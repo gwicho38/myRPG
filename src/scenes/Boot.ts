@@ -22,16 +22,20 @@ export class Boot extends Scene {
       assets.tilemaps.greenwoodCity,
     );
     this.load.tilemapTiledJSON(
+      'generated-medieval-castle',
+      assets.tilemaps.medievalCastle,
+    );
+    this.load.tilemapTiledJSON(
       'generated-mystic-forest',
       assets.tilemaps.mysticForest,
     );
     this.load.tilemapTiledJSON(
-      'generated-crystal-cave',
-      assets.tilemaps.crystalCave,
+      'generated-dark-dungeon',
+      assets.tilemaps.darkDungeon,
     );
     this.load.tilemapTiledJSON(
-      'generated-desert-oasis',
-      assets.tilemaps.desertOasis,
+      'generated-sci-fi-station',
+      assets.tilemaps.sciFiStation,
     );
 
     this.load.atlas(key.atlas.player, assets.atlas.image, assets.atlas.data);
