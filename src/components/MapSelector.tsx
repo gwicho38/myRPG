@@ -6,6 +6,7 @@
 import { Text } from 'phaser-jsx';
 
 import { MapConfig } from '../constants/maps';
+import { getAllTilesets } from '../constants/tilesets';
 import { MapManager } from '../managers/MapManager';
 import { Button } from './Button';
 
@@ -17,6 +18,7 @@ interface MapSelectorProps {
 export function MapSelector({ mapManager, onMapChange }: MapSelectorProps) {
   const currentMap = mapManager.getCurrentMap();
   const availableMaps = mapManager.getAvailableMaps();
+  const availableTilesets = getAllTilesets();
 
   const handleNextMap = async () => {
     try {
@@ -27,7 +29,7 @@ export function MapSelector({ mapManager, onMapChange }: MapSelectorProps) {
           onMapChange(newMap);
         }
       }
-    } catch (error) {
+    } catch {
       // Silently handle error for now
     }
   };
@@ -41,7 +43,7 @@ export function MapSelector({ mapManager, onMapChange }: MapSelectorProps) {
           onMapChange(newMap);
         }
       }
-    } catch (error) {
+    } catch {
       // Silently handle error for now
     }
   };
@@ -55,7 +57,7 @@ export function MapSelector({ mapManager, onMapChange }: MapSelectorProps) {
           onMapChange(newMap);
         }
       }
-    } catch (error) {
+    } catch {
       // Silently handle error for now
     }
   };
@@ -129,6 +131,60 @@ export function MapSelector({ mapManager, onMapChange }: MapSelectorProps) {
           style={{
             color: currentMap?.id === map.id ? '#ffff00' : '#ffffff',
             font: '12px monospace',
+          }}
+        />
+      ))}
+
+      <Text
+        x={450}
+        y={50}
+        text="AVAILABLE TILESETS"
+        fixed
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          color: '#ffffff',
+          font: 'bold 18px monospace',
+          padding: { x: 15, y: 10 },
+        }}
+      />
+
+      {availableTilesets.map((tileset, index) => (
+        <Text
+          key={tileset.id}
+          x={450}
+          y={100 + index * 25}
+          text={`🎨 ${tileset.name}`}
+          fixed
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            color: '#00ff00',
+            font: '12px monospace',
+            padding: { x: 8, y: 3 },
+          }}
+        />
+      ))}
+
+      <Text
+        x={450}
+        y={100 + availableTilesets.length * 25 + 20}
+        text="Theme Categories:"
+        fixed
+        style={{
+          color: '#ffffff',
+          font: 'bold 14px monospace',
+        }}
+      />
+
+      {availableTilesets.map((tileset, index) => (
+        <Text
+          key={`theme-${tileset.id}`}
+          x={450}
+          y={100 + availableTilesets.length * 25 + 50 + index * 20}
+          text={`• ${tileset.theme.toUpperCase()}: ${tileset.description}`}
+          fixed
+          style={{
+            color: '#cccccc',
+            font: '10px monospace',
           }}
         />
       ))}

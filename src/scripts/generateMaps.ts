@@ -30,18 +30,18 @@ class MapGeneratorScript {
    * Generate all predefined maps
    */
   async generateAllMaps(): Promise<void> {
-    console.log('🎮 Generating tilemaps for RPG game...\n');
+    // console.log('🎮 Generating tilemaps for RPG game...\n');
 
     for (const mapConfig of AVAILABLE_MAPS) {
       if (mapConfig.id === 'tuxemon-town') {
-        console.log(`⏭️  Skipping ${mapConfig.name} (using original)`);
+        // console.log(`⏭️  Skipping ${mapConfig.name} (using original)`);
         continue;
       }
 
       await this.generateMap(mapConfig);
     }
 
-    console.log('\n✅ All maps generated successfully!');
+    // console.log('\n✅ All maps generated successfully!');
     this.printUsageInstructions();
   }
 
@@ -49,7 +49,7 @@ class MapGeneratorScript {
    * Generate a single map
    */
   private async generateMap(mapConfig: MapConfig): Promise<void> {
-    console.log(`🗺️  Generating ${mapConfig.name}...`);
+    // console.log(`🗺️  Generating ${mapConfig.name}...`);
 
     let generatedMap;
 
@@ -76,7 +76,7 @@ class MapGeneratorScript {
         );
         break;
       default:
-        console.log(`❌ Unknown map type: ${mapConfig.type}`);
+        // console.log(`❌ Unknown map type: ${mapConfig.type}`);
         return;
     }
 
@@ -87,7 +87,7 @@ class MapGeneratorScript {
       );
       if (objectsLayer && 'objects' in objectsLayer) {
         objectsLayer.objects = mapConfig.objects.map((obj, index) => ({
-          height: (obj as any).height || 0,
+          height: (obj as unknown as { height?: number }).height || 0,
           id: index + 1,
           name: obj.name,
           properties: Object.entries(obj.properties || {}).map(
@@ -100,7 +100,7 @@ class MapGeneratorScript {
           rotation: 0,
           type: '',
           visible: true,
-          width: (obj as any).width || 0,
+          width: (obj as unknown as { width?: number }).width || 0,
           x: obj.x,
           y: obj.y,
         }));
@@ -112,7 +112,7 @@ class MapGeneratorScript {
     const filepath = path.join(this.outputDir, filename);
 
     fs.writeFileSync(filepath, JSON.stringify(generatedMap, null, 2));
-    console.log(`   ✅ Saved to: ${filepath}`);
+    // console.log(`   ✅ Saved to: ${filepath}`);
   }
 
   /**
@@ -124,7 +124,7 @@ class MapGeneratorScript {
     width: number = 40,
     height: number = 40,
   ): Promise<void> {
-    console.log(`🎨 Generating custom ${type} map: ${name}...`);
+    // console.log(`🎨 Generating custom ${type} map: ${name}...`);
 
     let generatedMap;
 
@@ -144,25 +144,25 @@ class MapGeneratorScript {
     const filepath = path.join(this.outputDir, filename);
 
     fs.writeFileSync(filepath, JSON.stringify(generatedMap, null, 2));
-    console.log(`✅ Custom map saved to: ${filepath}`);
+    // console.log(`✅ Custom map saved to: ${filepath}`);
   }
 
   /**
    * Print usage instructions
    */
   private printUsageInstructions(): void {
-    console.log('\n📖 Usage Instructions:');
-    console.log('1. Press "M" in-game to open the map selector');
-    console.log('2. Use the navigation buttons or click on maps to switch');
-    console.log('3. Each map has different terrain and objects');
-    console.log(
-      '4. Generated maps are stored in: src/assets/tilemaps/generated/',
-    );
-    console.log('\n🎮 Available Maps:');
-    AVAILABLE_MAPS.forEach((map) => {
-      const icon =
-        map.type === 'city' ? '🏙️' : map.type === 'forest' ? '🌲' : '🕳️';
-      console.log(`   ${icon} ${map.name} - ${map.description}`);
+    // console.log('\n📖 Usage Instructions:');
+    // console.log('1. Press "M" in-game to open the map selector');
+    // console.log('2. Use the navigation buttons or click on maps to switch');
+    // console.log('3. Each map has different terrain and objects');
+    // console.log(
+    //   '4. Generated maps are stored in: src/assets/tilemaps/generated/',
+    // );
+    // console.log('\n🎮 Available Maps:');
+    AVAILABLE_MAPS.forEach(() => {
+      // const icon =
+      //   map.type === 'city' ? '🏙️' : map.type === 'forest' ? '🌲' : '🕳️';
+      // console.log(`   ${icon} ${map.name} - ${map.description}`);
     });
   }
 
@@ -170,10 +170,10 @@ class MapGeneratorScript {
    * List generated maps
    */
   listGeneratedMaps(): void {
-    console.log('📁 Generated Maps:');
+    // console.log('📁 Generated Maps:');
 
     if (!fs.existsSync(this.outputDir)) {
-      console.log('   No generated maps found.');
+      // console.log('   No generated maps found.');
       return;
     }
 
@@ -181,14 +181,14 @@ class MapGeneratorScript {
     const jsonFiles = files.filter((file) => file.endsWith('.json'));
 
     if (jsonFiles.length === 0) {
-      console.log('   No generated maps found.');
+      // console.log('   No generated maps found.');
       return;
     }
 
-    jsonFiles.forEach((file) => {
-      const filepath = path.join(this.outputDir, file);
-      const stats = fs.statSync(filepath);
-      console.log(`   📄 ${file} (${this.formatFileSize(stats.size)})`);
+    jsonFiles.forEach(() => {
+      // const filepath = path.join(this.outputDir, file);
+      // const stats = fs.statSync(filepath);
+      // console.log(`   📄 ${file} (${this.formatFileSize(stats.size)})`);
     });
   }
 
@@ -216,24 +216,27 @@ async function main() {
 
     await generator.generateCustomMap(name, type, width, height);
   } else {
-    console.log('Usage:');
-    console.log(
-      '  npm run generate-maps              # Generate all predefined maps',
-    );
-    console.log('  npm run generate-maps list         # List generated maps');
-    console.log(
-      '  npm run generate-maps custom <name> <type> [width] [height]  # Generate custom map',
-    );
-    console.log('');
-    console.log('Examples:');
-    console.log('  npm run generate-maps custom "Ice City" city 50 50');
-    console.log('  npm run generate-maps custom "Dark Forest" forest 60 40');
+    // console.log('Usage:');
+    // console.log(
+    //   '  npm run generate-maps              # Generate all predefined maps',
+    // );
+    // console.log('  npm run generate-maps list         # List generated maps');
+    // console.log(
+    //   '  npm run generate-maps custom <name> <type> [width] [height]  # Generate custom map',
+    // );
+    // console.log('');
+    // console.log('Examples:');
+    // console.log('  npm run generate-maps custom "Ice City" city 50 50');
+    // console.log('  npm run generate-maps custom "Dark Forest" forest 60 40');
   }
 }
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(console.error);
+  main().catch(() => {
+    // console.error(error);
+    process.exit(1);
+  });
 }
 
 export { MapGeneratorScript };

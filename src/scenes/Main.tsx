@@ -27,6 +27,7 @@ export class Main extends Phaser.Scene {
   private lastKeyPressTime: number = 0;
   private keyDebounceDelay: number = 300;
   private playerWorldCollider!: Phaser.Physics.Arcade.Collider;
+  private isSwitchingMaps: boolean = false;
 
   constructor() {
     super(key.scene.main);
@@ -124,7 +125,7 @@ export class Main extends Phaser.Scene {
       render(
         <MapSelector
           mapManager={this.mapManager}
-          onMapChange={(mapConfig) => {
+          onMapChange={() => {
             this.updateMapAfterSwitch();
             // Hide map selector after successful map change
             this.showMapSelector = false;
@@ -148,52 +149,90 @@ export class Main extends Phaser.Scene {
     this.addPlayerSignInteraction();
 
     // Watch the player and worldLayer for collisions
-    this.playerWorldCollider = this.physics.add.collider(this.player, this.worldLayer);
+    this.playerWorldCollider = this.physics.add.collider(
+      this.player,
+      this.worldLayer,
+    );
   }
 
   private addPlayerSignInteraction() {
     const sign = this.tilemap.findObject(
       TilemapLayer.Objects,
       ({ name }) => name === TilemapObject.Sign,
-    )!;
-
-    this.sign = this.physics.add.staticBody(
-      sign.x!,
-      sign.y!,
-      sign.width,
-      sign.height,
     );
-    this.sign.text = sign.properties[0].value;
 
-    type ArcadeColliderType = Phaser.Types.Physics.Arcade.ArcadeColliderType;
+    // Only create sign interaction if a sign exists in the map
+    if (sign) {
+      this.sign = this.physics.add.staticBody(
+        sign.x!,
+        sign.y!,
+        sign.width,
+        sign.height,
+      );
+      this.sign.text = sign.properties[0].value;
 
-    this.physics.add.overlap(
-      this.sign as unknown as ArcadeColliderType,
-      this.player.selector as unknown as ArcadeColliderType,
-      (sign) => {
-        if (this.player.cursors.space.isDown && !state.isTypewriting) {
-          state.isTypewriting = true;
+      type ArcadeColliderType = Phaser.Types.Physics.Arcade.ArcadeColliderType;
 
-          render(
-            <Typewriter
-              text={(sign as unknown as Sign).text!}
-              onEnd={() => (state.isTypewriting = false)}
-            />,
-            this,
-          );
-        }
-      },
-      undefined,
-      this,
-    );
+      this.physics.add.overlap(
+        this.sign as unknown as ArcadeColliderType,
+        this.player.selector as unknown as ArcadeColliderType,
+        (sign) => {
+          if (this.player.cursors.space.isDown && !state.isTypewriting) {
+            state.isTypewriting = true;
+
+            render(
+              <Typewriter
+                text={(sign as unknown as Sign).text!}
+                onEnd={() => (state.isTypewriting = false)}
+              />,
+              this,
+            );
+          }
+        },
+        undefined,
+        this,
+      );
+    }
   }
 
   private updateMapAfterSwitch() {
-    // Get the new tilemap and worldLayer from the scene (set by MapManager)
-    this.tilemap = (this as any).tilemap;
-    this.worldLayer = (this as any).worldLayer;
+    // console.log('Starting map switch...');
+    this.isSwitchingMaps = true;
 
-    if (this.tilemap && this.worldLayer) {
+    // COMPLETE physics world reset approach
+    // Pause the entire physics world to stop all collision detection
+    this.physics.world.pause();
+
+    // Destroy ALL colliders in the physics world
+    this.physics.world.colliders.destroy();
+
+    // Remove all physics bodies from the world temporarily
+    if (this.player && this.player.body) {
+      this.physics.world.remove(this.player.body);
+    }
+
+    // Also remove sign body if it exists
+    if (this.sign && this.sign.body) {
+      this.physics.world.remove(this.sign.body);
+      this.sign.destroy();
+      this.sign = null as unknown as Sign;
+    }
+
+    // Clear references
+    this.playerWorldCollider =
+      null as unknown as Phaser.Physics.Arcade.Collider;
+
+    // Get the new tilemap and worldLayer from the scene (set by MapManager)
+    this.tilemap = (
+      this as unknown as { tilemap: Phaser.Tilemaps.Tilemap }
+    ).tilemap;
+    this.worldLayer = (
+      this as unknown as { worldLayer: Phaser.Tilemaps.TilemapLayer }
+    ).worldLayer;
+
+    if (this.tilemap && this.worldLayer && this.tilemap.tileWidth) {
+      // console.log(`New tilemap loaded: ${this.tilemap.tileWidth}x${this.tilemap.tileHeight} tiles`);
+
       // Update camera bounds
       this.cameras.main.setBounds(
         0,
@@ -202,14 +241,6 @@ export class Main extends Phaser.Scene {
         this.tilemap.heightInPixels,
       );
 
-      // Remove old collision
-      if (this.playerWorldCollider) {
-        this.playerWorldCollider.destroy();
-      }
-
-      // Add new collision with the new worldLayer
-      this.playerWorldCollider = this.physics.add.collider(this.player, this.worldLayer);
-
       // Move player to spawn point
       const spawnPoint = this.mapManager.getSpawnPoint();
       if (spawnPoint && this.player) {
@@ -217,12 +248,47 @@ export class Main extends Phaser.Scene {
       }
 
       // Update physics world bounds
-      this.physics.world.bounds.width = this.worldLayer.width;
-      this.physics.world.bounds.height = this.worldLayer.height;
+      if (this.worldLayer.width && this.worldLayer.height) {
+        this.physics.world.bounds.width = this.worldLayer.width;
+        this.physics.world.bounds.height = this.worldLayer.height;
+      }
+
+      // Wait longer for complete initialization
+      this.time.delayedCall(200, () => {
+        // Re-add player body to physics world
+        if (this.player && this.player.body) {
+          this.physics.world.add(this.player.body);
+        }
+
+        // Resume physics world first
+        this.physics.world.resume();
+
+        // Recreate sign interaction for the new map
+        this.addPlayerSignInteraction();
+
+        // Now create new collision
+        this.playerWorldCollider = this.physics.add.collider(
+          this.player,
+          this.worldLayer,
+        );
+        this.isSwitchingMaps = false;
+        // console.log('Map switch completed successfully - physics world reset');
+      });
+    } else {
+      // console.warn('Map switch failed: tilemap or worldLayer not properly initialized');
+      // Resume physics and re-add player even if switch failed
+      if (this.player && this.player.body) {
+        this.physics.world.add(this.player.body);
+      }
+      this.physics.world.resume();
+      this.isSwitchingMaps = false;
     }
   }
 
   update() {
-    this.player.update();
+    // Don't update player during map switches to prevent collision errors
+    if (!this.isSwitchingMaps) {
+      this.player.update();
+    }
   }
 }

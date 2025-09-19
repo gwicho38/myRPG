@@ -52,26 +52,22 @@ export class MapManager {
   async loadMap(mapId: string): Promise<boolean> {
     const mapConfig = getMapById(mapId);
     if (!mapConfig) {
-      console.error(`Map with ID '${mapId}' not found`);
+      // Map not found
       return false;
     }
 
     try {
-      // Generate the map if it's not already generated
-      if (!this.generatedMaps.has(mapId)) {
-        await this.generateMap(mapConfig);
-      }
-
       this.currentMap = mapConfig;
 
       if (this.phaserScene) {
         await this.loadMapInPhaser(mapId);
       }
 
-      console.log(`Loaded map: ${mapConfig.name}`);
+      // Map loaded successfully
       return true;
-    } catch (error) {
-      console.error(`Failed to load map '${mapId}':`, error);
+    } catch {
+      // console.error(`Failed to load map ${mapId}:`, error);
+      // Failed to load map
       return false;
     }
   }
@@ -147,7 +143,9 @@ export class MapManager {
     }
 
     // Clear existing tilemap
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((this.phaserScene as any).tilemap) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this.phaserScene as any).tilemap.destroy();
     }
 
@@ -159,18 +157,51 @@ export class MapManager {
       tilemapKey = `generated-${mapId}`;
     }
 
+    // console.log(`Loading tilemap with key: ${tilemapKey}`);
+
     // Create new tilemap
     const tilemap = this.phaserScene.make.tilemap({ key: tilemapKey });
 
-    // Add tileset
-    const tileset = tilemap.addTilesetImage(
-      'tuxemon-sample-32px-extruded',
-      'tuxemon',
-    );
+    // Debug: Check what tileset the map expects
+    // console.log('Tilemap info:', {
+    //   format: tilemap.format,
+    //   tileWidth: tilemap.tileWidth,
+    //   tileHeight: tilemap.tileHeight,
+    //   width: tilemap.width,
+    //   height: tilemap.height
+    // });
+
+    // Check if tuxemon image is loaded in cache
+    // console.log('Available images in cache:', this.phaserScene.textures.list);
+    // console.log('Tuxemon texture exists:', this.phaserScene.textures.exists('tuxemon'));
+
+    // For now, all maps use the tuxemon tileset since that's the only one we have loaded
+    // const tilesetName = 'tuxemon-sample-32px-extruded';
+    // const tilesetKey = 'tuxemon';
+    // console.log(`Using tileset: ${tilesetName} with key: ${tilesetKey}`);
+
+    // The generated maps have tileset name "tuxemon" which should match the texture key
+    let tileset = tilemap.addTilesetImage('tuxemon', 'tuxemon');
 
     if (!tileset) {
+      // console.log('Failed with name "tuxemon", trying full name...');
+      tileset = tilemap.addTilesetImage(
+        'tuxemon-sample-32px-extruded',
+        'tuxemon',
+      );
+    }
+
+    if (!tileset) {
+      // console.log('Failed with full name, trying default approach...');
+      tileset = tilemap.addTilesetImage('tuxemon-sample-32px-extruded');
+    }
+
+    if (!tileset) {
+      // console.error('All tileset loading attempts failed');
       throw new Error('Failed to load tileset');
     }
+
+    // console.log('Tileset loaded successfully:', tileset);
 
     // Create layers
     tilemap.createLayer('Below Player', tileset, 0, 0);
@@ -183,7 +214,9 @@ export class MapManager {
     }
 
     // Store reference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.phaserScene as any).tilemap = tilemap;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.phaserScene as any).worldLayer = worldLayer;
   }
 

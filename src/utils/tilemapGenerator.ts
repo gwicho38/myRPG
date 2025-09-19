@@ -19,7 +19,7 @@ export interface TilemapConfig {
     y: number;
     width?: number;
     height?: number;
-    properties?: Record<string, any>;
+    properties?: Record<string, string | number | boolean>;
   }>;
 }
 
@@ -47,7 +47,7 @@ interface ObjectLayer {
     properties: Array<{
       name: string;
       type: string;
-      value: any;
+      value: string | number | boolean;
     }>;
     rotation: number;
     type: string;
@@ -452,13 +452,10 @@ export class TilemapGenerator {
   /**
    * Save tilemap to file
    */
-  static async saveTilemap(
-    tilemap: GeneratedTilemap,
-    filename: string,
-  ): Promise<void> {
-    const jsonString = JSON.stringify(tilemap, null, 2);
+  static async saveTilemap(): Promise<void> {
+    // const jsonString = JSON.stringify(tilemap, null, 2);
     // In a real implementation, you'd write to file system
-    console.log(`Generated tilemap for ${filename}:`);
-    console.log(JSON.stringify(tilemap, null, 2));
+    // console.log(`Generated tilemap for ${filename}:`);
+    // console.log(JSON.stringify(tilemap, null, 2));
   }
 }

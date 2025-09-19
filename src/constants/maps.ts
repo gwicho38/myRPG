@@ -19,7 +19,7 @@ export interface MapConfig {
     name: string;
     x: number;
     y: number;
-    properties?: Record<string, any>;
+    properties?: Record<string, string | number | boolean>;
   }>;
 }
 
@@ -45,73 +45,51 @@ export const AVAILABLE_MAPS: MapConfig[] = [
     id: 'greenwood-city',
     name: 'Greenwood City',
     type: MAP_TYPES.CITY,
-    description: 'A bustling city with tall buildings',
-    tileset: 'tuxemon-sample-32px-extruded',
+    description: 'A vibrant city with tuxemon theme',
+    tileset: 'tuxemon',
     width: 40,
     height: 40,
     spawnPoint: { x: 640, y: 640 },
-    objects: [
-      {
-        name: 'Sign',
-        x: 628,
-        y: 620,
-        properties: { text: 'Welcome to Greenwood City!' },
-      },
-    ],
+  },
+  {
+    id: 'medieval-castle',
+    name: 'Medieval Castle',
+    type: MAP_TYPES.CITY,
+    description: 'A medieval castle town with stone buildings',
+    tileset: 'medieval',
+    width: 40,
+    height: 40,
+    spawnPoint: { x: 640, y: 640 },
   },
   {
     id: 'mystic-forest',
     name: 'Mystic Forest',
     type: MAP_TYPES.FOREST,
-    description: 'A mysterious forest filled with ancient trees',
-    tileset: 'tuxemon-sample-32px-extruded',
+    description: 'A dense forest with natural elements',
+    tileset: 'nature',
     width: 40,
     height: 40,
     spawnPoint: { x: 640, y: 640 },
-    objects: [
-      {
-        name: 'Sign',
-        x: 628,
-        y: 620,
-        properties: { text: 'Enter the Mystic Forest at your own risk!' },
-      },
-    ],
   },
   {
-    id: 'crystal-cave',
-    name: 'Crystal Cave',
+    id: 'dark-dungeon',
+    name: 'Dark Dungeon',
     type: MAP_TYPES.CAVE,
-    description: 'A dark cave filled with glowing crystals',
-    tileset: 'tuxemon-sample-32px-extruded',
+    description: 'A dark underground dungeon',
+    tileset: 'dungeon',
     width: 40,
     height: 40,
     spawnPoint: { x: 640, y: 640 },
-    objects: [
-      {
-        name: 'Sign',
-        x: 628,
-        y: 620,
-        properties: { text: 'Crystal Cave - Watch your step!' },
-      },
-    ],
   },
   {
-    id: 'desert-oasis',
-    name: 'Desert Oasis',
+    id: 'sci-fi-station',
+    name: 'Sci-Fi Station',
     type: MAP_TYPES.CITY,
-    description: 'A peaceful oasis in the middle of the desert',
-    tileset: 'tuxemon-sample-32px-extruded',
+    description: 'A futuristic space station',
+    tileset: 'scifi',
     width: 40,
     height: 40,
     spawnPoint: { x: 640, y: 640 },
-    objects: [
-      {
-        name: 'Sign',
-        x: 628,
-        y: 620,
-        properties: { text: 'Welcome to the Desert Oasis!' },
-      },
-    ],
   },
 ];
 
