@@ -117,18 +117,21 @@ export class LuminusInterfaceController {
 			if (keyboard.keyCode === 39) {
 				this.moveRight();
 			}
-			if (keyboard.keyCode === 38) {
+			if (keyboard.keyCode === 38 || keyboard.keyCode === 75) {
 				this.moveUp();
 			}
-			if (keyboard.keyCode === 40) {
+			if (keyboard.keyCode === 40 || keyboard.keyCode === 74) {
 				this.moveDown();
 			}
-			if (keyboard.keyCode === 13)
-				this.executeFunctionByName(
-					this.currentElementAction.action,
-					this.currentElementAction.context,
-					this.currentElementAction.args
-				);
+			if (keyboard.keyCode === 69 || keyboard.keyCode === 13) {
+				if (this.currentElementAction && this.currentElementAction.action) {
+					this.executeFunctionByName(
+						this.currentElementAction.action,
+						this.currentElementAction.context,
+						this.currentElementAction.args
+					);
+				}
+			}
 		});
 	}
 
@@ -206,13 +209,15 @@ export class LuminusInterfaceController {
 
 	menuHistoryRetrieve() {
 		let history = this.menuHistory[this.menuHistory.length - 1];
-		this.removeCurrentSelectionHighlight(this.currentElementAction.element);
+		this.removeCurrentSelectionHighlight();
 		this.currentElementAction = history.currentElementAction;
 		this.currentLinePosition = history.currentLinePosition;
 		this.currentMatrixRow = history.currentMatrixRow;
 		this.currentMatrixCol = history.currentMatrixCol;
 		this.closeAction = history.closeAction;
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 		delete this.menuHistory[this.menuHistory.length - 1];
 	}
 
@@ -220,7 +225,9 @@ export class LuminusInterfaceController {
 	 * Removes the current selectionhighlight.
 	 */
 	removeCurrentSelectionHighlight() {
-		this.removeSelection(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.removeSelection(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -228,7 +235,9 @@ export class LuminusInterfaceController {
 	 */
 	close() {
 		this.outlineEffect.outlinePostFxPlugin.destroy();
-		this.executeFunctionByName(this.closeAction.action, this.closeAction.context, this.closeAction.args);
+		if (this.closeAction && this.closeAction.action) {
+			this.executeFunctionByName(this.closeAction.action, this.closeAction.context, this.closeAction.args);
+		}
 	}
 
 	// /**
@@ -249,6 +258,9 @@ export class LuminusInterfaceController {
 		if (hasError) {
 			return;
 		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
+			return;
+		}
 		this.removeSelection(this.currentElementAction.element);
 		this.scene.sound.play(this.navigationSound);
 		this.currentMatrixCol++;
@@ -260,7 +272,9 @@ export class LuminusInterfaceController {
 			this.currentMatrixCol = 0;
 			this.currentElementAction = this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][0];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -269,6 +283,9 @@ export class LuminusInterfaceController {
 	moveLeft() {
 		let hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
@@ -289,7 +306,9 @@ export class LuminusInterfaceController {
 				this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][position];
 			this.currentMatrixCol = position;
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -298,6 +317,9 @@ export class LuminusInterfaceController {
 	moveDown(changeMatrixRow = true) {
 		let hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
@@ -309,7 +331,9 @@ export class LuminusInterfaceController {
 			let canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition--;
-				this.updateHighlightedElement(this.currentElementAction.element);
+				if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 				return;
 			}
 			this.moveDown(false);
@@ -331,7 +355,9 @@ export class LuminusInterfaceController {
 					this.interfaceElements[this.currentLinePosition][this.currentMatrixRow].length - 1
 				];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -340,6 +366,9 @@ export class LuminusInterfaceController {
 	moveUp(changeMatrixRow = true) {
 		let hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
@@ -351,7 +380,9 @@ export class LuminusInterfaceController {
 			let canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition++;
-				this.updateHighlightedElement(this.currentElementAction.element);
+				if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 				return;
 			}
 			this.moveUp(false);
@@ -373,7 +404,9 @@ export class LuminusInterfaceController {
 					this.interfaceElements[this.currentLinePosition][this.currentMatrixRow].length - 1
 				];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**

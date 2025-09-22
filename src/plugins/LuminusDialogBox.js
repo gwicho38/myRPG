@@ -447,6 +447,10 @@ export class LuminusDialogBox {
 	 * Creates the dialogue box itself.
 	 */
 	createDialogueBox() {
+		this.cameraWidth = this.scene.cameras.main.width;
+		this.cameraHeight = this.scene.cameras.main.height;
+		this.textWidth = this.cameraWidth - this.margin * 3;
+
 		this.dialog = this.scene.add.nineslice(
 			this.margin,
 			this.cameraHeight - this.dialogHeight - this.margin,
@@ -804,7 +808,7 @@ export class LuminusDialogBox {
 	 */
 	createText() {
 		this.dialog.textMessage = this.scene.add
-			.text(this.margin * 2, this.cameraHeight + this.margin * 2.5 - this.dialogHeight, '', {
+			.text(this.margin * 2, this.dialog.y + this.margin * 2.5, '', {
 				wordWrap: {
 					width: this.textWidth,
 				},

@@ -79,6 +79,10 @@ export class LuminusTiledInfoBox {
 					return;
 				}
 				let chat = CHATS.find((c) => c.id == messageID);
+				if (!chat) {
+					console.warn(`Chat with ID ${messageID} not found`);
+					return;
+				}
 				this.scene.physics.add.existing(zone);
 				zone.setOrigin(0, 0);
 				zone.body.immovable = true;
@@ -101,6 +105,10 @@ export class LuminusTiledInfoBox {
 				this.luminusDialogBox.isOverlapingChat = true;
 				this.luminusDialogBox.actionButton.visible = true;
 				this.luminusDialogBox.interactionIcon.visible = true;
+				this.luminusDialogBox.interactionIcon.setPosition(
+					this.player.container.x,
+					this.player.container.y - this.player.container.body.height * 2.5
+				);
 				this.luminusDialogBox.chat = zone.chat;
 				this.player.canAtack = false;
 			},

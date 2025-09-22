@@ -3,6 +3,7 @@ import { LuminusMovement } from '../plugins/LuminusMovement';
 import { Player } from '../entities/Player';
 import { LuminusDungeonGenerator } from '../plugins/LuminusDungeonGenerator';
 import { LuminusFogWarManager } from '../plugins/LuminusFogWarManager';
+import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 import { Enemy } from '../entities/Enemy';
 import { PlayerConfig } from '../consts/player/Player';
 
@@ -96,6 +97,35 @@ export class DungeonScene extends Phaser.Scene {
             this.player
         );
         this.fog.createFog();
+
+        this.saveManager = new LuminusSaveManager(this);
+        this.saveManager.create();
+        this.setupSaveKeybinds();
+    }
+
+    setupSaveKeybinds() {
+        this.input.keyboard.on('keydown', (event) => {
+            if (event.ctrlKey && event.key === 's') {
+                event.preventDefault();
+                this.saveManager.saveGame(false);
+            }
+            if (event.ctrlKey && event.key === 'l') {
+                event.preventDefault();
+                const saveData = this.saveManager.loadGame(false);
+                if (saveData) {
+                    this.saveManager.applySaveData(saveData);
+                }
+            }
+            if (event.key === 'F5') {
+                event.preventDefault();
+                const saveData = this.saveManager.loadGame(true);
+                if (saveData) {
+                    this.saveManager.applySaveData(saveData);
+                } else {
+                    this.saveManager.showSaveNotification('No checkpoint found', true);
+                }
+            }
+        });
     }
 
     update() {

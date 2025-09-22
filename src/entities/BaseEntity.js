@@ -39,6 +39,20 @@ export const BaseEntity = {
     canTakeDamage: true,
 
     /**
+     * Controls if the entity is currently blocking.
+     * @type { boolean }
+     * @default
+     */
+    isBlocking: false,
+
+    /**
+     * Controls if the entity can block.
+     * @type { boolean }
+     * @default
+     */
+    canBlock: true,
+
+    /**
      * This variable controls when the atack hitbox will appear.
      * @type { boolean }
      * @default
@@ -51,4 +65,46 @@ export const BaseEntity = {
      * @default
      */
     perceptionRange: 75,
+
+    /**
+     * Controls if the entity is currently swimming.
+     * @type { boolean }
+     * @default
+     */
+    isSwimming: false,
+
+    /**
+     * Controls if the entity can swim.
+     * @type { boolean }
+     * @default
+     */
+    canSwim: true,
+
+    /**
+     * Controls if the entity is currently running.
+     * @type { boolean }
+     * @default
+     */
+    isRunning: false,
+
+    /**
+     * The base movement speed when not swimming or running.
+     * @type { number }
+     * @default
+     */
+    baseSpeed: 200,
+
+    /**
+     * The movement speed while swimming (slower than normal).
+     * @type { number }
+     * @default
+     */
+    swimSpeed: 100,
+
+    /**
+     * The movement speed while running (faster than normal).
+     * @type { number }
+     * @default
+     */
+    runSpeed: 300,
 };
