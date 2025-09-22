@@ -315,6 +315,38 @@ export class HUDScene extends Phaser.Scene {
         this.scene.stop(this.attributeSceneName);
 
         this.level_text = this.add.text(15, 75, 'LvL ' + this.player.attributes.level);
+
+        this.createSaveButton();
+    }
+
+    createSaveButton() {
+        this.saveButton = this.add.text(
+            this.cameras.main.width - 80,
+            20,
+            'SAVE',
+            {
+                fontSize: '14px',
+                color: '#ffffff',
+                backgroundColor: '#333333',
+                padding: { x: 8, y: 4 }
+            }
+        );
+        this.saveButton.setScrollFactor(0);
+        this.saveButton.setInteractive();
+        this.saveButton.on('pointerdown', () => {
+            const mainScene = this.scene.get('MainScene') || this.scene.get('TownScene') ||
+                             this.scene.get('CaveScene') || this.scene.get('OverworldScene') ||
+                             this.scene.get('DungeonScene');
+            if (mainScene && mainScene.saveManager) {
+                mainScene.saveManager.saveGame(false);
+            }
+        });
+        this.saveButton.on('pointerover', () => {
+            this.saveButton.setStyle({ backgroundColor: '#555555' });
+        });
+        this.saveButton.on('pointerout', () => {
+            this.saveButton.setStyle({ backgroundColor: '#333333' });
+        });
     }
 
     /**

@@ -18,21 +18,55 @@ import { InventoryScene } from './scenes/InventoryScene';
 import { TutorialScene } from './scenes/TutorialScene';
 import { MainMenuScene } from './scenes/MainMenuScene';
 import { AttributeScene } from './scenes/AttributeScene';
+import { TownScene } from './scenes/TownScene';
+import { CaveScene } from './scenes/CaveScene';
+import { OverworldScene } from './scenes/OverworldScene';
 /**
  * @type { Phaser.Core.Config}
  */
+// Create canvas with willReadFrequently attribute
+const canvas = document.getElementById('luminus-rpg');
+if (!canvas) {
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = 'luminus-rpg';
+    document.getElementById('luminus-rpg-parent').appendChild(newCanvas);
+}
+
 const config = {
     type: Phaser.WEBGL,
     parent: 'luminus-rpg-parent',
     canvas: document.getElementById('luminus-rpg'),
     width: 800,
     height: 600,
+    render: {
+        antialias: false,
+        pixelArt: false,
+        roundPixels: false,
+        transparent: false,
+        willReadFrequently: true
+    },
+    callbacks: {
+        preBoot: function(game) {
+            // Set willReadFrequently for Phaser's internal canvas contexts
+            const originalGetContext = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function(type, attributes) {
+                if (type === '2d') {
+                    attributes = attributes || {};
+                    attributes.willReadFrequently = true;
+                }
+                return originalGetContext.call(this, type, attributes);
+            };
+        }
+    },
     scene: [
         // Preload should come first
         PreloadScene,
         IntroScene,
         MainScene,
         DungeonScene,
+        TownScene,
+        CaveScene,
+        OverworldScene,
         MobileCheckScene,
         TutorialScene,
         MainMenuScene,

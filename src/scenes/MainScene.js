@@ -6,6 +6,7 @@ import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentPartic
 import { LuminusOutlineEffect } from '../plugins/LuminusOutlineEffect';
 import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
+import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 import { Item } from '../entities/Item';
 
 export class MainScene extends Phaser.Scene {
@@ -33,6 +34,9 @@ export class MainScene extends Phaser.Scene {
 
         this.mapCreator = new LuminusMapCreator(this);
         this.mapCreator.create();
+
+        // Store map reference for other systems
+        this.map = this.mapCreator.map;
 
         const camera = this.cameras.main;
         camera.startFollow(this.player.container);
@@ -69,6 +73,11 @@ export class MainScene extends Phaser.Scene {
         this.luminusEnemyZones = new LuminusEnemyZones(this, this.mapCreator.map);
         this.luminusEnemyZones.create();
 
+        this.saveManager = new LuminusSaveManager(this);
+        this.saveManager.create();
+
+        this.setupSaveKeybinds();
+
         // new Item(this, this.player.container.x, this.player.container.y - 40, 2);
         // new Item(this, this.player.container.x, this.player.container.y - 50, 2);
         // new Item(this, this.player.container.x, this.player.container.y - 60, 1);
@@ -79,6 +88,37 @@ export class MainScene extends Phaser.Scene {
      */
     stopSceneMusic() {
         this.themeSound.stop();
+    }
+
+    setupSaveKeybinds() {
+        this.input.keyboard.on('keydown', (event) => {
+            if (event.ctrlKey && event.key === 's') {
+                event.preventDefault();
+                this.saveManager.saveGame(false);
+            }
+            if (event.ctrlKey && event.key === 'l') {
+                event.preventDefault();
+                const saveData = this.saveManager.loadGame(false);
+                if (saveData) {
+                    this.saveManager.applySaveData(saveData);
+                }
+            }
+            if (event.key === 'F5') {
+                event.preventDefault();
+                const saveData = this.saveManager.loadGame(true);
+                if (saveData) {
+                    this.saveManager.applySaveData(saveData);
+                } else {
+                    this.saveManager.showSaveNotification('No checkpoint found', true);
+                }
+            }
+            // Debug: Manual auto-save trigger with F6
+            if (event.key === 'F6') {
+                event.preventDefault();
+                console.log('Manual auto-save triggered');
+                this.saveManager.createCheckpoint();
+            }
+        });
     }
 
     update(time, delta) {

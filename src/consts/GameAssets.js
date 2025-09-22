@@ -95,6 +95,9 @@ import atlas_chat_bubble_animation_image_json from '../assets/sprites/chat_bubbl
 // JSON
 import tile_map_json from '../assets/maps/larus/larus.json';
 import tutorial_map_json from '../assets/maps/tutorial/tutorial.json';
+import town_map_json from '../assets/maps/town/town.json';
+import cave_map_json from '../assets/maps/cave/cave_dungeon.json';
+import overworld_map_json from '../assets/maps/overworld/overworld.json';
 
 // Sound
 import space_sound_key from '../assets/sound/typing/blip_06.mp3';
@@ -455,6 +458,18 @@ export const TilemapConfig = [
     {
         name: 'tutorial',
         json: tutorial_map_json,
+    },
+    {
+        name: 'town',
+        json: town_map_json,
+    },
+    {
+        name: 'cave_dungeon',
+        json: cave_map_json,
+    },
+    {
+        name: 'overworld',
+        json: overworld_map_json,
     },
 ];
 
