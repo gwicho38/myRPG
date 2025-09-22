@@ -37,11 +37,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	public container: Phaser.GameObjects.Container;
 	public speed: number;
 	public items: IInventoryItem[];
-	public healthBar?: LuminusHealthBar;
-	public walkDust?: any;
-	public hitZone?: Phaser.GameObjects.Zone;
-	public luminusKeyboardMouseController?: LuminusKeyboardMouseController;
-	public luminusMovement?: LuminusMovement;
+	public healthBar: LuminusHealthBar;
+	public walkDust: any;
+	public hitZone: Phaser.GameObjects.Zone;
+	public luminusKeyboardMouseController: LuminusKeyboardMouseController;
+	public luminusMovement: LuminusMovement;
+	public luminusHUDProgressBar: LuminusHUDProgressBar | null = null;
+	public joystickScene: any;
+
+	// Original properties from JS version
+	public hitZoneWidth: number = 12;
+	public hitZoneHeigth: number = 21;
+	public bodyWidth: number = 12;
+	public bodyHeight: number = 8;
+	public bodyOffsetY: number = 2;
+	public dustParticleName: string = 'walk_dust';
 
 	constructor(scene: Phaser.Scene, x: number, y: number, texture: string, map?: any) {
 		super(scene, 0, 0, texture);
@@ -49,136 +59,168 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		// Has to call this method, so the animations work properly.
 		this.addToUpdateList();
 
-		// Initialize BaseEntity properties
+		// Here are all classes that this Player Extends.
 		Object.assign(this, BaseEntity);
 
-		// Initialize attributes
+		/**
+		 * The entity attributes.
+		 */
 		this.attributes = {} as IEntityAttributes;
 		Object.assign(this.attributes, EntityAttributes);
 
-		// Initialize managers
+		/**
+		 * The Attributes Manager.
+		 */
 		this.attributesManager = new AttributesManager(this.scene, this);
+
+		/**
+		 * The name of the Entity. It's used for differenciation of the entityes.
+		 */
 		this.entityName = ENTITIES.Player;
 
-		// Initialize collections
+		/**
+		 * Maximum speed to be used for the player.
+		 */
+		this.speed = 70;
+
+		// TODO - Should get the player's items when he starts the game.
+		/**
+		 * An Array with the Item ID's and the number of that specific Item that the player has.
+		 */
 		this.items = [];
-		this.speed = this.baseSpeed;
 
-		// Create container for the player
-		this.container = this.scene.add.container(x, y);
-		this.container.add(this);
+		/**
+		 * The zone that will interact as a hitzone.
+		 */
+		this.hitZone = this.scene.add.zone(0, 0, this.width, this.height);
 
-		// Enable physics on the container
-		this.scene.physics.world.enable(this.container);
-
-		// Set up physics body
-		const body = this.container.body as Phaser.Physics.Arcade.Body;
-		body.setSize(12, 16);
-		body.setOffset(-6, -8);
-		body.setCollideWorldBounds(true);
-
-		// Initialize health bar
-		this.createHealthBar();
-
-		// Initialize controls
-		this.createControls();
-	}
-
-	private createHealthBar(): void {
+		// TODO - Change the offsets to a JSON file or DataBase so it's not HardCoded.
+		/**
+		 * The Health Bar.
+		 */
 		this.healthBar = new LuminusHealthBar(
 			this.scene,
-			this.container.x,
-			this.container.y - 20,
-			this.attributes.health,
-			this.attributes.maxHealth
+			0,
+			0,
+			this.width * 2,
+			this.attributes.baseHealth,
+			-this.width / 2.2,
+			this.height / 2
 		);
-	}
 
-	private createControls(): void {
+		this.setDepth(1);
+
+		/**
+		 * The class responsible for managing Keyboard and Mouse inputs.
+		 */
 		this.luminusKeyboardMouseController = new LuminusKeyboardMouseController(this.scene, this);
 		this.luminusKeyboardMouseController.create();
 
-		this.luminusMovement = new LuminusMovement(this.scene, this, null);
+		this.scene.scene.launch('JoystickScene', {
+			player: this,
+			map: map,
+		});
+
+		/**
+		 * The Joystick Scene.
+		 */
+		this.joystickScene = this.scene.scene.get('JoystickScene');
+
+		/**
+		 * This object is responsible for moving the entity.
+		 */
+		this.luminusMovement = new LuminusMovement(this.scene, this, this.joystickScene);
+
+		this.play('character-idle-down');
+
+		/**
+		 * The container that holds the player game objects.
+		 */
+		this.container = new Phaser.GameObjects.Container(this.scene, x, y, [this, this.healthBar, this.hitZone]);
+		this.container.setDepth(1);
+
+		// Initializes the physics.
+		this.setPhysics();
+		/**
+		 * The dust particles that the entity will emit when it moves.
+		 */
+		this.walkDust = this.scene.add
+			.particles(this.container.x, this.container.y, this.dustParticleName, {
+				follow: this.container,
+				speed: 2,
+				scale: { start: 0.1, end: 0.25 },
+				frequency: 300,
+				quantity: 20,
+				lifespan: 1000,
+				rotate: { min: 0, max: 360 },
+				alpha: { start: 1, end: 0 },
+				followOffset: {
+					y: 10,
+				},
+			})
+			.setDepth(0);
+
+		this.walkDust.on = false;
+		// All the dependencies that need to be inside the update game loop.
+		this.scene.events.on('update', this.onUpdate, this);
 	}
 
-	public takeDamage(damage: number): void {
-		if (!this.canTakeDamage) return;
-
-		// Apply damage reduction if blocking
-		const actualDamage = this.isBlocking ? Math.floor(damage * 0.5) : damage;
-
-		this.attributes.health = Math.max(0, this.attributes.health - actualDamage);
-
-		// Update health bar
-		if (this.healthBar) {
-			(this.healthBar as any).setValue(this.attributes.health);
-		}
-
-		// Check if player died
-		if (this.attributes.health <= 0) {
-			this.handleDeath();
-		}
+	/**
+	 * The default pre update method from the Sprite Game Object.
+	 */
+	preUpdate(time: number, delta: number): void {
+		super.preUpdate(time, delta);
 	}
 
-	private handleDeath(): void {
-		this.canMove = false;
-		this.canAtack = false;
-		// Add death logic here (respawn, game over, etc.)
-		console.log('Player died!');
+	/**
+	 * This method is called every game loop. Anything that depends on it (update game loop method) should be put in here.
+	 */
+	onUpdate(): void {
+		this.updateMovementDependencies();
+		if (this.luminusMovement) this.luminusMovement.move();
 	}
 
-	public heal(amount: number): void {
-		this.attributes.health = Math.min(this.attributes.maxHealth, this.attributes.health + amount);
+	/**
+	 * Initializes the physics
+	 */
+	setPhysics(): void {
+		// this.scene.add.existing(this);
+		this.scene.physics.add.existing(this);
+		this.body!.setSize(this.bodyWidth, this.bodyHeight);
+		(this.body as Phaser.Physics.Arcade.Body).offset.y = this.height / 1.8;
+		(this.body as Phaser.Physics.Arcade.Body).maxSpeed = this.speed;
 
-		if (this.healthBar) {
-			(this.healthBar as any).setValue(this.attributes.health);
-		}
+		this.scene.add.existing(this.container);
+		this.scene.physics.add.existing(this.container);
+		(this.container.body as Phaser.Physics.Arcade.Body).setSize(this.bodyWidth, this.bodyHeight);
+		(this.container.body as Phaser.Physics.Arcade.Body).offset.y = this.bodyOffsetY;
+		(this.container.body as Phaser.Physics.Arcade.Body).offset.x = -(this.bodyWidth / 2);
+		(this.container.body as Phaser.Physics.Arcade.Body).maxSpeed = this.speed;
+
+		this.scene.physics.add.existing(this.hitZone);
+		(this.hitZone.body as Phaser.Physics.Arcade.Body).setSize(this.hitZoneWidth, this.hitZoneHeigth);
+
+		// Debug color lines.
+		(this.container.body as Phaser.Physics.Arcade.Body).debugBodyColor = 0xffffff;
+		(this.body as Phaser.Physics.Arcade.Body).debugBodyColor = 0xffff00;
 	}
 
-	public gainExperience(amount: number): void {
-		this.attributes.experience += amount;
-		(this.attributesManager as any).checkLevelUp();
+	/**
+	 * Destroys all the sprite dependencies.
+	 */
+	destroyAll(): void {
+		this.container.destroy();
+		this.destroy();
 	}
 
-	public addItem(item: any): void {
-		this.items.push(item);
-	}
-
-	public removeItem(itemId: string): boolean {
-		const index = this.items.findIndex((item) => item.id.toString() === itemId);
-		if (index !== -1) {
-			this.items.splice(index, 1);
-			return true;
-		}
-		return false;
-	}
-
-	public hasItem(itemId: string): boolean {
-		return this.items.some((item) => item.id.toString() === itemId);
-	}
-
-	public update(): void {
-		// Update movement
-		if (this.luminusMovement) {
-			this.luminusMovement.move();
-		}
-
-		// Update health bar position
-		if (this.healthBar) {
-			this.healthBar.setPosition(this.container.x, this.container.y - 30);
-		}
-	}
-
-	public destroy(): void {
-		// Clean up resources
-		if (this.healthBar) {
-			this.healthBar.destroy();
-		}
-
-		if (this.container) {
-			this.container.destroy();
-		}
-
-		super.destroy();
+	/**
+	 * Updates all dependencies that are required by the game.
+	 * You should put any updates that require movement iteraction here.
+	 */
+	updateMovementDependencies(): void {
+		// if (this.hitZone) {
+		//     this.hitZone.x = this.x;
+		//     this.hitZone.y = this.y;
+		// }
 	}
 }
