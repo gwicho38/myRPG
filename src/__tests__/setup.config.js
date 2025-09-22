@@ -1,3 +1,9 @@
+// Global test setup
+beforeEach(() => {
+	// Clear all mocks before each test
+	jest.clearAllMocks();
+});
+
 // Mock Phaser for testing
 global.Phaser = {
 	Scene: class Scene {
