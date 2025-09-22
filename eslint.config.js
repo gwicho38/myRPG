@@ -2,6 +2,8 @@ const js = require('@eslint/js');
 const prettierPlugin = require('eslint-plugin-prettier');
 const prettierConfig = require('eslint-config-prettier');
 const babelParser = require('@babel/eslint-parser');
+const tsParser = require('@typescript-eslint/parser');
+const tsPlugin = require('@typescript-eslint/eslint-plugin');
 
 module.exports = [
 	js.configs.recommended,
@@ -43,7 +45,43 @@ module.exports = [
 		},
 	},
 	{
-		files: ['**/__tests__/**/*.js', '**/*.test.js', '**/*.spec.js'],
+		files: ['src/**/*.ts', 'src/**/*.tsx'],
+		languageOptions: {
+			ecmaVersion: 'latest',
+			sourceType: 'module',
+			parser: tsParser,
+			parserOptions: {
+				project: './tsconfig.json',
+			},
+			globals: {
+				Phaser: 'readonly',
+				document: 'readonly',
+				window: 'readonly',
+				console: 'readonly',
+				localStorage: 'readonly',
+				setTimeout: 'readonly',
+				setInterval: 'readonly',
+				clearTimeout: 'readonly',
+				clearInterval: 'readonly',
+				HTMLCanvasElement: 'readonly',
+				process: 'readonly',
+			},
+		},
+		plugins: {
+			'@typescript-eslint': tsPlugin,
+			prettier: prettierPlugin,
+		},
+		rules: {
+			...tsPlugin.configs.recommended.rules,
+			...prettierConfig.rules,
+			'@typescript-eslint/no-explicit-any': 'off',
+			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+			'@typescript-eslint/explicit-module-boundary-types': 'off',
+			'prettier/prettier': ['error', { endOfLine: 'auto' }],
+		},
+	},
+	{
+		files: ['**/__tests__/**/*.{js,ts}', '**/*.test.{js,ts}', '**/*.spec.{js,ts}'],
 		languageOptions: {
 			globals: {
 				jest: 'readonly',
