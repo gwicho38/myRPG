@@ -463,9 +463,14 @@ export class InventoryScene extends Phaser.Scene {
 		let slotIndex = 0;
 		let time = 0;
 		for (let i = 0; i < this.player.items.length; i++) {
+			// Check if we have enough slots
+			if (slotIndex >= this.slots.length) {
+				console.warn(`Not enough inventory slots. Available: ${this.slots.length}, Items: ${this.player.items.length}`);
+				break;
+			}
 			const slot = this.slots[slotIndex];
 			slotIndex++;
-			if (this.player.items[i] && this.player.items[i].id) {
+			if (this.player.items[i] && this.player.items[i].id && slot) {
 				let text;
 				const item = new Item(
 					this,
