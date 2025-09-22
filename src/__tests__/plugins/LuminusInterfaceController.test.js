@@ -53,14 +53,8 @@ describe('LuminusInterfaceController', () => {
 		beforeEach(() => {
 			// Set up a 2x2 grid of elements
 			controller.interfaceElements = [
-				[
-					[{ element: mockElement, action: 'action1' }],
-					[{ element: mockElement, action: 'action2' }],
-				],
-				[
-					[{ element: mockElement, action: 'action3' }],
-					[{ element: mockElement, action: 'action4' }],
-				],
+				[[{ element: mockElement, action: 'action1' }], [{ element: mockElement, action: 'action2' }]],
+				[[{ element: mockElement, action: 'action3' }], [{ element: mockElement, action: 'action4' }]],
 			];
 			controller.currentRowSize = 2;
 		});

@@ -96,8 +96,14 @@ export class LuminusMovement extends AnimationNames {
 	 */
 	isAnyKeyDown() {
 		return (
-			this.cursors.left.isDown || this.cursors.right.isDown || this.cursors.up.isDown || this.cursors.down.isDown ||
-			this.wasd.A.isDown || this.wasd.D.isDown || this.wasd.W.isDown || this.wasd.S.isDown
+			this.cursors.left.isDown ||
+			this.cursors.right.isDown ||
+			this.cursors.up.isDown ||
+			this.cursors.down.isDown ||
+			this.wasd.A.isDown ||
+			this.wasd.D.isDown ||
+			this.wasd.W.isDown ||
+			this.wasd.S.isDown
 		);
 	}
 
@@ -141,7 +147,7 @@ export class LuminusMovement extends AnimationNames {
 			this.player.isSwimming = true;
 			this.player.isRunning = false; // Can't run while swimming
 			this.player.speed = this.player.swimSpeed || 100;
-			this.player.setTint(0x87CEEB); // Light blue tint for swimming
+			this.player.setTint(0x87ceeb); // Light blue tint for swimming
 		} else if (!shouldBeSwimming && wasSwimming) {
 			// Exit swimming mode
 			this.player.isSwimming = false;
@@ -200,17 +206,25 @@ export class LuminusMovement extends AnimationNames {
 
 					// Horizontal movement
 					if (
-						this.cursors.left.isDown || this.wasd.A.isDown ||
-						(this.cursors.left.isDown && this.cursors.down.isDown) || (this.wasd.A.isDown && this.wasd.S.isDown) ||
-						(this.cursors.left.isDown && this.cursors.up.isDown && this.player.container.body.maxSpeed > 0) ||
+						this.cursors.left.isDown ||
+						this.wasd.A.isDown ||
+						(this.cursors.left.isDown && this.cursors.down.isDown) ||
+						(this.wasd.A.isDown && this.wasd.S.isDown) ||
+						(this.cursors.left.isDown &&
+							this.cursors.up.isDown &&
+							this.player.container.body.maxSpeed > 0) ||
 						(this.wasd.A.isDown && this.wasd.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.container.body.setVelocityX(-this.player.speed);
 						this.player.anims.play(texture + '-' + this.walkLeftAnimationName, true);
 					} else if (
-						this.cursors.right.isDown || this.wasd.D.isDown ||
-						(this.cursors.right.isDown && this.cursors.down.isDown) || (this.wasd.D.isDown && this.wasd.S.isDown) ||
-						(this.cursors.right.isDown && this.cursors.up.isDown && this.player.container.body.maxSpeed > 0) ||
+						this.cursors.right.isDown ||
+						this.wasd.D.isDown ||
+						(this.cursors.right.isDown && this.cursors.down.isDown) ||
+						(this.wasd.D.isDown && this.wasd.S.isDown) ||
+						(this.cursors.right.isDown &&
+							this.cursors.up.isDown &&
+							this.player.container.body.maxSpeed > 0) ||
 						(this.wasd.D.isDown && this.wasd.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.anims.play(texture + '-' + this.walkRightAnimationName, true);
@@ -220,11 +234,21 @@ export class LuminusMovement extends AnimationNames {
 					// Vertical movement
 					if ((this.cursors.up.isDown || this.wasd.W.isDown) && this.player.container.body.maxSpeed > 0) {
 						this.player.container.body.setVelocityY(-this.player.speed);
-						if (!this.cursors.left.isDown && !this.cursors.right.isDown && !this.wasd.A.isDown && !this.wasd.D.isDown)
+						if (
+							!this.cursors.left.isDown &&
+							!this.cursors.right.isDown &&
+							!this.wasd.A.isDown &&
+							!this.wasd.D.isDown
+						)
 							this.player.anims.play(texture + '-' + this.walkUpAnimationName, true);
 					}
 					if ((this.cursors.down.isDown || this.wasd.S.isDown) && this.player.container.body.maxSpeed > 0) {
-						if (!this.cursors.left.isDown && !this.cursors.right.isDown && !this.wasd.A.isDown && !this.wasd.D.isDown)
+						if (
+							!this.cursors.left.isDown &&
+							!this.cursors.right.isDown &&
+							!this.wasd.A.isDown &&
+							!this.wasd.D.isDown
+						)
 							this.player.anims.play(texture + '-' + this.walkDownAnimationName, true);
 						this.player.container.body.setVelocityY(this.player.speed);
 					}

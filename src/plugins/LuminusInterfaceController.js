@@ -208,7 +208,7 @@ export class LuminusInterfaceController {
 	}
 
 	menuHistoryRetrieve() {
-		let history = this.menuHistory[this.menuHistory.length - 1];
+		const history = this.menuHistory[this.menuHistory.length - 1];
 		this.removeCurrentSelectionHighlight();
 		this.currentElementAction = history.currentElementAction;
 		this.currentLinePosition = history.currentLinePosition;
@@ -254,7 +254,7 @@ export class LuminusInterfaceController {
 	 * Moves the cursor to the right.
 	 */
 	moveRight() {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
 			return;
 		}
@@ -264,7 +264,7 @@ export class LuminusInterfaceController {
 		this.removeSelection(this.currentElementAction.element);
 		this.scene.sound.play(this.navigationSound);
 		this.currentMatrixCol++;
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 		if (currentPosition) {
 			this.currentElementAction = currentPosition;
@@ -281,7 +281,7 @@ export class LuminusInterfaceController {
 	 * Moves the cursor to the left.
 	 */
 	moveLeft() {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
 			return;
 		}
@@ -291,7 +291,7 @@ export class LuminusInterfaceController {
 		this.scene.sound.play(this.navigationSound);
 		this.removeSelection(this.currentElementAction.element);
 		this.currentMatrixCol--;
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 		if (currentPosition) {
 			this.currentElementAction = currentPosition;
@@ -315,7 +315,7 @@ export class LuminusInterfaceController {
 	 * Moves the cursor down.
 	 */
 	moveDown(changeMatrixRow = true) {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
 			return;
 		}
@@ -328,12 +328,12 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentLinePosition++;
 			this.currentMatrixRow--;
-			let canMove = this.hasNoLineData();
+			const canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition--;
 				if (this.currentElementAction && this.currentElementAction.element) {
-			this.updateHighlightedElement(this.currentElementAction.element);
-		}
+					this.updateHighlightedElement(this.currentElementAction.element);
+				}
 				return;
 			}
 			this.moveDown(false);
@@ -341,7 +341,7 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentMatrixRow = this.interfaceElements[this.currentLinePosition].length - 1;
 		}
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 
 		if (currentPosition) {
@@ -364,7 +364,7 @@ export class LuminusInterfaceController {
 	 * Moves the cursor up.
 	 */
 	moveUp(changeMatrixRow = true) {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
 			return;
 		}
@@ -377,12 +377,12 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentLinePosition--;
 			this.currentMatrixRow++;
-			let canMove = this.hasNoLineData();
+			const canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition++;
 				if (this.currentElementAction && this.currentElementAction.element) {
-			this.updateHighlightedElement(this.currentElementAction.element);
-		}
+					this.updateHighlightedElement(this.currentElementAction.element);
+				}
 				return;
 			}
 			this.moveUp(false);
@@ -390,7 +390,7 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentMatrixRow = this.interfaceElements[this.currentLinePosition].length - 1;
 		}
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 
 		if (currentPosition) {
@@ -469,9 +469,9 @@ export class LuminusInterfaceController {
 	executeFunctionByName(functionName, context, args) {
 		if (functionName) {
 			var args = Array.prototype.slice.call(arguments, 2);
-			var namespaces = functionName.split('.');
-			var func = namespaces.pop();
-			for (var i = 0; i < namespaces.length; i++) {
+			const namespaces = functionName.split('.');
+			const func = namespaces.pop();
+			for (let i = 0; i < namespaces.length; i++) {
 				context = context[namespaces[i]];
 			}
 			return context[func].apply(context, args);

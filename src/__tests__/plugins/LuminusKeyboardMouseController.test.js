@@ -108,36 +108,28 @@ describe('LuminusKeyboardMouseController', () => {
 		});
 
 		it('should attack with spacebar (keyCode 32)', () => {
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 32 });
 			expect(controller.luminusBattleManager.atack).toHaveBeenCalledWith(mockPlayer);
 		});
 
 		it('should attack with J key (keyCode 74)', () => {
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 74 });
 			expect(controller.luminusBattleManager.atack).toHaveBeenCalledWith(mockPlayer);
 		});
 
 		it('should block with K key (keyCode 75)', () => {
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 75 });
 			expect(controller.luminusBattleManager.block).toHaveBeenCalledWith(mockPlayer);
 		});
 
 		it('should stop blocking when K key is released', () => {
-			const keyupCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keyup'
-			)[1];
+			const keyupCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keyup')[1];
 
 			keyupCallback({ keyCode: 75 });
 			expect(controller.luminusBattleManager.stopBlock).toHaveBeenCalledWith(mockPlayer);
@@ -145,9 +137,7 @@ describe('LuminusKeyboardMouseController', () => {
 
 		it('should not attack while swimming', () => {
 			mockPlayer.isSwimming = true;
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 32 });
 			expect(controller.luminusBattleManager.atack).not.toHaveBeenCalled();
@@ -155,9 +145,7 @@ describe('LuminusKeyboardMouseController', () => {
 
 		it('should not block while swimming', () => {
 			mockPlayer.isSwimming = true;
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 75 });
 			expect(controller.luminusBattleManager.block).not.toHaveBeenCalled();
@@ -165,37 +153,23 @@ describe('LuminusKeyboardMouseController', () => {
 
 		it('should open inventory with I key (keyCode 73)', () => {
 			const SceneToggleWatcher = require('../../scenes/watchers/SceneToggleWatcher').SceneToggleWatcher;
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 73 });
-			expect(SceneToggleWatcher.toggleScene).toHaveBeenCalledWith(
-				mockScene,
-				'InventoryScene',
-				mockPlayer
-			);
+			expect(SceneToggleWatcher.toggleScene).toHaveBeenCalledWith(mockScene, 'InventoryScene', mockPlayer);
 		});
 
 		it('should open attributes with U key (keyCode 85)', () => {
 			const SceneToggleWatcher = require('../../scenes/watchers/SceneToggleWatcher').SceneToggleWatcher;
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 85 });
-			expect(SceneToggleWatcher.toggleScene).toHaveBeenCalledWith(
-				mockScene,
-				'AttributeScene',
-				mockPlayer
-			);
+			expect(SceneToggleWatcher.toggleScene).toHaveBeenCalledWith(mockScene, 'AttributeScene', mockPlayer);
 		});
 
 		it('should not respond to keys when player is inactive', () => {
 			mockPlayer.active = false;
-			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find(
-				(call) => call[0] === 'keydown'
-			)[1];
+			const keydownCallback = mockScene.input.keyboard.on.mock.calls.find((call) => call[0] === 'keydown')[1];
 
 			keydownCallback({ keyCode: 32 });
 			expect(controller.luminusBattleManager.atack).not.toHaveBeenCalled();

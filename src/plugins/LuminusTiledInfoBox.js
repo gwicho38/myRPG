@@ -66,19 +66,19 @@ export class LuminusTiledInfoBox {
 		this.luminusDialogBox.create();
 		// Rules to show informations!
 		const infoObjects = this.map.getObjectLayer(this.tiledObjectLayer);
-		let zones = [];
+		const zones = [];
 		if (infoObjects && infoObjects.objects) {
 			infoObjects.objects.forEach((infoObj) => {
-				let zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
-				let obj = infoObj.properties.find((f) => f.name === this.messageAttribute);
+				const zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
+				const obj = infoObj.properties.find((f) => f.name === this.messageAttribute);
 				if (!obj) {
 					return;
 				}
-				let messageID = obj.value;
+				const messageID = obj.value;
 				if (!isNumber(messageID)) {
 					return;
 				}
-				let chat = CHATS.find((c) => c.id == messageID);
+				const chat = CHATS.find((c) => c.id == messageID);
 				if (!chat) {
 					console.warn(`Chat with ID ${messageID} not found`);
 					return;

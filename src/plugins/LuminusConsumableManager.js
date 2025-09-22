@@ -101,7 +101,7 @@ export class LuminusConsumableManager {
 					});
 				} else {
 					// Add the item
-					let bonusStatus = new ConsumableBonus(item.buffType.id, 'atack', action[2], action[3]);
+					const bonusStatus = new ConsumableBonus(item.buffType.id, 'atack', action[2], action[3]);
 					this.changeStats(player, bonusStatus);
 
 					player.scene.sound.play(item.useSfx);
