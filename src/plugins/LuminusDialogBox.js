@@ -185,7 +185,7 @@ export class LuminusDialogBox {
 		 * @type { Phaser.Display.Color }
 		 * @default
 		 */
-		this.fontColor = new Phaser.Display.Color(61, 61, 61, 1);
+		this.fontColor = new Phaser.Display.Color(255, 255, 255, 1);
 
 		/**
 		 * Button A

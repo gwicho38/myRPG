@@ -78,6 +78,7 @@ export class InfoBox {
 		this.name = this.scene.add.text(baseX, baseY, this.config.name, {
 			fontSize: this.titleTextFontSize,
 			fontFamily: `${this.titleFontFamily}`,
+			color: '#ffffff',
 			wordWrap: { width: wrap },
 		});
 		this.name.setOrigin(0, 0.5);
@@ -85,6 +86,7 @@ export class InfoBox {
 		this.description = this.scene.add.text(baseX, this.name.y + this.name.height + 10, this.config.description, {
 			fontSize: this.titleTextFontSize,
 			fontFamily: `${this.titleFontFamily}`,
+			color: '#ffffff',
 			wordWrap: { width: wrap },
 		});
 		this.description.setScrollFactor(0, 0);
