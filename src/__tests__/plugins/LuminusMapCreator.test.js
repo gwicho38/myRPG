@@ -126,10 +126,7 @@ describe('LuminusMapCreator', () => {
 
 			mapCreator.create();
 
-			expect(mockMap.findObject).toHaveBeenCalledWith(
-				'spawn',
-				expect.any(Function)
-			);
+			expect(mockMap.findObject).toHaveBeenCalledWith('spawn', expect.any(Function));
 			expect(Player).toHaveBeenCalledWith(mockScene, 100, 200, 'player');
 			expect(mockScene.player).toBeDefined();
 		});

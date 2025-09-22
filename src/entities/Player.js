@@ -172,9 +172,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 		 * @type { Phaser.GameObjects.Particles }
 		 */
 		this.walkDust = this.scene.add
-			.particles(this.dustParticleName)
-			.setDepth(0)
-			.createEmitter({
+			.particles(this.container.x, this.container.y, this.dustParticleName, {
 				follow: this.container,
 				speed: 2,
 				scale: { start: 0.1, end: 0.25 },
@@ -186,7 +184,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 				followOffset: {
 					y: 10,
 				},
-			});
+			})
+			.setDepth(0);
 
 		this.walkDust.on = false;
 		// All the dependencies that need to be inside the update game loop.

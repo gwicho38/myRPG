@@ -14,5 +14,5 @@ declare module '*.mp4';
 declare module '*.json';
 
 interface Window {
-  game: Phaser.Game;
+	game: Phaser.Game;
 }

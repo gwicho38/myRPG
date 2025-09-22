@@ -584,7 +584,7 @@ export class LuminusDialogBox {
 			this.dialog.textMessage.text = '';
 			this.setText(this.pagesMessage[this.currentPage], true);
 		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1) {
-			let index = this.currentChat.index;
+			const index = this.currentChat.index;
 			this.currentChat = this.chat[index + 1];
 			this.currentChat.index = index + 1;
 			this.checkSpeaker();
@@ -651,7 +651,7 @@ export class LuminusDialogBox {
 		this.pagesMessage = [];
 		let lettersOffset = 0;
 		for (let i = 0; i < this.pagesNumber; i++) {
-			let localText = this.dialogMessage.substr(i * maxLettersPage - lettersOffset, maxLettersPage);
+			const localText = this.dialogMessage.substr(i * maxLettersPage - lettersOffset, maxLettersPage);
 
 			let localMaxLength = localText.length;
 			// Check for whole letter so it doesn't break final words.
@@ -765,7 +765,8 @@ export class LuminusDialogBox {
 			this.textWidth = this.cameraWidth - this.margin * 3;
 			this.dialog.x = this.margin;
 			this.dialog.y = this.cameraHeight - this.dialogHeight - this.margin; // this is the starting x/y location
-			this.dialog.resize(this.cameraWidth - this.margin * 2, this.dialogHeight);
+			// Update dialog size and position
+			this.dialog.setSize(this.cameraWidth - this.margin * 2, this.dialogHeight);
 
 			this.actionButton.x = this.cameraWidth - this.margin * 4;
 			this.actionButton.y = this.cameraHeight - this.margin * 3;

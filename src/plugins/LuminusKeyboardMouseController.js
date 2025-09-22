@@ -62,7 +62,12 @@ export class LuminusKeyboardMouseController {
 		});
 
 		this.scene.input.keyboard.on('keydown', (keydown) => {
-			if ((keydown.keyCode === 32 || keydown.keyCode === 74) && this.player && this.player.active && !this.player.isSwimming) {
+			if (
+				(keydown.keyCode === 32 || keydown.keyCode === 74) &&
+				this.player &&
+				this.player.active &&
+				!this.player.isSwimming
+			) {
 				this.luminusBattleManager.atack(this.player);
 			}
 			if (keydown.keyCode === 75 && this.player && this.player.active && !this.player.isSwimming) {

@@ -1,4 +1,4 @@
 export const ENTITIES = {
-    Player: 'Player',
-    Enemy: 'Enemy',
+	Player: 'Player',
+	Enemy: 'Enemy',
 };

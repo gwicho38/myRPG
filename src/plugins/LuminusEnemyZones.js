@@ -73,8 +73,8 @@ export class LuminusEnemyZones {
 		const objectZones = this.map.getObjectLayer(this.tiledObjectLayer);
 		if (objectZones && objectZones.objects && objectZones.objects.length > 0) {
 			objectZones.objects.forEach((infoObj) => {
-				let zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
-				var spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(zone), 0, 0);
+				const zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
+				const spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(zone), 0, 0);
 				if (this.createFromProperties && infoObj.properties) {
 					let number = infoObj.properties.find((f) => f.name === this.numberPropertyName);
 
@@ -84,9 +84,9 @@ export class LuminusEnemyZones {
 
 					let texture = infoObj.properties.find((f) => f.name === this.texturePropertyName);
 
-					let id = infoObj.properties.find((f) => f.name === this.idPropertyName);
+					const id = infoObj.properties.find((f) => f.name === this.idPropertyName);
 
-					let enemyConfig = EnemiesSeedConfig.find((e) => e.id === parseInt(id.value));
+					const enemyConfig = EnemiesSeedConfig.find((e) => e.id === parseInt(id.value));
 					console.log(enemyConfig);
 
 					if (enemyConfig) {

@@ -381,7 +381,7 @@ export class LuminusBattleManager extends AnimationNames {
 			}
 
 			// Stores the enemies that where atacked on the current animation.
-			let atackedEnemies = [];
+			const atackedEnemies = [];
 			// Destroys the slash atack if the atacker dies.
 			atacker.scene.events.on('update', (update) => {
 				if (hitBoxSprite && hitBoxSprite.active && atacker && !atacker.active) {
@@ -420,7 +420,7 @@ export class LuminusBattleManager extends AnimationNames {
 						hitBoxSprite,
 						atacker.scene[this.playerVariableName].hitZone,
 						(h, e) => {
-							let enemy = atacker.scene[this.playerVariableName];
+							const enemy = atacker.scene[this.playerVariableName];
 							this.takeDamage(atacker, enemy);
 							enemy.canTakeDamage = false;
 							atackedEnemies.push(enemy);
@@ -429,7 +429,7 @@ export class LuminusBattleManager extends AnimationNames {
 							// }
 						},
 						(h, e) => {
-							let enemy = atacker.scene[this.playerVariableName];
+							const enemy = atacker.scene[this.playerVariableName];
 							return enemy.canTakeDamage;
 						}
 					);

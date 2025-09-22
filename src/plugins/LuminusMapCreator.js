@@ -102,7 +102,7 @@ export class LuminusMapCreator {
 		});
 
 		this.map.layers.forEach((layer) => {
-			let currentLayer = this.map.createLayer(layer.name, this.map.tilesets);
+			const currentLayer = this.map.createLayer(layer.name, this.map.tilesets);
 			const depth = layer.properties.find((f) => f.name === this.depthProperty);
 			if (depth) {
 				currentLayer.depth = depth.value;
@@ -124,7 +124,8 @@ export class LuminusMapCreator {
 				this.scene,
 				spawnPoint.x,
 				spawnPoint.y,
-				PlayerConfig.texture
+				PlayerConfig.texture,
+				this.map
 			);
 		}
 

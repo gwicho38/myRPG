@@ -3,11 +3,11 @@
  * @class
  */
 export class IconDeviceChange {
-    /**
-     *
-     * @param { Phaser.GameObjects.Image } gameObject
-     */
-    static changeTexture(gameObject) {
-        gameObject.setTexture();
-    }
+	/**
+	 *
+	 * @param { Phaser.GameObjects.Image } gameObject
+	 */
+	static changeTexture(gameObject) {
+		gameObject.setTexture();
+	}
 }
