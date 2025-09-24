@@ -9,8 +9,9 @@ export class LuminusMapCreator {
 	/**
 	 * This class is responsible for creating the map with all it's Layers
 	 * @param { Phaser.Scene } scene The Parent Phaser Scene.
+	 * @param { string } mapName The name of the map to load (defaults to 'larus' for backward compatibility)
 	 */
-	constructor(scene) {
+	constructor(scene, mapName = 'larus') {
 		/**
 		 * The Parent Phaser Scene.
 		 * @type { Phaser.Scene }
@@ -21,7 +22,7 @@ export class LuminusMapCreator {
 		 * @type { string }
 		 * @default
 		 */
-		this.mapName = 'larus';
+		this.mapName = mapName;
 
 		/**
 		 * The name of the LAYER Property that will make it change the Depth of the layer.
@@ -101,7 +102,7 @@ export class LuminusMapCreator {
 		});
 
 		this.map.layers.forEach((layer) => {
-			let currentLayer = this.map.createLayer(layer.name, this.map.tilesets);
+			const currentLayer = this.map.createLayer(layer.name, this.map.tilesets);
 			const depth = layer.properties.find((f) => f.name === this.depthProperty);
 			if (depth) {
 				currentLayer.depth = depth.value;
@@ -123,7 +124,8 @@ export class LuminusMapCreator {
 				this.scene,
 				spawnPoint.x,
 				spawnPoint.y,
-				PlayerConfig.texture
+				PlayerConfig.texture,
+				this.map
 			);
 		}
 

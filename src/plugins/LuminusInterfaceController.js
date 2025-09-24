@@ -117,18 +117,21 @@ export class LuminusInterfaceController {
 			if (keyboard.keyCode === 39) {
 				this.moveRight();
 			}
-			if (keyboard.keyCode === 38) {
+			if (keyboard.keyCode === 38 || keyboard.keyCode === 75) {
 				this.moveUp();
 			}
-			if (keyboard.keyCode === 40) {
+			if (keyboard.keyCode === 40 || keyboard.keyCode === 74) {
 				this.moveDown();
 			}
-			if (keyboard.keyCode === 13)
-				this.executeFunctionByName(
-					this.currentElementAction.action,
-					this.currentElementAction.context,
-					this.currentElementAction.args
-				);
+			if (keyboard.keyCode === 69 || keyboard.keyCode === 13) {
+				if (this.currentElementAction && this.currentElementAction.action) {
+					this.executeFunctionByName(
+						this.currentElementAction.action,
+						this.currentElementAction.context,
+						this.currentElementAction.args
+					);
+				}
+			}
 		});
 	}
 
@@ -205,14 +208,16 @@ export class LuminusInterfaceController {
 	}
 
 	menuHistoryRetrieve() {
-		let history = this.menuHistory[this.menuHistory.length - 1];
-		this.removeCurrentSelectionHighlight(this.currentElementAction.element);
+		const history = this.menuHistory[this.menuHistory.length - 1];
+		this.removeCurrentSelectionHighlight();
 		this.currentElementAction = history.currentElementAction;
 		this.currentLinePosition = history.currentLinePosition;
 		this.currentMatrixRow = history.currentMatrixRow;
 		this.currentMatrixCol = history.currentMatrixCol;
 		this.closeAction = history.closeAction;
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 		delete this.menuHistory[this.menuHistory.length - 1];
 	}
 
@@ -220,7 +225,9 @@ export class LuminusInterfaceController {
 	 * Removes the current selectionhighlight.
 	 */
 	removeCurrentSelectionHighlight() {
-		this.removeSelection(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.removeSelection(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -228,7 +235,9 @@ export class LuminusInterfaceController {
 	 */
 	close() {
 		this.outlineEffect.outlinePostFxPlugin.destroy();
-		this.executeFunctionByName(this.closeAction.action, this.closeAction.context, this.closeAction.args);
+		if (this.closeAction && this.closeAction.action) {
+			this.executeFunctionByName(this.closeAction.action, this.closeAction.context, this.closeAction.args);
+		}
 	}
 
 	// /**
@@ -245,14 +254,17 @@ export class LuminusInterfaceController {
 	 * Moves the cursor to the right.
 	 */
 	moveRight() {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.removeSelection(this.currentElementAction.element);
 		this.scene.sound.play(this.navigationSound);
 		this.currentMatrixCol++;
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 		if (currentPosition) {
 			this.currentElementAction = currentPosition;
@@ -260,21 +272,26 @@ export class LuminusInterfaceController {
 			this.currentMatrixCol = 0;
 			this.currentElementAction = this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][0];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
 	 * Moves the cursor to the left.
 	 */
 	moveLeft() {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
 		this.removeSelection(this.currentElementAction.element);
 		this.currentMatrixCol--;
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 		if (currentPosition) {
 			this.currentElementAction = currentPosition;
@@ -289,15 +306,20 @@ export class LuminusInterfaceController {
 				this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][position];
 			this.currentMatrixCol = position;
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
 	 * Moves the cursor down.
 	 */
 	moveDown(changeMatrixRow = true) {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
@@ -306,10 +328,12 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentLinePosition++;
 			this.currentMatrixRow--;
-			let canMove = this.hasNoLineData();
+			const canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition--;
-				this.updateHighlightedElement(this.currentElementAction.element);
+				if (this.currentElementAction && this.currentElementAction.element) {
+					this.updateHighlightedElement(this.currentElementAction.element);
+				}
 				return;
 			}
 			this.moveDown(false);
@@ -317,7 +341,7 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentMatrixRow = this.interfaceElements[this.currentLinePosition].length - 1;
 		}
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 
 		if (currentPosition) {
@@ -331,15 +355,20 @@ export class LuminusInterfaceController {
 					this.interfaceElements[this.currentLinePosition][this.currentMatrixRow].length - 1
 				];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
 	 * Moves the cursor up.
 	 */
 	moveUp(changeMatrixRow = true) {
-		let hasError = this.hasNoLineData();
+		const hasError = this.hasNoLineData();
 		if (hasError) {
+			return;
+		}
+		if (!this.currentElementAction || !this.currentElementAction.element) {
 			return;
 		}
 		this.scene.sound.play(this.navigationSound);
@@ -348,10 +377,12 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentLinePosition--;
 			this.currentMatrixRow++;
-			let canMove = this.hasNoLineData();
+			const canMove = this.hasNoLineData();
 			if (canMove) {
 				this.currentLinePosition++;
-				this.updateHighlightedElement(this.currentElementAction.element);
+				if (this.currentElementAction && this.currentElementAction.element) {
+					this.updateHighlightedElement(this.currentElementAction.element);
+				}
 				return;
 			}
 			this.moveUp(false);
@@ -359,7 +390,7 @@ export class LuminusInterfaceController {
 		if (!this.interfaceElements[this.currentLinePosition][this.currentMatrixRow]) {
 			this.currentMatrixRow = this.interfaceElements[this.currentLinePosition].length - 1;
 		}
-		let currentPosition =
+		const currentPosition =
 			this.interfaceElements[this.currentLinePosition][this.currentMatrixRow][this.currentMatrixCol];
 
 		if (currentPosition) {
@@ -373,7 +404,9 @@ export class LuminusInterfaceController {
 					this.interfaceElements[this.currentLinePosition][this.currentMatrixRow].length - 1
 				];
 		}
-		this.updateHighlightedElement(this.currentElementAction.element);
+		if (this.currentElementAction && this.currentElementAction.element) {
+			this.updateHighlightedElement(this.currentElementAction.element);
+		}
 	}
 
 	/**
@@ -436,9 +469,9 @@ export class LuminusInterfaceController {
 	executeFunctionByName(functionName, context, args) {
 		if (functionName) {
 			var args = Array.prototype.slice.call(arguments, 2);
-			var namespaces = functionName.split('.');
-			var func = namespaces.pop();
-			for (var i = 0; i < namespaces.length; i++) {
+			const namespaces = functionName.split('.');
+			const func = namespaces.pop();
+			for (let i = 0; i < namespaces.length; i++) {
 				context = context[namespaces[i]];
 			}
 			return context[func].apply(context, args);

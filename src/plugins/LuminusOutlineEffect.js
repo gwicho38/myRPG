@@ -44,7 +44,7 @@ export class LuminusOutlineEffect {
 	applyEffect(object) {
 		if (object && object.scene && object.scene.sys) {
 			object.setPostPipeline(OutlinePostFx);
-			var pipelineInstance = this.outlinePostFxPlugin.get(object)[0];
+			const pipelineInstance = this.outlinePostFxPlugin.get(object)[0];
 			pipelineInstance.setOutlineColor(this.outlineColor);
 			pipelineInstance.thickness = this.outlineThickness;
 		}

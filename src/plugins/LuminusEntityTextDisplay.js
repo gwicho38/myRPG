@@ -108,7 +108,7 @@ export class LuminusEntityTextDisplay {
 			this.fontColor = this.heallingColor;
 		}
 
-		let damageSprite = this.scene.add.text(position.x, position.y, damage, {
+		const damageSprite = this.scene.add.text(position.x, position.y, damage, {
 			fontSize: this.fontSize,
 			letterSpacing: this.letterSpacing,
 			fontFamily: this.fontFamily,
@@ -127,7 +127,7 @@ export class LuminusEntityTextDisplay {
 
 		damageSprite.setScale(0.4);
 
-		let tween = this.scene.add.tween({
+		const tween = this.scene.add.tween({
 			targets: [damageSprite, criticalSprite],
 			y: position.y - this.fontVerticalMovement,
 			alpha: 0,

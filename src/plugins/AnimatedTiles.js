@@ -48,7 +48,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 	//  Called when the Plugin is booted by the PluginManager.
 	//  If you need to reference other systems in the Scene (like the Loader or DisplayList) then set-up those references now, not in the constructor.
 	boot() {
-		var eventEmitter = this.systems.events;
+		const eventEmitter = this.systems.events;
 		eventEmitter.on('postupdate', this.postUpdate, this);
 		eventEmitter.on('shutdown', this.shutdown, this);
 		eventEmitter.on('destroy', this.destroy, this);
@@ -57,8 +57,8 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 	// Initilize support for animated tiles on given map
 	init(map) {
 		// TODO: Check if map is initilized already, if so do it again but overwrite the old.
-		let mapAnimData = this.getAnimatedTiles(map);
-		let animatedTiles = {
+		const mapAnimData = this.getAnimatedTiles(map);
+		const animatedTiles = {
 			map,
 			animatedTiles: mapAnimData,
 			active: true,
@@ -88,7 +88,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 				this.animatedTiles[map].rate = rate;
 			}
 		} else {
-			let loopThrough = (animatedTiles) => {
+			const loopThrough = (animatedTiles) => {
 				animatedTiles.forEach((animatedTile) => {
 					if (animatedTile.index === gid) {
 						animatedTile.rate = rate;
@@ -126,7 +126,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 
 	//  Start (or resume) animations
 	resume(layerIndex = null, mapIndex = null) {
-		let scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
+		const scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
 		if (layerIndex === null) {
 			scope.active = true;
 		} else {
@@ -139,7 +139,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 
 	// Stop (or pause) animations
 	pause(layerIndex = null, mapIndex = null) {
-		let scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
+		const scope = mapIndex === null ? this : this.animatedTiles[mapIndex];
 		if (layerIndex === null) {
 			scope.active = false;
 		} else {
@@ -152,22 +152,22 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 			return;
 		}
 		// Elapsed time is the delta multiplied by the global rate and the scene timeScale if folowTimeScale is true
-		let globalElapsedTime = delta * this.rate * (this.followTimeScale ? this.scene.time.timeScale : 1);
+		const globalElapsedTime = delta * this.rate * (this.followTimeScale ? this.scene.time.timeScale : 1);
 		this.animatedTiles.forEach((mapAnimData) => {
 			if (!mapAnimData.active) {
 				return;
 			}
 			// Multiply with rate for this map
-			let elapsedTime = globalElapsedTime * mapAnimData.rate;
+			const elapsedTime = globalElapsedTime * mapAnimData.rate;
 			mapAnimData.animatedTiles.forEach((animatedTile) => {
 				// Reduce time for current tile, multiply elapsedTime with this tile's private rate
 				animatedTile.next -= elapsedTime * animatedTile.rate;
 				// Time for current tile is up!!!
 				if (animatedTile.next < 0) {
 					// Remember current frame index
-					let currentIndex = animatedTile.currentFrame;
+					const currentIndex = animatedTile.currentFrame;
 					// Remember the tileId of current tile
-					let oldTileId = animatedTile.frames[currentIndex].tileid;
+					const oldTileId = animatedTile.frames[currentIndex].tileid;
 					// Advance to next in line
 					let newIndex = currentIndex + 1;
 					// If we went beyond last frame, we just start over
@@ -193,8 +193,8 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 	}
 
 	updateLayer(animatedTile, layer, oldTileId = -1) {
-		let tilesToRemove = [];
-		let tileId = animatedTile.frames[animatedTile.currentFrame].tileid;
+		const tilesToRemove = [];
+		const tileId = animatedTile.frames[animatedTile.currentFrame].tileid;
 		layer.forEach((tile) => {
 			// If the tile is removed or has another index than expected, it's
 			// no longer animated. Mark for removal.
@@ -207,7 +207,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 		});
 		// Remove obselete tiles
 		tilesToRemove.forEach((tile) => {
-			let pos = layer.indexOf(tile);
+			const pos = layer.indexOf(tile);
 			if (pos > -1) {
 				layer.splice(pos, 1);
 			} else {
@@ -229,17 +229,17 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 
 	getAnimatedTiles(map) {
 		// this.animatedTiles is an array of objects with information on how to animate and which tiles.
-		let animatedTiles = [];
+		const animatedTiles = [];
 		// loop through all tilesets
 		map.tilesets.forEach(
 			// Go through the data stored on each tile (not tile on the tilemap but tile in the tileset)
 			(tileset) => {
-				let tileData = tileset.tileData;
+				const tileData = tileset.tileData;
 				Object.keys(tileData).forEach((index) => {
 					index = parseInt(index);
 					// If tile has animation info we'll dive into it
 					if (tileData[index].hasOwnProperty('animation')) {
-						let animatedTileData = {
+						const animatedTileData = {
 							index: index + tileset.firstgid, // gid of the original tile
 							frames: [], // array of frames
 							currentFrame: 0, // start on first frame
@@ -248,7 +248,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 						};
 						// push all frames to the animatedTileData
 						tileData[index].animation.forEach((frameData) => {
-							let frame = {
+							const frame = {
 								duration: frameData.duration,
 								tileid: frameData.tileid + tileset.firstgid,
 							};
@@ -270,7 +270,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 								return;
 							}
 							// tiles array for current layer
-							let tiles = [];
+							const tiles = [];
 							// loop through all rows with tiles...
 							layer.data.forEach((tileRow) => {
 								// ...and loop through all tiles in that row
@@ -323,20 +323,20 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 
 		// 1 & 2: Update the map(s)
 		container.forEach((mapAnimData) => {
-			let chkX = x !== null ? x : 0;
-			let chkY = y !== null ? y : 0;
-			let chkW = w !== null ? mapAnimData.map.width : 10;
-			let chkH = h !== null ? mapAnimData.map.height : 10;
+			const chkX = x !== null ? x : 0;
+			const chkY = y !== null ? y : 0;
+			const chkW = w !== null ? mapAnimData.map.width : 10;
+			const chkH = h !== null ? mapAnimData.map.height : 10;
 
 			mapAnimData.animatedTiles.forEach((tileAnimData) => {
 				tileAnimData.tiles.forEach((tiles, layerIndex) => {
-					let layer = mapAnimData.map.layers[layerIndex];
+					const layer = mapAnimData.map.layers[layerIndex];
 					if (layer.type === 'StaticTilemapLayer') {
 						return;
 					}
 					for (let x = chkX; x < chkX + chkW; x++) {
 						for (let y = chkY; y < chkY + chkH; y++) {
-							let tile = mapAnimData.map.layers[layerIndex].data[x][y];
+							const tile = mapAnimData.map.layers[layerIndex].data[x][y];
 							// should this tile be animated?
 							if (tile.index == tileAnimData.index) {
 								// is it already known? if not, add it to the list

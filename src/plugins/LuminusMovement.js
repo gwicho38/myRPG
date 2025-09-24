@@ -29,7 +29,19 @@ export class LuminusMovement extends AnimationNames {
 		 * Keyboard cursors that will control the character.
 		 * @type { any }
 		 */
-		this.cursors = this.scene.input.keyboard.addKeys('W,A,S,D');
+		this.cursors = this.scene.input.keyboard.createCursorKeys();
+
+		/**
+		 * WASD keys for alternative movement controls.
+		 * @type { object }
+		 */
+		this.wasd = this.scene.input.keyboard.addKeys('W,S,A,D');
+
+		/**
+		 * Shift key for running mode.
+		 * @type { Phaser.Input.Keyboard.Key }
+		 */
+		this.shiftKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
 		/**
 		 * Virtual joystick plugin
@@ -60,8 +72,11 @@ export class LuminusMovement extends AnimationNames {
 			});
 		}
 
-		this.scene.input.on('keydown', (down) => {
-			console.log('down');
+		// Debug: Log WASD key presses to verify they're working
+		this.scene.input.keyboard.on('keydown', (event) => {
+			if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(event.code)) {
+				console.log(`WASD Control: ${event.code} pressed`);
+			}
 		});
 
 		this.scene.input.addPointer(3);
@@ -76,18 +91,114 @@ export class LuminusMovement extends AnimationNames {
 	}
 
 	/**
-	 * Checks if there is any cuross key pressed.
+	 * Checks if there is any cursor or WASD key pressed.
 	 * @returns { boolean }
 	 */
 	isAnyKeyDown() {
 		return (
-			this.cursors.A.isDown || this.cursors.D.isDown || this.cursors.W.isDown || this.cursors.S.isDown
+			this.cursors.left.isDown ||
+			this.cursors.right.isDown ||
+			this.cursors.up.isDown ||
+			this.cursors.down.isDown ||
+			this.wasd.A.isDown ||
+			this.wasd.D.isDown ||
+			this.wasd.W.isDown ||
+			this.wasd.S.isDown
 		);
+	}
+
+	/**
+	 * Checks if the player is currently standing on water tiles.
+	 * @returns { boolean }
+	 */
+	isOnWater() {
+		if (!this.scene.map || !this.player || !this.player.container) return false;
+
+		const playerX = this.player.container.x;
+		const playerY = this.player.container.y;
+
+		// Convert world coordinates to tile coordinates
+		const tileX = this.scene.map.worldToTileX(playerX);
+		const tileY = this.scene.map.worldToTileY(playerY);
+
+		// Get the ground layer (first layer contains terrain tiles)
+		const groundLayer = this.scene.map.getLayer(0);
+		if (!groundLayer) return false;
+
+		const tile = this.scene.map.getTileAt(tileX, tileY, false, groundLayer.name);
+		if (!tile) return false;
+
+		// Water tile IDs: 734 (deep water), 653 (regular water), 482 (shallow water/shore)
+		const waterTileIds = [734, 653, 482];
+		return waterTileIds.includes(tile.index);
+	}
+
+	/**
+	 * Updates the player's swimming state based on current position.
+	 */
+	updateSwimmingState() {
+		if (!this.player || !this.player.canSwim) return;
+
+		const wasSwimming = this.player.isSwimming;
+		const shouldBeSwimming = this.isOnWater();
+
+		if (shouldBeSwimming && !wasSwimming) {
+			// Enter swimming mode
+			this.player.isSwimming = true;
+			this.player.isRunning = false; // Can't run while swimming
+			this.player.speed = this.player.swimSpeed || 100;
+			this.player.setTint(0x87ceeb); // Light blue tint for swimming
+		} else if (!shouldBeSwimming && wasSwimming) {
+			// Exit swimming mode
+			this.player.isSwimming = false;
+			this.updateRunningSpeed(); // Update speed based on running state
+			this.player.clearTint();
+		}
+	}
+
+	/**
+	 * Updates the player's running state based on Shift key.
+	 */
+	updateRunningState() {
+		if (!this.player || this.player.isSwimming) return;
+
+		const wasRunning = this.player.isRunning;
+		const shouldBeRunning = this.shiftKey.isDown;
+
+		if (shouldBeRunning && !wasRunning) {
+			// Enter running mode
+			this.player.isRunning = true;
+			this.player.speed = this.player.runSpeed || 300;
+		} else if (!shouldBeRunning && wasRunning) {
+			// Exit running mode
+			this.player.isRunning = false;
+			this.player.speed = this.player.baseSpeed || 200;
+		}
+	}
+
+	/**
+	 * Updates the player's speed based on current running state (used when exiting swimming).
+	 */
+	updateRunningSpeed() {
+		if (!this.player || this.player.isSwimming) return;
+
+		if (this.shiftKey.isDown) {
+			this.player.isRunning = true;
+			this.player.speed = this.player.runSpeed || 300;
+		} else {
+			this.player.isRunning = false;
+			this.player.speed = this.player.baseSpeed || 200;
+		}
 	}
 
 	move() {
 		if (this.player && this.player.container && this.player.container.body && this.player.canMove) {
 			this.player.container.body.setVelocity(0);
+
+			// Update swimming and running states
+			this.updateSwimmingState();
+			this.updateRunningState();
+
 			if (!this.player.isAtacking) {
 				const texture = this.player.texture.key;
 				if (this.scene.input.isActive) {
@@ -95,29 +206,49 @@ export class LuminusMovement extends AnimationNames {
 
 					// Horizontal movement
 					if (
-						this.cursors.A.isDown ||
-						(this.cursors.A.isDown && this.cursors.S.isDown) ||
-						(this.cursors.A.isDown && this.cursors.W.isDown && this.player.container.body.maxSpeed > 0)
+						this.cursors.left.isDown ||
+						this.wasd.A.isDown ||
+						(this.cursors.left.isDown && this.cursors.down.isDown) ||
+						(this.wasd.A.isDown && this.wasd.S.isDown) ||
+						(this.cursors.left.isDown &&
+							this.cursors.up.isDown &&
+							this.player.container.body.maxSpeed > 0) ||
+						(this.wasd.A.isDown && this.wasd.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.container.body.setVelocityX(-this.player.speed);
 						this.player.anims.play(texture + '-' + this.walkLeftAnimationName, true);
 					} else if (
-						this.cursors.D.isDown ||
-						(this.cursors.D.isDown && this.cursors.S.isDown) ||
-						(this.cursors.D.isDown && this.cursors.W.isDown && this.player.container.body.maxSpeed > 0)
+						this.cursors.right.isDown ||
+						this.wasd.D.isDown ||
+						(this.cursors.right.isDown && this.cursors.down.isDown) ||
+						(this.wasd.D.isDown && this.wasd.S.isDown) ||
+						(this.cursors.right.isDown &&
+							this.cursors.up.isDown &&
+							this.player.container.body.maxSpeed > 0) ||
+						(this.wasd.D.isDown && this.wasd.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.anims.play(texture + '-' + this.walkRightAnimationName, true);
 						this.player.container.body.setVelocityX(this.player.speed);
 					}
 
 					// Vertical movement
-					if (this.cursors.W.isDown && this.player.container.body.maxSpeed > 0) {
+					if ((this.cursors.up.isDown || this.wasd.W.isDown) && this.player.container.body.maxSpeed > 0) {
 						this.player.container.body.setVelocityY(-this.player.speed);
-						if (!this.cursors.A.isDown && !this.cursors.D.isDown)
+						if (
+							!this.cursors.left.isDown &&
+							!this.cursors.right.isDown &&
+							!this.wasd.A.isDown &&
+							!this.wasd.D.isDown
+						)
 							this.player.anims.play(texture + '-' + this.walkUpAnimationName, true);
 					}
-					if (this.cursors.S.isDown && this.player.container.body.maxSpeed > 0) {
-						if (!this.cursors.A.isDown && !this.cursors.D.isDown)
+					if ((this.cursors.down.isDown || this.wasd.S.isDown) && this.player.container.body.maxSpeed > 0) {
+						if (
+							!this.cursors.left.isDown &&
+							!this.cursors.right.isDown &&
+							!this.wasd.A.isDown &&
+							!this.wasd.D.isDown
+						)
 							this.player.anims.play(texture + '-' + this.walkDownAnimationName, true);
 						this.player.container.body.setVelocityY(this.player.speed);
 					}
