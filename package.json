@@ -2,16 +2,32 @@
   "name": "luminus-rpg-template",
   "version": "0.0.1",
   "description": "A Luminus Action RPG Template. This is a project that will help you create your Action RPG Game with Phaser and JavaScript.",
-  "main": "src/index.js",
+  "main": "electron-main.js",
   "scripts": {
-    "build": "webpack --config webpack/prod.js ",
+    "build": "webpack --config webpack/prod.js",
+    "build:web": "npm run build",
     "start": "webpack-dev-server --config webpack/base.js --open",
+    "dev": "npm run start",
     "jsdoc": "npx jsdoc src -r -c jsdoc.config.json && npx browser-sync start --server --files 'docs/*.html' --startPath docs/ --watch 'docs/*.html'",
     "tutorial": "npx browser-sync start --server --files 'tutorial/*.html' --startPath tutorial/ --watch 'tutorial/*.html'",
     "serve-tutorial": "cd tutorial-admin && php -S localhost:3500 system/router.php",
     "wget-tutorial": "wget --mirror --convert-links --adjust-extension --restrict-file-names=windows  --page-requisites --no-parent -e robots=off -P ./  http://localhost:3500 && mv ./localhost+3500 ./tutorial",
     "distwatch": "npx browser-sync start --server 'dist'  --watch 'dist/*.html'",
-    "publish-git": "npm run build && cd dist && git init && git remote rm pages && git remote add pages https://github.com/SkyAlpha/luminus-rpg.github.io && git add -A . && git commit -a --allow-empty-message -m '' && git push pages master --force && cd .. "
+    "publish-git": "npm run build && cd dist && git init && git remote rm pages && git remote add pages https://github.com/SkyAlpha/luminus-rpg.github.io && git add -A . && git commit -a --allow-empty-message -m '' && git push pages master --force && cd .. ",
+    "electron": "npm run build && electron .",
+    "electron:dev": "NODE_ENV=development electron .",
+    "build:desktop": "npm run build && electron-builder",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:win": "npm run build && electron-builder --win",
+    "build:linux": "npm run build && electron-builder --linux",
+    "build:mobile": "npm run build && npx cap copy",
+    "build:ios": "npm run build && npx cap copy ios && npx cap build ios",
+    "build:android": "npm run build && npx cap copy android && npx cap build android",
+    "open:ios": "npx cap open ios",
+    "open:android": "npx cap open android",
+    "sync:mobile": "npm run build && npx cap sync",
+    "build:all": "npm run build:desktop && npm run build:mobile",
+    "serve:mobile": "npx cap serve"
   },
   "repository": {
     "type": "git",
@@ -27,9 +43,15 @@
   "devDependencies": {
     "@babel/core": "^7.22.1",
     "@babel/preset-env": "^7.22.2",
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/cli": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/ios": "^7.4.3",
     "babel-loader": "^9.1.2",
     "browser-sync": "^2.26.14",
     "clean-webpack-plugin": "^4.0.0",
+    "electron": "^38.1.2",
+    "electron-builder": "^26.0.12",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.1",
     "jsdoc": "^3.6.6",
@@ -52,5 +74,63 @@
     "phaser3-rex-plugins": "^1.1.41",
     "uniqid": "^5.3.0",
     "uuid": "^8.3.2"
+  },
+  "build": {
+    "appId": "com.luminusgames.rpg",
+    "productName": "Luminus RPG",
+    "directories": {
+      "output": "builds"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-main.js",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.games",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        }
+      ]
+    },
+    "linux": {
+      "category": "Game",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

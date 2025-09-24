@@ -136,7 +136,7 @@ export class IntroScene extends Phaser.Scene {
         this.isMobile = !this.sys.game.device.os.desktop ? true : false;
         this.centerX = this.scale.width / 2;
         this.centerY = this.scale.height / 2;
-        this.timeline = this.tweens.createTimeline();
+        this.timeline = this.tweens.timeline({});
 
         // LOGO Part.
         this.createPhaserLogo();

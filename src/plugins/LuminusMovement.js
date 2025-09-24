@@ -29,7 +29,7 @@ export class LuminusMovement extends AnimationNames {
 		 * Keyboard cursors that will control the character.
 		 * @type { any }
 		 */
-		this.cursors = this.scene.input.keyboard.createCursorKeys();
+		this.cursors = this.scene.input.keyboard.addKeys('W,A,S,D');
 
 		/**
 		 * Virtual joystick plugin
@@ -81,7 +81,7 @@ export class LuminusMovement extends AnimationNames {
 	 */
 	isAnyKeyDown() {
 		return (
-			this.cursors.left.isDown || this.cursors.right.isDown || this.cursors.up.isDown || this.cursors.down.isDown
+			this.cursors.A.isDown || this.cursors.D.isDown || this.cursors.W.isDown || this.cursors.S.isDown
 		);
 	}
 
@@ -95,29 +95,29 @@ export class LuminusMovement extends AnimationNames {
 
 					// Horizontal movement
 					if (
-						this.cursors.left.isDown ||
-						(this.cursors.left.isDown && this.cursors.down.isDown) ||
-						(this.cursors.left.isDown && this.cursors.up.isDown && this.player.container.body.maxSpeed > 0)
+						this.cursors.A.isDown ||
+						(this.cursors.A.isDown && this.cursors.S.isDown) ||
+						(this.cursors.A.isDown && this.cursors.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.container.body.setVelocityX(-this.player.speed);
 						this.player.anims.play(texture + '-' + this.walkLeftAnimationName, true);
 					} else if (
-						this.cursors.right.isDown ||
-						(this.cursors.right.isDown && this.cursors.down.isDown) ||
-						(this.cursors.right.isDown && this.cursors.up.isDown && this.player.container.body.maxSpeed > 0)
+						this.cursors.D.isDown ||
+						(this.cursors.D.isDown && this.cursors.S.isDown) ||
+						(this.cursors.D.isDown && this.cursors.W.isDown && this.player.container.body.maxSpeed > 0)
 					) {
 						this.player.anims.play(texture + '-' + this.walkRightAnimationName, true);
 						this.player.container.body.setVelocityX(this.player.speed);
 					}
 
 					// Vertical movement
-					if (this.cursors.up.isDown && this.player.container.body.maxSpeed > 0) {
+					if (this.cursors.W.isDown && this.player.container.body.maxSpeed > 0) {
 						this.player.container.body.setVelocityY(-this.player.speed);
-						if (!this.cursors.left.isDown && !this.cursors.right.isDown)
+						if (!this.cursors.A.isDown && !this.cursors.D.isDown)
 							this.player.anims.play(texture + '-' + this.walkUpAnimationName, true);
 					}
-					if (this.cursors.down.isDown && this.player.container.body.maxSpeed > 0) {
-						if (!this.cursors.left.isDown && !this.cursors.right.isDown)
+					if (this.cursors.S.isDown && this.player.container.body.maxSpeed > 0) {
+						if (!this.cursors.A.isDown && !this.cursors.D.isDown)
 							this.player.anims.play(texture + '-' + this.walkDownAnimationName, true);
 						this.player.container.body.setVelocityY(this.player.speed);
 					}
