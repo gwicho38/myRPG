@@ -56,20 +56,34 @@ export class LuminusKeyboardMouseController {
 		this.scene.input.mouse.disableContextMenu();
 		this.luminusBattleManager = new LuminusBattleManager();
 		this.scene.input.on('pointerdown', (pointer) => {
-			if (pointer.leftButtonDown() && !isMobile && this.player && this.player.active) {
+			if (pointer.leftButtonDown() && !isMobile && this.player && this.player.active && !this.player.isSwimming) {
 				this.luminusBattleManager.atack(this.player);
 			}
 		});
 
 		this.scene.input.keyboard.on('keydown', (keydown) => {
-			if (keydown.keyCode === 74 && this.player && this.player.active) {
+			if (
+				(keydown.keyCode === 32 || keydown.keyCode === 74) &&
+				this.player &&
+				this.player.active &&
+				!this.player.isSwimming
+			) {
 				this.luminusBattleManager.atack(this.player);
+			}
+			if (keydown.keyCode === 75 && this.player && this.player.active && !this.player.isSwimming) {
+				this.luminusBattleManager.block(this.player);
 			}
 			if (keydown.keyCode === 73 && this.player && this.player.active) {
 				SceneToggleWatcher.toggleScene(this.scene, this.inventorySceneName, this.player);
 			}
 			if (keydown.keyCode === 85 && this.player && this.player.active) {
 				SceneToggleWatcher.toggleScene(this.scene, this.attributeSceneName, this.player);
+			}
+		});
+
+		this.scene.input.keyboard.on('keyup', (keyup) => {
+			if (keyup.keyCode === 75 && this.player && this.player.active && !this.player.isSwimming) {
+				this.luminusBattleManager.stopBlock(this.player);
 			}
 		});
 	}

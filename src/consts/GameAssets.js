@@ -95,6 +95,9 @@ import atlas_chat_bubble_animation_image_json from '../assets/sprites/chat_bubbl
 // JSON
 import tile_map_json from '../assets/maps/larus/larus.json';
 import tutorial_map_json from '../assets/maps/tutorial/tutorial.json';
+import town_map_json from '../assets/maps/town/town.json';
+import cave_map_json from '../assets/maps/cave/cave_dungeon.json';
+import overworld_map_json from '../assets/maps/overworld/overworld.json';
 
 // Sound
 import space_sound_key from '../assets/sound/typing/blip_06.mp3';
@@ -145,443 +148,455 @@ import minus_small_button from '../assets/sprites/minus_small_button.png';
 import minus_small_button_json from '../assets/sprites/minus_small_button.json';
 
 export const Images = [
-    {
-        name: 'tiles',
-        image: tiles,
-    },
-    {
-        name: 'tiles_overworld',
-        image: tiles_overworld,
-    },
-    {
-        name: 'tutorial_tileset',
-        image: tutorial_tileset,
-    },
-    {
-        name: 'inner',
-        image: inner,
-    },
-    {
-        name: 'collision_tiles',
-        image: collision_tile,
-    },
-    {
-        name: 'player',
-        image: player_image,
-    },
-    {
-        name: 'dialog',
-        image: dialog,
-    },
-    {
-        name: 'space',
-        image: space,
-    },
-    {
-        name: 'buttonA',
-        image: buttonA,
-    },
-    {
-        name: 'buttonB',
-        image: buttonB,
-    },
-    {
-        name: 'buttonY',
-        image: buttonY,
-    },
-    {
-        name: 'enter_keyboard_key',
-        image: enter_keyboard_key,
-    },
-    {
-        name: 'h_keyboard_key',
-        image: h_keyboard_key,
-    },
-    {
-        name: 'esc_keyboard_key',
-        image: esc_keyboard_key,
-    },
-    {
-        name: 'buttonXboxWindows',
-        image: buttonXboxWindows,
-    },
-    {
-        name: 'XboxOne_Menu',
-        image: XboxOne_Menu,
-    },
-    {
-        name: 'question_mark',
-        image: question_mark,
-    },
-    {
-        name: 'spread',
-        image: spread,
-    },
-    {
-        name: 'maximize',
-        image: maximize,
-    },
-    {
-        name: 'close_button',
-        image: close,
-    },
-    {
-        name: 'logo_phaser',
-        image: logo_phaser,
-    },
-    {
-        name: 'luminus_candle',
-        image: luminus_candle,
-    },
-    {
-        name: 'rain',
-        image: rain,
-    },
-    {
-        name: 'dust',
-        image: dust,
-    },
-    {
-        name: 'leaves',
-        image: leaves,
-    },
-    {
-        name: 'particle_warp',
-        image: particle_warp,
-    },
-    {
-        name: 'cog_settings',
-        image: cog_settings,
-    },
-    {
-        name: 'settings_background',
-        image: settings_background,
-    },
-    {
-        name: 'landscape_mobile',
-        image: landscape_mobile,
-    },
-    {
-        name: 'walk_dust',
-        image: walk_dust,
-    },
-    {
-        name: 'dungeon_tiles',
-        image: dungeon_map,
-    },
-    {
-        name: 'fog_mask',
-        image: fog_mask,
-    },
-    {
-        name: 'health',
-        image: health,
-    },
-    {
-        name: 'red_potion',
-        image: red_potion,
-    },
-    {
-        name: 'atk_potion',
-        image: atk_potion,
-    },
-    {
-        name: 'treasure_chest',
-        image: treasure_chest,
-    },
-    {
-        name: 'mighty_sword',
-        image: mighty_sword,
-    },
-    {
-        name: 'critical',
-        image: critical,
-    },
-    {
-        name: 'critical_2x',
-        image: critical_50,
-    },
-    {
-        name: 'infobox_background',
-        image: infobox_background,
-    },
+	{
+		name: 'tiles',
+		image: tiles,
+	},
+	{
+		name: 'tiles_overworld',
+		image: tiles_overworld,
+	},
+	{
+		name: 'tutorial_tileset',
+		image: tutorial_tileset,
+	},
+	{
+		name: 'inner',
+		image: inner,
+	},
+	{
+		name: 'collision_tiles',
+		image: collision_tile,
+	},
+	{
+		name: 'player',
+		image: player_image,
+	},
+	{
+		name: 'dialog',
+		image: dialog,
+	},
+	{
+		name: 'space',
+		image: space,
+	},
+	{
+		name: 'buttonA',
+		image: buttonA,
+	},
+	{
+		name: 'buttonB',
+		image: buttonB,
+	},
+	{
+		name: 'buttonY',
+		image: buttonY,
+	},
+	{
+		name: 'enter_keyboard_key',
+		image: enter_keyboard_key,
+	},
+	{
+		name: 'h_keyboard_key',
+		image: h_keyboard_key,
+	},
+	{
+		name: 'esc_keyboard_key',
+		image: esc_keyboard_key,
+	},
+	{
+		name: 'buttonXboxWindows',
+		image: buttonXboxWindows,
+	},
+	{
+		name: 'XboxOne_Menu',
+		image: XboxOne_Menu,
+	},
+	{
+		name: 'question_mark',
+		image: question_mark,
+	},
+	{
+		name: 'spread',
+		image: spread,
+	},
+	{
+		name: 'maximize',
+		image: maximize,
+	},
+	{
+		name: 'close_button',
+		image: close,
+	},
+	{
+		name: 'logo_phaser',
+		image: logo_phaser,
+	},
+	{
+		name: 'luminus_candle',
+		image: luminus_candle,
+	},
+	{
+		name: 'rain',
+		image: rain,
+	},
+	{
+		name: 'dust',
+		image: dust,
+	},
+	{
+		name: 'leaves',
+		image: leaves,
+	},
+	{
+		name: 'particle_warp',
+		image: particle_warp,
+	},
+	{
+		name: 'cog_settings',
+		image: cog_settings,
+	},
+	{
+		name: 'settings_background',
+		image: settings_background,
+	},
+	{
+		name: 'landscape_mobile',
+		image: landscape_mobile,
+	},
+	{
+		name: 'walk_dust',
+		image: walk_dust,
+	},
+	{
+		name: 'dungeon_tiles',
+		image: dungeon_map,
+	},
+	{
+		name: 'fog_mask',
+		image: fog_mask,
+	},
+	{
+		name: 'health',
+		image: health,
+	},
+	{
+		name: 'red_potion',
+		image: red_potion,
+	},
+	{
+		name: 'atk_potion',
+		image: atk_potion,
+	},
+	{
+		name: 'treasure_chest',
+		image: treasure_chest,
+	},
+	{
+		name: 'mighty_sword',
+		image: mighty_sword,
+	},
+	{
+		name: 'critical',
+		image: critical,
+	},
+	{
+		name: 'critical_2x',
+		image: critical_50,
+	},
+	{
+		name: 'infobox_background',
+		image: infobox_background,
+	},
 
-    // HUD
-    {
-        name: 'hp_hud',
-        image: hp_hud,
-    },
-    {
-        name: 'hp_hud_2x',
-        image: hp_hud_2x,
-    },
-    {
-        name: 'hp_hud_3x',
-        image: hp_hud_3x,
-    },
-    {
-        name: 'sp_hud_2x',
-        image: sp_hud_2x,
-    },
-    {
-        name: 'xp_hud_2x',
-        image: xp_hud_2x,
-    },
-    {
-        name: 'red_bar',
-        image: red_bar,
-    },
-    {
-        name: 'yellow_bar',
-        image: yellow_bar,
-    },
-    {
-        name: 'green_bar',
-        image: green_bar,
-    },
-    {
-        name: 'blue_bar',
-        image: blue_bar,
-    },
-    {
-        name: 'exp_blue_bar',
-        image: exp_blue_bar,
-    },
-    {
-        name: 'progressbar_background',
-        image: progressbar_background,
-    },
-    {
-        name: 'inventory_shortcut',
-        image: inventory_shortcut,
-    },
-    {
-        name: 'attributes_shortcut_icon',
-        image: attributes_shortcut_icon,
-    },
-    {
-        name: 'book_ui',
-        image: book_ui,
-    },
+	// HUD
+	{
+		name: 'hp_hud',
+		image: hp_hud,
+	},
+	{
+		name: 'hp_hud_2x',
+		image: hp_hud_2x,
+	},
+	{
+		name: 'hp_hud_3x',
+		image: hp_hud_3x,
+	},
+	{
+		name: 'sp_hud_2x',
+		image: sp_hud_2x,
+	},
+	{
+		name: 'xp_hud_2x',
+		image: xp_hud_2x,
+	},
+	{
+		name: 'red_bar',
+		image: red_bar,
+	},
+	{
+		name: 'yellow_bar',
+		image: yellow_bar,
+	},
+	{
+		name: 'green_bar',
+		image: green_bar,
+	},
+	{
+		name: 'blue_bar',
+		image: blue_bar,
+	},
+	{
+		name: 'exp_blue_bar',
+		image: exp_blue_bar,
+	},
+	{
+		name: 'progressbar_background',
+		image: progressbar_background,
+	},
+	{
+		name: 'inventory_shortcut',
+		image: inventory_shortcut,
+	},
+	{
+		name: 'attributes_shortcut_icon',
+		image: attributes_shortcut_icon,
+	},
+	{
+		name: 'book_ui',
+		image: book_ui,
+	},
 
-    // Portraits
-    {
-        name: 'lucius_portrait_beard',
-        image: lucius_portrait_beard,
-    },
-    {
-        name: 'lucius_portrait_beardless',
-        image: lucius_portrait_beardless,
-    },
+	// Portraits
+	{
+		name: 'lucius_portrait_beard',
+		image: lucius_portrait_beard,
+	},
+	{
+		name: 'lucius_portrait_beardless',
+		image: lucius_portrait_beardless,
+	},
 
-    // Inventory
-    {
-        name: 'inventory_box',
-        image: inventory_box,
-    },
-    {
-        name: 'panel_background',
-        image: panel_background,
-    },
-    {
-        name: 'panel_title',
-        image: panel_title,
-    },
-    {
-        name: 'inventory_slot',
-        image: inventory_slot,
-    },
+	// Inventory
+	{
+		name: 'inventory_box',
+		image: inventory_box,
+	},
+	{
+		name: 'panel_background',
+		image: panel_background,
+	},
+	{
+		name: 'panel_title',
+		image: panel_title,
+	},
+	{
+		name: 'inventory_slot',
+		image: inventory_slot,
+	},
 
-    // UI
-    {
-        name: 'attributes_background',
-        image: attributes_background,
-    },
-    {
-        name: 'attributes_background_3x',
-        image: attributes_background_3x,
-    },
+	// UI
+	{
+		name: 'attributes_background',
+		image: attributes_background,
+	},
+	{
+		name: 'attributes_background_3x',
+		image: attributes_background_3x,
+	},
 
-    //Clouds
-    {
-        name: 'cloud',
-        image: cloud,
-    },
+	//Clouds
+	{
+		name: 'cloud',
+		image: cloud,
+	},
 ];
 
 export const AtlasConfig = [
-    {
-        name: 'character',
-        image: atlas_character_image,
-        json: atlas_character_image_json,
-    },
-    {
-        name: 'flares',
-        image: atlas_flares_image,
-        json: atlas_flares_image_json,
-    },
-    {
-        name: 'chat_bubble_animation',
-        image: atlas_chat_bubble_animation_image,
-        json: atlas_chat_bubble_animation_image_json,
-    },
-    {
-        name: 'slash',
-        image: atlas_slash_image,
-        json: atlas_slash_image_json,
-    },
-    {
-        name: 'bat',
-        image: atlas_bat_image,
-        json: atlas_bat_image_json,
-    },
-    {
-        name: 'ogre',
-        image: atlas_ogre_image,
-        json: atlas_ogre_image_json,
-    },
-    {
-        name: 'rat',
-        image: atlas_rat_image,
-        json: atlas_rat_image_json,
-    },
+	{
+		name: 'character',
+		image: atlas_character_image,
+		json: atlas_character_image_json,
+	},
+	{
+		name: 'flares',
+		image: atlas_flares_image,
+		json: atlas_flares_image_json,
+	},
+	{
+		name: 'chat_bubble_animation',
+		image: atlas_chat_bubble_animation_image,
+		json: atlas_chat_bubble_animation_image_json,
+	},
+	{
+		name: 'slash',
+		image: atlas_slash_image,
+		json: atlas_slash_image_json,
+	},
+	{
+		name: 'bat',
+		image: atlas_bat_image,
+		json: atlas_bat_image_json,
+	},
+	{
+		name: 'ogre',
+		image: atlas_ogre_image,
+		json: atlas_ogre_image_json,
+	},
+	{
+		name: 'rat',
+		image: atlas_rat_image,
+		json: atlas_rat_image_json,
+	},
 ];
 
 export const TilemapConfig = [
-    {
-        name: 'larus',
-        json: tile_map_json,
-    },
-    {
-        name: 'tutorial',
-        json: tutorial_map_json,
-    },
+	{
+		name: 'larus',
+		json: tile_map_json,
+	},
+	{
+		name: 'tutorial',
+		json: tutorial_map_json,
+	},
+	{
+		name: 'town',
+		json: town_map_json,
+	},
+	{
+		name: 'cave_dungeon',
+		json: cave_map_json,
+	},
+	{
+		name: 'overworld',
+		json: overworld_map_json,
+	},
 ];
 
 export const LuminusAudios = [
-    {
-        name: 'space_sound',
-        audio: space_sound_key,
-    },
-    {
-        name: 'typing_key_01',
-        audio: typing_key_01,
-    },
-    {
-        name: 'typing_key_02',
-        audio: typing_key_02,
-    },
-    {
-        name: 'typing_key_03',
-        audio: typing_key_03,
-    },
-    {
-        name: 'typing_key_04',
-        audio: typing_key_04,
-    },
-    {
-        name: 'typing_key_05',
-        audio: typing_key_05,
-    },
-    {
-        name: 'path_to_lake_land',
-        audio: path_to_lake_land,
-    },
-    {
-        name: 'dungeon_ambient',
-        audio: dungeon_ambient,
-    },
-    {
-        name: 'dark_theme',
-        audio: dark_theme,
-    },
-    {
-        name: 'forest',
-        audio: forest,
-    },
+	{
+		name: 'space_sound',
+		audio: space_sound_key,
+	},
+	{
+		name: 'typing_key_01',
+		audio: typing_key_01,
+	},
+	{
+		name: 'typing_key_02',
+		audio: typing_key_02,
+	},
+	{
+		name: 'typing_key_03',
+		audio: typing_key_03,
+	},
+	{
+		name: 'typing_key_04',
+		audio: typing_key_04,
+	},
+	{
+		name: 'typing_key_05',
+		audio: typing_key_05,
+	},
+	{
+		name: 'path_to_lake_land',
+		audio: path_to_lake_land,
+	},
+	{
+		name: 'dungeon_ambient',
+		audio: dungeon_ambient,
+	},
+	{
+		name: 'dark_theme',
+		audio: dark_theme,
+	},
+	{
+		name: 'forest',
+		audio: forest,
+	},
 
-    // SFX
-    // Atack
-    {
-        name: 'atack01',
-        audio: atack01,
-    },
-    {
-        name: 'atack02',
-        audio: atack02,
-    },
-    {
-        name: 'atack03',
-        audio: atack03,
-    },
-    // Damage
-    {
-        name: 'damage01',
-        audio: damage01,
-    },
-    {
-        name: 'damage02',
-        audio: damage02,
-    },
-    {
-        name: 'damage03',
-        audio: damage03,
-    },
-    {
-        name: 'critical',
-        audio: critical_hit,
-    },
-    // UI
-    {
-        name: 'level_up',
-        audio: level_up,
-    },
+	// SFX
+	// Atack
+	{
+		name: 'atack01',
+		audio: atack01,
+	},
+	{
+		name: 'atack02',
+		audio: atack02,
+	},
+	{
+		name: 'atack03',
+		audio: atack03,
+	},
+	// Damage
+	{
+		name: 'damage01',
+		audio: damage01,
+	},
+	{
+		name: 'damage02',
+		audio: damage02,
+	},
+	{
+		name: 'damage03',
+		audio: damage03,
+	},
+	{
+		name: 'critical',
+		audio: critical_hit,
+	},
+	// UI
+	{
+		name: 'level_up',
+		audio: level_up,
+	},
 
-    // Interaction
-    {
-        name: 'get_items',
-        audio: get_items,
-    },
-    {
-        name: 'equip_item',
-        audio: equip_item,
-    },
-    {
-        name: 'start_game',
-        audio: start_game,
-    },
-    // Consumables
-    {
-        name: 'heal',
-        audio: heal,
-    },
-    {
-        name: 'menu_navigation',
-        audio: menu_navigation,
-    },
-    {
-        name: 'inventory_cloth',
-        audio: inventory_cloth,
-    },
-    {
-        name: 'attributes_menu',
-        audio: attributes_menu,
-    },
-    {
-        name: 'turn_page',
-        audio: turn_page,
-    },
+	// Interaction
+	{
+		name: 'get_items',
+		audio: get_items,
+	},
+	{
+		name: 'equip_item',
+		audio: equip_item,
+	},
+	{
+		name: 'start_game',
+		audio: start_game,
+	},
+	// Consumables
+	{
+		name: 'heal',
+		audio: heal,
+	},
+	{
+		name: 'menu_navigation',
+		audio: menu_navigation,
+	},
+	{
+		name: 'inventory_cloth',
+		audio: inventory_cloth,
+	},
+	{
+		name: 'attributes_menu',
+		audio: attributes_menu,
+	},
+	{
+		name: 'turn_page',
+		audio: turn_page,
+	},
 ];
 
 export const ASEPRITE_CONFIG = [
-    {
-        name: 'plus_small_button',
-        image: plus_small_button,
-        json: plus_small_button_json,
-    },
-    {
-        name: 'minus_small_button',
-        image: minus_small_button,
-        json: minus_small_button_json,
-    },
+	{
+		name: 'plus_small_button',
+		image: plus_small_button,
+		json: plus_small_button_json,
+	},
+	{
+		name: 'minus_small_button',
+		image: minus_small_button,
+		json: minus_small_button_json,
+	},
 ];

@@ -87,7 +87,7 @@ export class LuminusAnimationManager extends AnimationNames {
 		const currrentAnimation = this.entity.anims.currentAnim.key;
 		if (!currrentAnimation.includes('idle') && !this.entity.isAtacking) {
 			const splitAnimation = currrentAnimation.split('-');
-			let changedAnimaton = `${this.entity.texture.key}-${this.idlePrefixAnimation}-${splitAnimation[2]}`;
+			const changedAnimaton = `${this.entity.texture.key}-${this.idlePrefixAnimation}-${splitAnimation[2]}`;
 			this.entity.anims.play(changedAnimaton);
 		}
 	}

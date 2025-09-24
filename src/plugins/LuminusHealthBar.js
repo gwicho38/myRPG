@@ -103,10 +103,10 @@ export class LuminusHealthBar extends Phaser.GameObjects.Sprite {
 	 * Changes the color of the Health bar based on the current entity's health.
 	 */
 	draw() {
-		var d = (this.health * 100) / this.full / 100;
-		var x = (this.health / this.full) * 100;
+		const d = (this.health * 100) / this.full / 100;
+		const x = (this.health / this.full) * 100;
 
-		let color = this.rgbToHex(
+		const color = this.rgbToHex(
 			(x > 50 ? 1 - (2 * (x - 50)) / 100.0 : 1.0) * 255,
 			(x > 50 ? 1.0 : (2 * x) / 100.0) * 255,
 			0

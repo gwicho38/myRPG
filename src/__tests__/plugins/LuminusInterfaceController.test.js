@@ -1,0 +1,342 @@
+import { LuminusInterfaceController } from '../../plugins/LuminusInterfaceController';
+
+describe('LuminusInterfaceController', () => {
+	let controller;
+	let mockScene;
+	let mockElement;
+
+	beforeEach(() => {
+		mockScene = {
+			input: {
+				keyboard: {
+					on: jest.fn(),
+				},
+			},
+			add: {
+				image: jest.fn().mockReturnValue({
+					destroy: jest.fn(),
+					setOrigin: jest.fn(),
+					setScale: jest.fn(),
+					setPosition: jest.fn(),
+				}),
+			},
+		};
+
+		mockElement = {
+			x: 100,
+			y: 100,
+			width: 50,
+			height: 50,
+		};
+
+		controller = new LuminusInterfaceController(mockScene);
+	});
+
+	describe('constructor', () => {
+		it('should initialize with default values', () => {
+			expect(controller.scene).toBe(mockScene);
+			expect(controller.interfaceElements).toEqual([]);
+			expect(controller.currentElementAction).toBe(null);
+			expect(controller.closeAction).toBe(null);
+			expect(controller.menuHistory).toEqual([]);
+			expect(controller.currentRow).toBe(0);
+			expect(controller.currentColumn).toBe(0);
+			expect(controller.currentRowSize).toBe(0);
+		});
+
+		it('should set up keyboard listener', () => {
+			expect(mockScene.input.keyboard.on).toHaveBeenCalledWith('keydown', expect.any(Function));
+		});
+	});
+
+	describe('navigation', () => {
+		beforeEach(() => {
+			// Set up a 2x2 grid of elements
+			controller.interfaceElements = [
+				[[{ element: mockElement, action: 'action1' }], [{ element: mockElement, action: 'action2' }]],
+				[[{ element: mockElement, action: 'action3' }], [{ element: mockElement, action: 'action4' }]],
+			];
+			controller.currentRowSize = 2;
+		});
+
+		describe('moveUp', () => {
+			it('should move up when not at top', () => {
+				controller.currentRow = 1;
+				controller.moveUp();
+				expect(controller.currentRow).toBe(0);
+			});
+
+			it('should not move up when at top', () => {
+				controller.currentRow = 0;
+				controller.moveUp();
+				expect(controller.currentRow).toBe(0);
+			});
+
+			it('should not move when no elements exist', () => {
+				controller.interfaceElements = [];
+				controller.moveUp();
+				expect(controller.currentRow).toBe(0);
+			});
+		});
+
+		describe('moveDown', () => {
+			it('should move down when not at bottom', () => {
+				controller.currentRow = 0;
+				controller.moveDown();
+				expect(controller.currentRow).toBe(1);
+			});
+
+			it('should not move down when at bottom', () => {
+				controller.currentRow = 1;
+				controller.moveDown();
+				expect(controller.currentRow).toBe(1);
+			});
+		});
+
+		describe('moveLeft', () => {
+			it('should move left when not at leftmost', () => {
+				controller.currentColumn = 1;
+				controller.moveLeft();
+				expect(controller.currentColumn).toBe(0);
+			});
+
+			it('should not move left when at leftmost', () => {
+				controller.currentColumn = 0;
+				controller.moveLeft();
+				expect(controller.currentColumn).toBe(0);
+			});
+		});
+
+		describe('moveRight', () => {
+			it('should move right when not at rightmost', () => {
+				controller.currentColumn = 0;
+				controller.moveRight();
+				expect(controller.currentColumn).toBe(1);
+			});
+
+			it('should not move right when at rightmost', () => {
+				controller.currentColumn = 1;
+				controller.moveRight();
+				expect(controller.currentColumn).toBe(1);
+			});
+		});
+	});
+
+	describe('keyboard input handling', () => {
+		let keyboardCallback;
+
+		beforeEach(() => {
+			keyboardCallback = mockScene.input.keyboard.on.mock.calls[0][1];
+			controller.currentElementAction = {
+				action: 'testAction',
+				context: this,
+				args: ['arg1'],
+			};
+			controller.executeFunctionByName = jest.fn();
+		});
+
+		it('should move left with arrow key (keyCode 37)', () => {
+			controller.moveLeft = jest.fn();
+			keyboardCallback({ keyCode: 37 });
+			expect(controller.moveLeft).toHaveBeenCalled();
+		});
+
+		it('should move right with arrow key (keyCode 39)', () => {
+			controller.moveRight = jest.fn();
+			keyboardCallback({ keyCode: 39 });
+			expect(controller.moveRight).toHaveBeenCalled();
+		});
+
+		it('should move up with arrow key (keyCode 38)', () => {
+			controller.moveUp = jest.fn();
+			keyboardCallback({ keyCode: 38 });
+			expect(controller.moveUp).toHaveBeenCalled();
+		});
+
+		it('should move up with K key (keyCode 75) for menu navigation', () => {
+			controller.moveUp = jest.fn();
+			keyboardCallback({ keyCode: 75 });
+			expect(controller.moveUp).toHaveBeenCalled();
+		});
+
+		it('should move down with arrow key (keyCode 40)', () => {
+			controller.moveDown = jest.fn();
+			keyboardCallback({ keyCode: 40 });
+			expect(controller.moveDown).toHaveBeenCalled();
+		});
+
+		it('should move down with J key (keyCode 74) for menu navigation', () => {
+			controller.moveDown = jest.fn();
+			keyboardCallback({ keyCode: 74 });
+			expect(controller.moveDown).toHaveBeenCalled();
+		});
+
+		it('should execute action with Enter key (keyCode 13)', () => {
+			keyboardCallback({ keyCode: 13 });
+			expect(controller.executeFunctionByName).toHaveBeenCalledWith(
+				'testAction',
+				controller.currentElementAction.context,
+				['arg1']
+			);
+		});
+
+		it('should execute action with E key (keyCode 69)', () => {
+			keyboardCallback({ keyCode: 69 });
+			expect(controller.executeFunctionByName).toHaveBeenCalledWith(
+				'testAction',
+				controller.currentElementAction.context,
+				['arg1']
+			);
+		});
+
+		it('should close with Escape key (keyCode 27)', () => {
+			controller.close = jest.fn();
+			keyboardCallback({ keyCode: 27 });
+			expect(controller.close).toHaveBeenCalled();
+		});
+
+		it('should not execute action when no action exists', () => {
+			controller.currentElementAction = null;
+			keyboardCallback({ keyCode: 13 });
+			expect(controller.executeFunctionByName).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('close', () => {
+		it('should execute close action when available', () => {
+			controller.closeAction = {
+				action: 'closeFunction',
+				context: this,
+				args: [],
+			};
+			controller.executeFunctionByName = jest.fn();
+
+			controller.close();
+
+			expect(controller.executeFunctionByName).toHaveBeenCalledWith(
+				'closeFunction',
+				controller.closeAction.context,
+				[]
+			);
+		});
+
+		it('should handle missing close action gracefully', () => {
+			controller.closeAction = null;
+			expect(() => controller.close()).not.toThrow();
+		});
+
+		it('should handle close action without action property', () => {
+			controller.closeAction = {};
+			expect(() => controller.close()).not.toThrow();
+		});
+	});
+
+	describe('highlight management', () => {
+		beforeEach(() => {
+			controller.highlightElement = mockScene.add.image();
+		});
+
+		it('should update highlight position', () => {
+			controller.updateHighlightedElement(mockElement);
+
+			expect(controller.highlightElement.setPosition).toHaveBeenCalledWith(100, 100);
+			expect(controller.highlightElement.setScale).toHaveBeenCalled();
+		});
+
+		it('should create highlight if it does not exist', () => {
+			controller.highlightElement = null;
+			controller.updateHighlightedElement(mockElement);
+
+			expect(mockScene.add.image).toHaveBeenCalled();
+		});
+
+		it('should remove highlight when requested', () => {
+			controller.removeCurrentSelectionHighlight();
+			expect(controller.highlightElement.destroy).toHaveBeenCalled();
+			expect(controller.highlightElement).toBe(null);
+		});
+
+		it('should handle removing non-existent highlight', () => {
+			controller.highlightElement = null;
+			expect(() => controller.removeCurrentSelectionHighlight()).not.toThrow();
+		});
+	});
+
+	describe('menu history', () => {
+		it('should add to menu history', () => {
+			const menuState = {
+				currentRow: 1,
+				currentColumn: 2,
+				currentElementAction: { action: 'test' },
+			};
+			controller.currentRow = menuState.currentRow;
+			controller.currentColumn = menuState.currentColumn;
+			controller.currentElementAction = menuState.currentElementAction;
+
+			controller.menuHistoryAdd();
+
+			expect(controller.menuHistory).toHaveLength(1);
+			expect(controller.menuHistory[0]).toEqual(menuState);
+		});
+
+		it('should retrieve from menu history', () => {
+			const menuState = {
+				currentRow: 1,
+				currentColumn: 2,
+				currentElementAction: { action: 'test' },
+			};
+			controller.menuHistory.push(menuState);
+
+			controller.menuHistoryRetrieve();
+
+			expect(controller.currentRow).toBe(1);
+			expect(controller.currentColumn).toBe(2);
+			expect(controller.currentElementAction).toEqual({ action: 'test' });
+			expect(controller.menuHistory).toHaveLength(0);
+		});
+
+		it('should handle empty menu history', () => {
+			controller.menuHistoryRetrieve();
+			expect(controller.currentRow).toBe(0);
+			expect(controller.currentColumn).toBe(0);
+		});
+	});
+
+	describe('clearItems', () => {
+		it('should clear all interface elements', () => {
+			controller.interfaceElements = [[{ element: mockElement }]];
+			controller.clearItems();
+			expect(controller.interfaceElements).toEqual([]);
+		});
+	});
+
+	describe('executeFunctionByName', () => {
+		it('should execute function by name on context', () => {
+			const context = {
+				testFunction: jest.fn(),
+			};
+
+			controller.executeFunctionByName('testFunction', context, ['arg1', 'arg2']);
+
+			expect(context.testFunction).toHaveBeenCalledWith('arg1', 'arg2');
+		});
+
+		it('should handle nested function names', () => {
+			const context = {
+				nested: {
+					testFunction: jest.fn(),
+				},
+			};
+
+			global.nested = context.nested;
+			controller.executeFunctionByName('nested.testFunction', global, ['arg1']);
+
+			expect(context.nested.testFunction).toHaveBeenCalledWith('arg1');
+		});
+
+		it('should handle missing function gracefully', () => {
+			const context = {};
+			expect(() => controller.executeFunctionByName('missingFunction', context, [])).not.toThrow();
+		});
+	});
+});

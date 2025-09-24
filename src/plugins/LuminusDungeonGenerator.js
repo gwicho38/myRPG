@@ -146,7 +146,7 @@ export class LuminusDungeonGenerator {
 			//weightedIndexes, tileX, tileY, width, height
 
 			// Fill the floor with mostly clean tiles
-			let random = this.groundLayer.weightedRandomize(TILES.FLOOR, x + 1, y + 1, width - 2, height - 2);
+			const random = this.groundLayer.weightedRandomize(TILES.FLOOR, x + 1, y + 1, width - 2, height - 2);
 
 			// Place the room corners tiles
 			this.groundLayer.putTileAt(TILES.WALL.TOP_LEFT, left, top);
@@ -162,8 +162,8 @@ export class LuminusDungeonGenerator {
 
 			// Dungeons have rooms that are connected with doors. Each door has an x & y relative to the
 			// room's location. Each direction has a different door to tile mapping.
-			var doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
-			for (var i = 0; i < doors.length; i++) {
+			const doors = room.getDoorLocations(); // → Returns an array of {x, y} objects
+			for (let i = 0; i < doors.length; i++) {
 				if (doors[i].y === 0) {
 					this.groundLayer.putTilesAt(TILES.DOOR.TOP, x + doors[i].x - 1, y + doors[i].y);
 				} else if (doors[i].y === room.height - 1) {

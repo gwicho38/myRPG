@@ -311,6 +311,51 @@ export class LuminusBattleManager extends AnimationNames {
 	}
 
 	/**
+	 * This method will perform the block routine, reducing incoming damage.
+	 * @param { Phaser.Physics.Arcade.Sprite } blocker the entity that will block.
+	 */
+	block(blocker) {
+		if (blocker.canBlock && blocker.canMove && !blocker.isAtacking) {
+			blocker.isBlocking = true;
+			blocker.canMove = false;
+			blocker.canAtack = false;
+
+			const texture = blocker.texture.key;
+
+			// Play block animation if it exists, otherwise just set blocking state
+			const blockAnimKey = `${texture}-block-down`;
+			if (blocker.anims.exists(blockAnimKey)) {
+				blocker.anims.play(blockAnimKey, true);
+			}
+
+			// Add visual feedback - darker tint while blocking
+			blocker.setTint(0x888888);
+		}
+	}
+
+	/**
+	 * This method will stop the block routine.
+	 * @param { Phaser.Physics.Arcade.Sprite } blocker the entity that will stop blocking.
+	 */
+	stopBlock(blocker) {
+		if (blocker.isBlocking) {
+			blocker.isBlocking = false;
+			blocker.canMove = true;
+			blocker.canAtack = true;
+
+			// Remove visual feedback
+			blocker.clearTint();
+
+			// Return to idle animation
+			const texture = blocker.texture.key;
+			const idleAnimKey = `${texture}-idle-down`;
+			if (blocker.anims.exists(idleAnimKey)) {
+				blocker.anims.play(idleAnimKey, true);
+			}
+		}
+	}
+
+	/**
 	 * This method will perform the atack routine, checking for enemies within range.
 	 * The atacker should have a body in order to stop him from walking as the movement is expected to be done with Velocity.
 	 * @param { Phaser.Physics.Arcade.Sprite } atacker the atacker.
@@ -336,7 +381,7 @@ export class LuminusBattleManager extends AnimationNames {
 			}
 
 			// Stores the enemies that where atacked on the current animation.
-			let atackedEnemies = [];
+			const atackedEnemies = [];
 			// Destroys the slash atack if the atacker dies.
 			atacker.scene.events.on('update', (update) => {
 				if (hitBoxSprite && hitBoxSprite.active && atacker && !atacker.active) {
@@ -375,7 +420,7 @@ export class LuminusBattleManager extends AnimationNames {
 						hitBoxSprite,
 						atacker.scene[this.playerVariableName].hitZone,
 						(h, e) => {
-							let enemy = atacker.scene[this.playerVariableName];
+							const enemy = atacker.scene[this.playerVariableName];
 							this.takeDamage(atacker, enemy);
 							enemy.canTakeDamage = false;
 							atackedEnemies.push(enemy);
@@ -384,7 +429,7 @@ export class LuminusBattleManager extends AnimationNames {
 							// }
 						},
 						(h, e) => {
-							let enemy = atacker.scene[this.playerVariableName];
+							const enemy = atacker.scene[this.playerVariableName];
 							return enemy.canTakeDamage;
 						}
 					);
