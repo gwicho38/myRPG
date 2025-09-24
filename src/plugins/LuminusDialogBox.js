@@ -65,7 +65,7 @@ export class LuminusDialogBox {
 		 * @type { Phaser.Input.Keyboard.KeyCodes }
 		 * @default
 		 *  */
-		this.actionButtonKeyCode = Phaser.Input.Keyboard.KeyCodes.SPACE;
+		this.actionButtonKeyCode = Phaser.Input.Keyboard.KeyCodes.J;
 		/**
 		 * Dialog height.
 		 * @type { number }
@@ -185,7 +185,7 @@ export class LuminusDialogBox {
 		 * @type { Phaser.Display.Color }
 		 * @default
 		 */
-		this.fontColor = new Phaser.Display.Color(61, 61, 61, 1);
+		this.fontColor = new Phaser.Display.Color(255, 255, 255, 1);
 
 		/**
 		 * Button A
@@ -303,6 +303,7 @@ export class LuminusDialogBox {
 	}
 
 	create() {
+		console.log('🎭 LuminusDialogBox.create() - Initializing dialog system');
 		this.luminusTypingSoundManager = new LuminusTypingSoundManager(this.scene);
 		this.luminusTypingSoundManager.create();
 		// First thing to do is to check if it's mobile.
@@ -428,7 +429,7 @@ export class LuminusDialogBox {
 		this.keyObj = this.scene.input.keyboard.addKey(this.actionButtonKeyCode);
 
 		this.scene.input.keyboard.on('keydown', (key) => {
-			if (key.keyCode === 32) this.checkButtonDown();
+			if (key.keyCode === 74) this.checkButtonDown();
 		});
 
 		const joystickScene = this.scene.scene.get('JoystickScene');
@@ -447,6 +448,9 @@ export class LuminusDialogBox {
 	 * Creates the dialogue box itself.
 	 */
 	createDialogueBox() {
+		this.cameraWidth = this.scene.cameras.main.width;
+		this.cameraHeight = this.scene.cameras.main.height;
+		this.textWidth = this.cameraWidth - this.margin * 3;
 		this.dialog = this.scene.add.nineslice(
 			this.margin,
 			this.cameraHeight - this.dialogHeight - this.margin,
@@ -558,11 +562,20 @@ export class LuminusDialogBox {
 	 * Checks what to do when the player presses the action button.
 	 */
 	checkButtonDown() {
+		console.log('🎮 checkButtonDown triggered:', {
+			overlapping: this.isOverlapingChat,
+			showRandom: this.showRandomChat,
+			buttonPressed: this.checkButtonsPressed(),
+			dialogVisible: this.dialog?.visible,
+			chat: this.chat
+		});
 		if ((this.isOverlapingChat || this.showRandomChat) && this.checkButtonsPressed() && !this.dialog.visible) {
 			// First time, show the Dialog.
+			console.log('📢 Showing first dialog message');
 			this.currentChat = this.chat[0];
 			this.currentChat.index = 0;
 			this.dialogMessage = this.currentChat.message;
+			console.log('📝 Dialog message set:', this.dialogMessage);
 			this.checkSpeaker();
 			this.showDialog();
 			this.player.container.body.maxSpeed = 0;
@@ -638,6 +651,11 @@ export class LuminusDialogBox {
 	 * Make sure you have only one overlaping zone with the player.
 	 */
 	showDialog(createText = true) {
+		console.log('🎭 showDialog called:', {
+			createText,
+			message: this.dialogMessage?.substring(0, 50) + '...',
+			dialog: this.dialog
+		});
 		this.currentPage = 0;
 		// this.actionButton.visible = false;
 		this.dialog.visible = true;
@@ -679,6 +697,7 @@ export class LuminusDialogBox {
 	 * @param { boolean } animate Rather it should animate the text or not. If it's false, it will stop the animation text in process.
 	 */
 	setText(text, animate = false) {
+		console.log('💬 setText called:', { text: text.substring(0, 50) + '...', animate });
 		// Reset the dialog
 		this.eventCounter = 0;
 		this.animationText = text.split('');
@@ -707,7 +726,17 @@ export class LuminusDialogBox {
 	 * */
 	animateText() {
 		this.eventCounter++;
-		this.dialog.textMessage.setText(this.dialog.textMessage.text + this.animationText[this.eventCounter - 1]);
+		const newChar = this.animationText[this.eventCounter - 1];
+		this.dialog.textMessage.setText(this.dialog.textMessage.text + newChar);
+		if (this.eventCounter <= 3) {
+			console.log('🔤 Animating text:', {
+				counter: this.eventCounter,
+				newChar: newChar,
+				currentText: this.dialog.textMessage.text,
+				visible: this.dialog.textMessage.visible,
+				position: { x: this.dialog.textMessage.x, y: this.dialog.textMessage.y }
+			});
+		}
 		this.luminusTypingSoundManager.type(this.animationText[this.eventCounter - 1]);
 		// Stops the text animation.
 		if (this.eventCounter === this.animationText.length) {
@@ -761,7 +790,8 @@ export class LuminusDialogBox {
 			this.textWidth = this.cameraWidth - this.margin * 3;
 			this.dialog.x = this.margin;
 			this.dialog.y = this.cameraHeight - this.dialogHeight - this.margin; // this is the starting x/y location
-			this.dialog.resize(this.cameraWidth - this.margin * 2, this.dialogHeight);
+			// Update dialog size and position
+			this.dialog.setSize(this.cameraWidth - this.margin * 2, this.dialogHeight);
 
 			this.actionButton.x = this.cameraWidth - this.margin * 4;
 			this.actionButton.y = this.cameraHeight - this.margin * 3;
@@ -791,6 +821,7 @@ export class LuminusDialogBox {
 					maxLines: this.dialogMaxLines,
 					letterSpacing: this.letterSpacing,
 					fontFamily: this.fontFamily,
+					color: '#FFFFFF',
 				});
 			} else {
 				this.createText();
@@ -803,8 +834,16 @@ export class LuminusDialogBox {
 	 * @private
 	 */
 	createText() {
+		console.log('📝 Creating dialog text with:', {
+			x: this.margin * 2,
+			y: this.dialog.y + this.margin * 2.5,
+			dialogY: this.dialog.y,
+			margin: this.margin,
+			cameraHeight: this.cameraHeight,
+			dialogHeight: this.dialogHeight
+		});
 		this.dialog.textMessage = this.scene.add
-			.text(this.margin * 2, this.cameraHeight + this.margin * 2.5 - this.dialogHeight, '', {
+			.text(this.margin * 2, this.dialog.y + this.margin * 2.5, '', {
 				wordWrap: {
 					width: this.textWidth,
 				},
@@ -812,10 +851,17 @@ export class LuminusDialogBox {
 				maxLines: this.dialogMaxLines,
 				letterSpacing: this.letterSpacing,
 				fontFamily: this.fontFamily,
-				color: this.fontColor,
+				color: '#FFFFFF',
 			})
 			.setScrollFactor(0, 0)
 			.setDepth(99999999999999999)
 			.setFixedSize(this.cameraWidth - this.margin * 3, this.dialogHeight);
+
+		console.log('📝 Text created:', {
+			object: this.dialog.textMessage,
+			visible: this.dialog.textMessage.visible,
+			position: { x: this.dialog.textMessage.x, y: this.dialog.textMessage.y },
+			size: { width: this.dialog.textMessage.width, height: this.dialog.textMessage.height }
+		});
 	}
 }
