@@ -208,6 +208,11 @@ dev-electron: ## Start Electron in development mode
 	@echo "$(YELLOW)🔧 Starting Electron development...$(RESET)"
 	npm run electron:dev
 
+.PHONY: dev-electron-server
+dev-electron-server: ## Start Electron with dev server (requires dev server running)
+	@echo "$(YELLOW)🔧 Starting Electron with dev server...$(RESET)"
+	ELECTRON_USE_DEV_SERVER=true ELECTRON_DEV_TOOLS=true npm run electron:dev
+
 .PHONY: serve-mobile
 serve-mobile: ## Start mobile development server
 	@echo "$(YELLOW)📱 Starting mobile development server...$(RESET)"
@@ -217,6 +222,9 @@ serve-mobile: ## Start mobile development server
 test-electron: build-web ## Test Electron app locally
 	@echo "$(YELLOW)🧪 Testing Electron app...$(RESET)"
 	npm run electron
+
+.PHONY: electron
+electron: dev-electron ## Alias for dev-electron
 
 # =============================================================================
 # TESTING AND VALIDATION

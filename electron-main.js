@@ -16,12 +16,19 @@ function createWindow() {
         }
     });
 
-    // Load the game
-    if (process.env.NODE_ENV === 'development') {
+    // Load the game - use built version by default
+    if (process.env.ELECTRON_USE_DEV_SERVER === 'true') {
+        // Only use dev server if explicitly requested
         mainWindow.loadURL('http://localhost:8080');
-        mainWindow.webContents.openDevTools();
+        if (process.env.ELECTRON_DEV_TOOLS === 'true') {
+            mainWindow.webContents.openDevTools();
+        }
     } else {
+        // Use built version (default behavior)
         mainWindow.loadFile(path.join(__dirname, 'dist/index.html'));
+        if (process.env.NODE_ENV === 'development' && process.env.ELECTRON_DEV_TOOLS === 'true') {
+            mainWindow.webContents.openDevTools();
+        }
     }
 
     // Remove menu bar in production
