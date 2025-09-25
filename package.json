@@ -6,8 +6,9 @@
   "scripts": {
     "build": "webpack --config webpack/prod.js",
     "build:web": "npm run build",
-    "start": "webpack-dev-server --config webpack/base.js --open",
+    "start": "webpack --config webpack/dev.js --watch",
     "dev": "npm run start",
+    "serve": "node scripts/serve.js",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "eslint src --ext .js,.ts --fix",
     "format": "prettier --write 'src/**/*.{js,ts}'",
