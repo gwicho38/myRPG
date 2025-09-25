@@ -131,9 +131,35 @@ const config: Phaser.Types.Core.GameConfig = {
 	},
 };
 
-const game = new Phaser.Game(config);
+// Initialize game with error handling
+let game: Phaser.Game;
 
-// Make game globally available for debugging
-(window as any).game = game;
+try {
+	game = new Phaser.Game(config);
+
+	// Make game globally available for debugging
+	(window as any).game = game;
+
+	// Handle uncaught game errors
+	game.events.on('error', (error: Error) => {
+		console.error('Game error:', error);
+	});
+} catch (error) {
+	console.error('Failed to initialize game:', error);
+
+	// Show user-friendly error message
+	document.body.innerHTML = `
+		<div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif;">
+			<div style="text-align: center;">
+				<h2>Game Failed to Load</h2>
+				<p>We're sorry, but the game encountered an error during initialization.</p>
+				<p>Please refresh the page to try again.</p>
+				<button onclick="window.location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+					Refresh Page
+				</button>
+			</div>
+		</div>
+	`;
+}
 
 export default game;

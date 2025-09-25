@@ -315,7 +315,7 @@ export class HUDScene extends Phaser.Scene {
 		this.scene.stop(this.attributeSceneName);
 
 		this.level_text = this.add.text(15, 75, 'LvL ' + this.player.attributes.level, {
-			color: '#ffffff'
+			color: '#ffffff',
 		});
 
 		this.createSaveButton();

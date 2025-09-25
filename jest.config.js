@@ -1,9 +1,10 @@
 module.exports = {
 	testEnvironment: 'jsdom',
 	roots: ['<rootDir>/src'],
-	testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js'],
+	testMatch: ['**/__tests__/**/*.{js,ts}', '**/?(*.)+(spec|test).{js,ts}'],
 	transform: {
 		'^.+\\.js$': 'babel-jest',
+		'^.+\\.ts$': 'ts-jest',
 	},
 	transformIgnorePatterns: [
 		'node_modules/(?!(phaser3-juice-plugin)/)',
@@ -15,12 +16,13 @@ module.exports = {
 		'^phaser3-juice-plugin$': '<rootDir>/src/__mocks__/phaserJuiceMock.js',
 	},
 	collectCoverageFrom: [
-		'src/**/*.js',
-		'!src/index.js',
-		'!src/**/*.test.js',
-		'!src/**/*.spec.js',
+		'src/**/*.{js,ts}',
+		'!src/index.{js,ts}',
+		'!src/**/*.test.{js,ts}',
+		'!src/**/*.spec.{js,ts}',
 		'!src/__mocks__/**',
 		'!src/__tests__/**',
+		'!src/**/*.d.ts',
 	],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['text', 'lcov', 'html'],

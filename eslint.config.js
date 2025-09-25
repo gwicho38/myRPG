@@ -28,6 +28,7 @@ module.exports = [
 				clearInterval: 'readonly',
 				HTMLCanvasElement: 'readonly',
 				process: 'readonly',
+				navigator: 'readonly',
 			},
 		},
 		plugins: {
@@ -65,6 +66,7 @@ module.exports = [
 				clearInterval: 'readonly',
 				HTMLCanvasElement: 'readonly',
 				process: 'readonly',
+				navigator: 'readonly',
 			},
 		},
 		plugins: {
@@ -81,17 +83,21 @@ module.exports = [
 		},
 	},
 	{
-		files: ['**/__tests__/**/*.{js,ts}', '**/*.test.{js,ts}', '**/*.spec.{js,ts}'],
+		files: ['**/__tests__/**/*.{js,ts}', '**/*.test.{js,ts}', '**/*.spec.{js,ts}', 'src/__mocks__/**/*.js'],
 		languageOptions: {
 			globals: {
 				jest: 'readonly',
 				describe: 'readonly',
 				it: 'readonly',
+				test: 'readonly',
 				expect: 'readonly',
 				beforeEach: 'readonly',
 				afterEach: 'readonly',
 				beforeAll: 'readonly',
 				afterAll: 'readonly',
+				module: 'readonly',
+				require: 'readonly',
+				global: 'readonly',
 			},
 		},
 	},
@@ -105,6 +111,10 @@ module.exports = [
 			'*.min.js',
 			'bundle.js',
 			'coverage/**',
+			'src/assets/maps/**/*.tsx',
+			'*.config.js',
+			'electron-main.js',
+			'src/plugins/AnimatedTiles.js',
 		],
 	},
 ];

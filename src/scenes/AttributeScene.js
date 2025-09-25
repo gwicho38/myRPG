@@ -154,12 +154,14 @@ export class AttributeScene extends Phaser.Scene {
 		const baseX =
 			this.attributesBackground.x + 15 + (this.attributesBackground.width / 2) * this.attributesBackground.scaleX;
 		const baseY = this.attributesBackground.y + 115;
-		this.atackText = this.add.text(baseX, baseY, `Atack: ${this.player.attributes.atack}`, {
-			color: '#ffffff'
-		}).setOrigin(0, 0.5);
+		this.atackText = this.add
+			.text(baseX, baseY, `Atack: ${this.player.attributes.atack}`, {
+				color: '#ffffff',
+			})
+			.setOrigin(0, 0.5);
 		this.defenseText = this.add
 			.text(baseX, this.atackText.y + this.atackText.height + 5, `Defense: ${this.player.attributes.defense}`, {
-				color: '#ffffff'
+				color: '#ffffff',
 			})
 			.setOrigin(0, 0.5);
 		this.maxHealthText = this.add

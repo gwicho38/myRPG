@@ -107,7 +107,6 @@ export const OgreConfig = {
 	flee: 3,
 	hit: 5,
 	exp: 100,
-	hit: 5,
 	healthBarOffsetX: -5,
 	healthBarOffsetY: 17,
 	drops: [

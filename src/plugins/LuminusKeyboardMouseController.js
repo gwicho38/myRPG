@@ -62,26 +62,40 @@ export class LuminusKeyboardMouseController {
 		});
 
 		this.scene.input.keyboard.on('keydown', (keydown) => {
+			// J key (74) or Space (32) - Attack
 			if (
 				(keydown.keyCode === 32 || keydown.keyCode === 74) &&
 				this.player &&
 				this.player.active &&
+				this.player.canAtack &&
+				this.player.canMove &&
 				!this.player.isSwimming
 			) {
 				this.luminusBattleManager.atack(this.player);
 			}
-			if (keydown.keyCode === 75 && this.player && this.player.active && !this.player.isSwimming) {
+			// K key (75) - Block
+			if (
+				keydown.keyCode === 75 &&
+				this.player &&
+				this.player.active &&
+				this.player.canBlock &&
+				this.player.canMove &&
+				!this.player.isSwimming
+			) {
 				this.luminusBattleManager.block(this.player);
 			}
-			if (keydown.keyCode === 73 && this.player && this.player.active) {
+			// I key (73) - Inventory (only block if canMove is false)
+			if (keydown.keyCode === 73 && this.player && this.player.active && this.player.canMove) {
 				SceneToggleWatcher.toggleScene(this.scene, this.inventorySceneName, this.player);
 			}
-			if (keydown.keyCode === 85 && this.player && this.player.active) {
+			// U key (85) - Attributes (only block if canMove is false)
+			if (keydown.keyCode === 85 && this.player && this.player.active && this.player.canMove) {
 				SceneToggleWatcher.toggleScene(this.scene, this.attributeSceneName, this.player);
 			}
 		});
 
 		this.scene.input.keyboard.on('keyup', (keyup) => {
+			// K key (75) - Stop Block
 			if (keyup.keyCode === 75 && this.player && this.player.active && !this.player.isSwimming) {
 				this.luminusBattleManager.stopBlock(this.player);
 			}

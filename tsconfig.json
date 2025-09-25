@@ -35,10 +35,7 @@
     "dist",
     "docs",
     "tutorial",
-    "**/*.test.ts",
-    "**/*.spec.ts",
     "src/assets/**/*",
-    "src/__tests__/**/*",
     "src/__mocks__/**/*"
   ]
 }

@@ -154,7 +154,7 @@ export class LuminusSaveManager {
 					baseHealth: player.attributes.baseHealth,
 					atack: player.attributes.atack,
 					defense: player.attributes.defense,
-					availableAttributePoints: player.attributes.availableAttributePoints,
+					availableStatPoints: player.attributes.availableStatPoints,
 				},
 				items: player.items,
 				level: player.attributes.level,
@@ -177,7 +177,7 @@ export class LuminusSaveManager {
 		return (
 			this.scene.player ||
 			this.scene.data?.get('player') ||
-			this.scene.children?.getByName('player') as Player ||
+			(this.scene.children?.getByName('player') as Player) ||
 			null
 		);
 	}
@@ -293,7 +293,7 @@ export class LuminusSaveManager {
 
 			// Update health bar if it exists
 			if (player.healthBar) {
-				player.healthBar.setValue(player.attributes.health);
+				player.healthBar.update(player.attributes.health);
 			}
 
 			// Switch to saved scene if different
