@@ -65,7 +65,7 @@ export class LuminusMovement extends AnimationNames {
 		/**
 		 * Animation manager for the player
 		 */
-		this.luminusAnimationManager = new LuminusAnimationManager(this.scene, this.player);
+		this.luminusAnimationManager = new LuminusAnimationManager(this.player);
 
 		/**
 		 * GamePad controller

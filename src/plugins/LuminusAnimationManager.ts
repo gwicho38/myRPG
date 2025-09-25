@@ -13,7 +13,7 @@ export class LuminusAnimationManager extends AnimationNames {
 	/**
 	 * This class is responsible for animating game objects such as Player, Enemy and so on.
 	 */
-	constructor(scene: Phaser.Scene, entity: Player | Phaser.GameObjects.Sprite) {
+	constructor(entity: Player | Phaser.GameObjects.Sprite) {
 		super();
 
 		/**
