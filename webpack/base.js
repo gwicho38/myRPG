@@ -4,9 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
-    devtool: 'eval-source-map',
     entry: './src/index.ts',
+    output: {
+        path: require('path').resolve(__dirname, '../dist'),
+        filename: 'bundle.js',
+    },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
@@ -42,9 +44,7 @@ module.exports = {
         ],
     },
     plugins: [
-        new CleanWebpackPlugin({
-            root: path.resolve(__dirname, '../'),
-        }),
+        new CleanWebpackPlugin(),
         new webpack.DefinePlugin({
             CANVAS_RENDERER: JSON.stringify(true),
             WEBGL_RENDERER: JSON.stringify(true),
