@@ -14,7 +14,6 @@ export class IntroScene extends Phaser.Scene {
 			key: 'IntroScene',
 		});
 
-
 		/**
 		 * The mid center of the screen in the horizontal position;
 		 * @type { number }

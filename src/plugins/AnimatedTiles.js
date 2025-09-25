@@ -238,7 +238,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 				Object.keys(tileData).forEach((index) => {
 					index = parseInt(index);
 					// If tile has animation info we'll dive into it
-					if (tileData[index].hasOwnProperty('animation')) {
+					if (Object.prototype.hasOwnProperty.call(tileData[index], 'animation')) {
 						const animatedTileData = {
 							index: index + tileset.firstgid, // gid of the original tile
 							frames: [], // array of frames

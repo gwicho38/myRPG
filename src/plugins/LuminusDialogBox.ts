@@ -333,11 +333,7 @@ export class LuminusDialogBox {
 	 */
 	createInteractionButtons(): void {
 		this.actionButton = this.scene.add
-			.image(
-				this.cameraWidth - this.margin * 4,
-				this.cameraHeight - this.margin * 4,
-				this.actionButtonSpriteName
-			)
+			.image(this.cameraWidth - this.margin * 4, this.cameraHeight - this.margin * 4, this.actionButtonSpriteName)
 			.setScrollFactor(0, 0)
 			.setOrigin(0.5, 0.5)
 			.setDepth(99999999999999999);
@@ -431,9 +427,7 @@ export class LuminusDialogBox {
 	 */
 	animateText(): void {
 		this.eventCounter++;
-		this.dialog.textMessage!.setText(
-			this.dialog.textMessage!.text + this.animationText[this.eventCounter - 1]
-		);
+		this.dialog.textMessage!.setText(this.dialog.textMessage!.text + this.animationText[this.eventCounter - 1]);
 		this.luminusTypingSoundManager.type(this.animationText[this.eventCounter - 1]);
 
 		// Stops the text animation.
@@ -463,7 +457,13 @@ export class LuminusDialogBox {
 			this.dialogMessage = this.currentChat.message;
 			this.checkSpeaker();
 			this.showDialog();
-			this.player.container.body!.maxSpeed = 0;
+			if (this.player.container.body && 'maxSpeed' in this.player.container.body) {
+				(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = 0;
+			}
+			// Disable player input capabilities during dialog
+			this.player.canMove = false;
+			this.player.canAtack = false;
+			this.player.canBlock = false;
 		} else if (this.isAnimatingText && this.checkButtonsPressed()) {
 			// Skips the typing animation.
 			this.setText(this.pagesMessage[this.currentPage], false);
@@ -497,7 +497,13 @@ export class LuminusDialogBox {
 			this.actionButton.visible = false;
 			this.isOverlapingChat = false;
 			this.showRandomChat = false;
-			this.player.container.body!.maxSpeed = this.player.speed;
+			if (this.player.container.body && 'maxSpeed' in this.player.container.body) {
+				(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = this.player.speed;
+			}
+			// Re-enable player input capabilities
+			this.player.canMove = true;
+			this.player.canAtack = true;
+			this.player.canBlock = true;
 			this.scene.events.emit('dialogComplete');
 		}
 	}
@@ -522,24 +528,16 @@ export class LuminusDialogBox {
 	 * Create text element for dialog
 	 */
 	createText(): void {
-		this.dialog.textMessage = this.scene.add.text(
-			this.margin * 2,
-			this.dialog.y + this.margin * 2.5,
-			'',
-			{
-				wordWrap: {
-					width: this.textWidth,
-				},
-				fontSize: this.fontSize,
-				fontFamily: this.fontFamily,
-				color: this.fontColor.rgba,
-			}
-		) as IDialogTextMessage;
+		this.dialog.textMessage = this.scene.add.text(this.margin * 2, this.dialog.y + this.margin * 2.5, '', {
+			wordWrap: {
+				width: this.textWidth,
+			},
+			fontSize: this.fontSize,
+			fontFamily: this.fontFamily,
+			color: this.fontColor.rgba,
+		}) as IDialogTextMessage;
 
-		this.dialog.textMessage
-			.setScrollFactor(0, 0)
-			.setDepth(99999999999999999)
-			.setOrigin(0, 0);
+		this.dialog.textMessage.setScrollFactor(0, 0).setDepth(99999999999999999).setOrigin(0, 0);
 	}
 
 	/**
@@ -583,6 +581,13 @@ export class LuminusDialogBox {
 		this.leftPortraitImage.alpha = 0.5;
 		this.rightNameText.alpha = 0.5;
 		this.rightPortraitImage.alpha = 0.5;
+	}
+
+	/**
+	 * Check if dialog is currently active and should block other inputs
+	 */
+	isDialogActive(): boolean {
+		return this.dialog?.visible === true || this.isOverlapingChat || this.showRandomChat;
 	}
 
 	/**

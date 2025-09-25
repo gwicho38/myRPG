@@ -155,6 +155,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 				rotate: { min: 0, max: 360 },
 				alpha: { start: 1, end: 0 },
 				followOffset: {
+					x: 0,
 					y: 10,
 				},
 			})

@@ -107,7 +107,6 @@ export const BatConfig = {
 	flee: 3,
 	hit: 5,
 	exp: 50,
-	hit: 5,
 	healthBarOffsetX: -6,
 	healthBarOffsetY: 16,
 	drops: [

@@ -2,19 +2,19 @@
 class PhaserJuice {
 	constructor() {}
 
-	shake(object, options) {
+	shake(_object, _options) {
 		return Promise.resolve();
 	}
 
-	flash(object, options) {
+	flash(_object, _options) {
 		return Promise.resolve();
 	}
 
-	pulse(object, options) {
+	pulse(_object, _options) {
 		return Promise.resolve();
 	}
 
-	jump(object, options) {
+	jump(_object, _options) {
 		return Promise.resolve();
 	}
 }

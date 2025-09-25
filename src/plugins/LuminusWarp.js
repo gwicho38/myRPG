@@ -103,15 +103,20 @@ export class LuminusWarp {
 				frequency: 300,
 				speed: 1,
 				// accelerationY: -1,
-				x: { min: -(warp.width/2), max: warp.width/2 },
-				y: { min: -(warp.height/2), max: warp.height/2 },
+				x: { min: -(warp.width / 2), max: warp.width / 2 },
+				y: { min: -(warp.height / 2), max: warp.height / 2 },
 				lifespan: { min: 500, max: 2000 },
 				scale: { start: 1.3, end: 0.8 },
 				alpha: { start: 1, end: 0.7 },
 				// radial: true,
 				rotation: 180,
 			};
-			const particles = this.scene.add.particles(warp.x + warp.width/2, warp.y + warp.height/2, 'particle_warp', this.particlesConfig);
+			const particles = this.scene.add.particles(
+				warp.x + warp.width / 2,
+				warp.y + warp.height / 2,
+				'particle_warp',
+				this.particlesConfig
+			);
 			this.scene.physics.add.existing(zone);
 			zone.body.immovable = true; // Prevents it from moving on collision.
 			zone.setOrigin(0, 0);

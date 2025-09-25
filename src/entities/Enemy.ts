@@ -82,7 +82,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		this.drops = enemyConfig.drops;
 		this.exp = enemyConfig.exp;
 
-		this.luminusAnimationManager = new LuminusAnimationManager(this);
+		this.luminusAnimationManager = new LuminusAnimationManager(this.scene, this);
 		this.luminusBattleManager = new LuminusBattleManager();
 
 		this.hitZone = this.scene.add.zone(0, 0, this.width, this.height);

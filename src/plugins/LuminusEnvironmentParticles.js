@@ -86,14 +86,14 @@ export class LuminusEnvironmentParticles {
 	makeClouds(width, height, originX, originY) {
 		// Sets the bounds of the particles so they do not leave the respective zone.
 		const deathZone = new Phaser.Geom.Rectangle(originX, originY, width, height);
-		this.particles = this.scene.add.particles(originX + width/2, originY + height/2, this.cloudParticleName, {
+		this.particles = this.scene.add.particles(originX + width / 2, originY + height / 2, this.cloudParticleName, {
 			angle: { min: 0, max: 360 },
 			deathZone: { source: deathZone, type: 'onLeave' },
 			frequency: 15000,
 			speedX: { min: 5, max: 15 },
 			speedY: { min: 5, max: 15 },
-			x: { min: -(width/2), max: width/2 },
-			y: { min: -(height/2), max: height/2 },
+			x: { min: -(width / 2), max: width / 2 },
+			y: { min: -(height / 2), max: height / 2 },
 			lifespan: 300000,
 			scale: 0.8,
 			alpha: { start: 0.5, end: 0.7 },
@@ -115,30 +115,30 @@ export class LuminusEnvironmentParticles {
 	makeDust(width, height, originX, originY) {
 		// Sets the bounds of the particles so they do not leave the respective zone.
 		const deathZone = new Phaser.Geom.Rectangle(originX, originY, width, height);
-		this.particles = this.scene.add.particles(originX + width/2, originY + height/2, this.dustParticleSprite, {
+		this.particles = this.scene.add.particles(originX + width / 2, originY + height / 2, this.dustParticleSprite, {
 			angle: { min: 0, max: 360 },
 			// emitZone: { source: offscreen },
 			deathZone: { source: deathZone, type: 'onLeave' },
 			frequency: 5,
 			speedX: { min: 5, max: 20 },
 			speedY: { min: 5, max: 20 },
-			x: { min: -(width/2), max: width/2 },
-			y: { min: -(height/2), max: height/2 },
+			x: { min: -(width / 2), max: width / 2 },
+			y: { min: -(height / 2), max: height / 2 },
 			lifespan: 10000,
 			scale: { start: 1.3, end: 0.7 },
 			alpha: { start: 0.4, end: 1 },
 			radial: true,
 			rotation: 180,
 		});
-		this.dustParticles = this.scene.add.particles(originX + width/2, originY + height/2, 'dust', {
+		this.dustParticles = this.scene.add.particles(originX + width / 2, originY + height / 2, 'dust', {
 			angle: { min: 0, max: 360 },
 			// emitZone: { source: offscreen },
 			deathZone: { source: deathZone, type: 'onLeave' },
 			frequency: 5,
 			speedX: { min: 5, max: 20 },
 			speedY: { min: 0, max: 20 },
-			x: { min: -(width/2), max: width/2 },
-			y: { min: -(height/2), max: height/2 },
+			x: { min: -(width / 2), max: width / 2 },
+			y: { min: -(height / 2), max: height / 2 },
 			lifespan: 7000,
 			scale: { start: 1.3, end: 0.7 },
 			alpha: { start: 0.4, end: 1 },

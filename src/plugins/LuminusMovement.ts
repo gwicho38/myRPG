@@ -25,7 +25,7 @@ export class LuminusMovement extends AnimationNames {
 	 * @param joystickScene Virtual joystick scene
 	 */
 	constructor(scene: Phaser.Scene, player: Player, joystickScene?: Phaser.Scene) {
-		super(null);
+		super();
 
 		/**
 		 * Scene Context.
@@ -289,7 +289,7 @@ export class LuminusMovement extends AnimationNames {
 					}
 
 					// GamePad movement
-					this.luminusGamePadController.move();
+					this.luminusGamePadController.sendInputs();
 				}
 
 				// Handle idle animation and particle effects

@@ -77,10 +77,7 @@ export class LuminusAnimationManager extends AnimationNames {
 		} else if (numAngle > -2.33 && numAngle < -0.66) {
 			// Up direction
 			this.entity.anims.play(animation + this.upAnimationSufix, true);
-		} else if (
-			(numAngle < -2.33 && numAngle >= -3.14) ||
-			(numAngle <= 3.14 && numAngle > 2.33)
-		) {
+		} else if ((numAngle < -2.33 && numAngle >= -3.14) || (numAngle <= 3.14 && numAngle > 2.33)) {
 			// Left direction
 			if (this.entity.anims.animationManager.exists(animation + this.leftAnimationSufix)) {
 				this.entity.anims.play(animation + this.leftAnimationSufix, true);
