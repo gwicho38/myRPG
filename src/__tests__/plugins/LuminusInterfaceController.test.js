@@ -36,6 +36,12 @@ describe('LuminusInterfaceController', () => {
 					add: jest.fn(),
 				})),
 			},
+			events: {
+				on: jest.fn(),
+				off: jest.fn(),
+				emit: jest.fn(),
+				once: jest.fn(),
+			},
 		};
 
 		mockElement = {

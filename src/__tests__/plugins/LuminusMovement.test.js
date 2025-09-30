@@ -70,6 +70,10 @@ describe('LuminusMovement', () => {
 			texture: { key: 'player' },
 			anims: {
 				play: jest.fn(),
+				currentAnim: { key: '' },
+				animationManager: {
+					exists: jest.fn(() => true),
+				},
 			},
 			setTint: jest.fn(),
 			clearTint: jest.fn(),
