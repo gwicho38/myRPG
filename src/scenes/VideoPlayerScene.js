@@ -155,7 +155,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 				.setDepth(50);
 
 			// Closes the Video Scene when the player clicks the Close button.
-			this.closeButton.on('pointerdown', (pointer) => {
+			this.closeButton.on('pointerdown', () => {
 				// Just to make sure everything works if thereis no player.
 				if (this.player && this.player.container.body) this.player.container.body.maxSpeed = this.player.speed;
 				this.luminusSoundManager.resumeAllAudio();
@@ -169,7 +169,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 	 * @param { number } width width
 	 * @param { number } height height
 	 */
-	changeSize(width, height) {
+	changeSize() {
 		if (this.cameras.main) {
 			this.closeButton.destroy();
 			this.createCloseButton();

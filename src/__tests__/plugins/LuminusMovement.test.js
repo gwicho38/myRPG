@@ -41,7 +41,7 @@ describe('LuminusMovement', () => {
 			map: {
 				worldToTileX: jest.fn((x) => Math.floor(x / 16)),
 				worldToTileY: jest.fn((y) => Math.floor(y / 16)),
-				getLayer: jest.fn((index) => ({ name: 'Ground' })),
+				getLayer: jest.fn((_index) => ({ name: 'Ground' })),
 				getTileAt: jest.fn(),
 			},
 		};

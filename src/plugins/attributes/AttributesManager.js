@@ -1,6 +1,4 @@
 import { ATTRIBUTES_CONST } from '../../consts/AttributesConst';
-import { Enemy } from '../../entities/Enemy';
-import { Player } from '../../entities/Player';
 import lodash from 'lodash';
 import { BUFF_TYPES } from '../../consts/DB_SEED/BuffTypes';
 
@@ -175,7 +173,7 @@ export class AttributesManager {
 		}
 	}
 
-	addAttribute(attribute, amount, lastRawAttributes) {
+	addAttribute(attribute, amount, _lastRawAttributes) {
 		if (this.entity.attributes.availableStatPoints >= amount) {
 			this.entity.attributes.rawAttributes[attribute] += amount;
 			this.entity.attributes.availableStatPoints -= amount;

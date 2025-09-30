@@ -123,7 +123,7 @@ export class MobileCheckScene extends Phaser.Scene {
 			completeDelay: 500,
 		});
 
-		this.input.once('pointerup', (pointer) => {
+		this.input.once('pointerup', () => {
 			this.scale.startFullscreen();
 		});
 

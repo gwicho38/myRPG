@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { ENTITIES } from '../consts/Entities';
 
 /**
@@ -127,12 +126,12 @@ export class LuminusEntityTextDisplay {
 
 		damageSprite.setScale(0.4);
 
-		const tween = this.scene.add.tween({
+		this.scene.add.tween({
 			targets: [damageSprite, criticalSprite],
 			y: position.y - this.fontVerticalMovement,
 			alpha: 0,
 			duration: this.verticalMovementDuration,
-			onComplete: (t) => {
+			onComplete: (_t) => {
 				damageSprite.destroy();
 				if (criticalSprite) criticalSprite.destroy();
 			},

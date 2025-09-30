@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 /**
  * @class
  */
@@ -96,8 +94,6 @@ export class LuminusWarp {
 			// );
 			const zone = this.scene.add.zone(warp.x, warp.y, warp.width, warp.height);
 
-			const emiterZone = new Phaser.Geom.Rectangle(warp.x, warp.y, warp.width, warp.height);
-
 			this.particlesConfig = {
 				angle: -90,
 				frequency: 300,
@@ -111,7 +107,7 @@ export class LuminusWarp {
 				// radial: true,
 				rotation: 180,
 			};
-			const particles = this.scene.add.particles(
+			this.scene.add.particles(
 				warp.x + warp.width / 2,
 				warp.y + warp.height / 2,
 				'particle_warp',
@@ -123,16 +119,16 @@ export class LuminusWarp {
 			warp_points.push({ ...zone, warp });
 		});
 
-		this.scene.cameras.main.on('camerafadeoutstart', (fade) => {
+		this.scene.cameras.main.on('camerafadeoutstart', (_fade) => {
 			// Stop moving.
 			this.player.container.body.maxSpeed = 0;
 		});
-		this.scene.cameras.main.on('camerafadeincomplete', (fade) => {
+		this.scene.cameras.main.on('camerafadeincomplete', (_fade) => {
 			this.player.container.body.maxSpeed = this.maxSpeed;
 		});
 
 		// Sets the collision between the player and the waro points.
-		this.scene.physics.add.collider(warp_points, this.player.container, (warp_point, player) => {
+		this.scene.physics.add.collider(warp_points, this.player.container, (warp_point, _player) => {
 			const dest = destinations.find(
 				(d) => d.id === warp_point.warp.properties.find((f) => f.name === this.propertyWarpName).value
 			);

@@ -1,6 +1,5 @@
 import Phaser from 'phaser';
 import { AnimationNames } from '../consts/AnimationNames';
-import { PlayerConfig } from '../consts/player/Player';
 import { Player } from '../entities/Player';
 
 /**
@@ -65,8 +64,6 @@ export class LuminusAnimationManager extends AnimationNames {
 	 */
 	animateWithAngle(animation: string, angle: number): void {
 		if (!this.entity.anims) return;
-
-		const texture = this.entity.texture.key;
 		const formattedAngle = parseFloat(angle.toString()).toFixed(2);
 		const numAngle = parseFloat(formattedAngle);
 

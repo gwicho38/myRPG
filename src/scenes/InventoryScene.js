@@ -1,9 +1,7 @@
 import Phaser from 'phaser';
-import { NineSlice } from 'phaser3-nineslice';
 import { InfoBox } from '../components/InfoBox';
 import { PanelComponent } from '../components/PanelComponent';
 import { Item } from '../entities/Item';
-import { Player } from '../entities/Player';
 import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
 import { LuminusUtils } from '../utils/LuminusUtils';
 export const InventorySceneName = 'InventoryScene';
@@ -207,11 +205,11 @@ export class InventoryScene extends Phaser.Scene {
 			this.setGamepadTextures();
 		}
 
-		this.input.gamepad.on('connected', (pad) => {
+		this.input.gamepad.on('connected', () => {
 			this.registerGamepad();
 			this.setGamepadTextures();
 		});
-		this.input.gamepad.on('disconnected', (pad) => {
+		this.input.gamepad.on('disconnected', () => {
 			this.backButtonLegend.setTexture(this.backButtonDesktopSpriteName);
 		});
 
@@ -284,7 +282,7 @@ export class InventoryScene extends Phaser.Scene {
 	createCloseButton() {
 		this.closeButton = this.panelComponent.closeButton;
 
-		this.closeButton.on('pointerup', (pointer) => {
+		this.closeButton.on('pointerup', () => {
 			this.stopScene();
 		});
 
@@ -473,14 +471,13 @@ export class InventoryScene extends Phaser.Scene {
 			const slot = this.slots[slotIndex];
 			slotIndex++;
 			if (this.player.items[i] && this.player.items[i].id && slot) {
-				let text;
 				const item = new Item(
 					this,
 					slot.x + slot.width / 2,
 					slot.y + slot.height / 2 - 7,
 					this.player.items[i].id
 				);
-				text = this.add
+				const text = this.add
 					.text(item.x, item.y + 15 + (item.height * item.scaleY) / 2, this.player.items[i].count)
 					.setOrigin(0.5, 0.5);
 				// Sets the slot item;
@@ -490,12 +487,12 @@ export class InventoryScene extends Phaser.Scene {
 				slot.playerItemIndex = i;
 				if (item.stackable) {
 					slot.setInteractive();
-					slot.on('pointerover', (pointer) => {
+					slot.on('pointerover', () => {
 						if (!this.helpPanel && !this.input.gamepad.pad1) {
 							this.createInfoBox(slot);
 						}
 					});
-					slot.on('pointerout', (pointer) => {
+					slot.on('pointerout', () => {
 						if (this.helpPanel && !this.input.gamepad.pad1) {
 							this.destroyHelpPanel();
 						}
@@ -602,7 +599,6 @@ export class InventoryScene extends Phaser.Scene {
 
 	useItem(slot) {
 		if (slot && slot.item) {
-			const item = slot.item;
 			const text = slot.text;
 			const i = slot.playerItemIndex;
 			slot.item.consume(this.player);
@@ -647,7 +643,7 @@ export class InventoryScene extends Phaser.Scene {
 	 * Resizes everything
 	 * @param { Size } size the new size.
 	 */
-	resizeAll(size) {
+	resizeAll() {
 		if (this.cameras && this.cameras.main) {
 			this.inventoryBackground.setPosition(
 				this.cameras.main.midPoint.x - 512 / 2,

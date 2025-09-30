@@ -4,7 +4,6 @@ import { LuminusAnimationManager } from '../plugins/LuminusAnimationManager';
 import { LuminusHealthBar } from '../plugins/LuminusHealthBar';
 import { BaseEntity, IBaseEntity } from './BaseEntity';
 import { EntityAttributes, IEntityAttributes } from './EntityAttributes';
-import { Player } from './Player';
 import uniqid from 'uniqid';
 import { LuminusBattleManager } from '../plugins/LuminusBattleManager';
 import { ENTITIES } from '../consts/Entities';
@@ -140,7 +139,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		for (let target of enemiesInRange) {
 			if (target && target.gameObject && (target.gameObject as any).entityName === ENTITIES.Player) {
 				let overlaps = false;
-				this.scene.physics.overlap((target.gameObject as any).hitZone, this, (t: any, enemy: any) => {
+				this.scene.physics.overlap((target.gameObject as any).hitZone, this, (_t: any, _enemy: any) => {
 					overlaps = true;
 					this.stopMovement();
 					if (this.canAtack) this.luminusBattleManager.atack(this);

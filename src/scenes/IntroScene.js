@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { LuminusUtils } from '../utils/LuminusUtils';
 
 /**
  * The Introduction Scene.

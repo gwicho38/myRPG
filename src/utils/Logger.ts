@@ -232,7 +232,7 @@ class Logger {
 	}
 
 	// Remote logging (stub - implement based on your backend)
-	private async sendToRemote(entry: LogEntry): Promise<void> {
+	private async sendToRemote(_entry: LogEntry): Promise<void> {
 		// Implement remote logging endpoint
 		// Example:
 		// await fetch('/api/logs', {

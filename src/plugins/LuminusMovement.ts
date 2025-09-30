@@ -208,7 +208,6 @@ export class LuminusMovement extends AnimationNames {
 			this.updateRunningState();
 
 			if (!this.player.isAtacking) {
-				const texture = this.player.texture.key;
 				if (this.scene.input.isActive) {
 					// Stop any previous movement from the last frame
 

@@ -46,7 +46,7 @@ const config: Phaser.Types.Core.GameConfig = {
 		transparent: false,
 	},
 	callbacks: {
-		preBoot: function (game: Phaser.Game) {
+		preBoot: function (_game: Phaser.Game) {
 			// Set willReadFrequently for Phaser's internal canvas contexts
 			const originalGetContext = HTMLCanvasElement.prototype.getContext;
 			HTMLCanvasElement.prototype.getContext = function (type: string, attributes?: any): any {

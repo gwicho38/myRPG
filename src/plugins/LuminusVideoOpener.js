@@ -1,5 +1,3 @@
-import Phaser from 'phaser';
-
 /**
  * Class responsible to open a video.
  * @class

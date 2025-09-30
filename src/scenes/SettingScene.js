@@ -1,13 +1,7 @@
 import Phaser from 'phaser';
 import { LuminusSoundManager } from '../plugins/LuminusSoundManager';
-import { NineSlice } from 'phaser3-nineslice';
 import { PanelComponent } from '../components/PanelComponent';
 
-/**
- * @constant
- * @default
- */
-const COLOR_PRIMARY = 0x4e342e;
 /**
  * @constant
  * @default
@@ -164,11 +158,11 @@ export class SettingScene extends Phaser.Scene {
 
 		this.closeButton = this.panelComponent.closeButton;
 
-		this.closeButton.on('pointerdown', (pointer) => {
+		this.closeButton.on('pointerdown', () => {
 			this.scene.stop();
 		});
 
-		this.scale.on('resize', (size) => {
+		this.scale.on('resize', () => {
 			if (this.cameras && this.cameras.main) {
 				this.dialog.setSize(
 					this.cameras.main.width - this.margin * 2,

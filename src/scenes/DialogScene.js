@@ -41,7 +41,7 @@ export class DialogScene extends Phaser.Scene {
 			}
 		});
 
-		this.input.on('pointerdown', (pointer) => {
+		this.input.on('pointerdown', () => {
 			// console.log(this.cameras.main);
 		});
 	}

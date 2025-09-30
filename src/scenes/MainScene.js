@@ -3,11 +3,9 @@ import { LuminusWarp } from '../plugins/LuminusWarp';
 import { LuminusObjectMarker } from '../plugins/LuminusObjectMarker';
 import AnimatedTiles from '../plugins/AnimatedTiles';
 import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentParticles';
-import { LuminusOutlineEffect } from '../plugins/LuminusOutlineEffect';
 import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
-import { Item } from '../entities/Item';
 
 export class MainScene extends Phaser.Scene {
 	constructor() {
@@ -115,13 +113,12 @@ export class MainScene extends Phaser.Scene {
 			// Debug: Manual auto-save trigger with F6
 			if (event.key === 'F6') {
 				event.preventDefault();
-				console.log('Manual auto-save triggered');
 				this.saveManager.createCheckpoint();
 			}
 		});
 	}
 
-	update(time, delta) {
+	update() {
 		// this.outlineEffect.removeEffect(this.player.container);
 		// this.physics.overlap(
 		//     this.player,

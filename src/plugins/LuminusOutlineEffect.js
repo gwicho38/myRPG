@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import OutlinePostFx from 'phaser3-rex-plugins/plugins/outlinepipeline.js';
 /**
  * @class

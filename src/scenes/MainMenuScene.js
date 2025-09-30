@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 import intro_video from '../assets/video/intro_video_converted_FULLHD.mp4';
-import { NineSlice } from 'phaser3-nineslice';
 import { PanelComponent } from '../components/PanelComponent';
 
 export class MainMenuScene extends Phaser.Scene {
@@ -89,7 +88,7 @@ export class MainMenuScene extends Phaser.Scene {
 			.setOrigin(0.5, 0.5)
 			.setInteractive();
 
-		this.gameStartText.on('pointerdown', (pointer) => {
+		this.gameStartText.on('pointerdown', () => {
 			this.startGame();
 		});
 
@@ -104,7 +103,7 @@ export class MainMenuScene extends Phaser.Scene {
 			.setOrigin(0.5, 0.5)
 			.setInteractive();
 
-		this.loadGameText.on('pointerdown', (pointer) => {
+		this.loadGameText.on('pointerdown', () => {
 			if (this.saveManager.hasSaveData()) {
 				this.loadGame();
 			}
@@ -118,8 +117,7 @@ export class MainMenuScene extends Phaser.Scene {
 			.setOrigin(0.5, 0.5)
 			.setInteractive();
 
-		this.creditsText.on('pointerdown', (pointer, object) => {
-			console.log(object);
+		this.creditsText.on('pointerdown', () => {
 			this.showCredits();
 		});
 
@@ -227,7 +225,7 @@ Forest - Intro Scene Music by "syncopika"
 		this.luminusInterfaceControler.interfaceElements[0][0].push(closeAction);
 		this.luminusInterfaceControler.updateHighlightedElement(closeAction.element);
 
-		this.closeButton.on('pointerup', (pointer) => {
+		this.closeButton.on('pointerup', () => {
 			this.closeCredits();
 		});
 	}
@@ -247,7 +245,7 @@ Forest - Intro Scene Music by "syncopika"
 		this.cameras.main.fadeOut(1000, 0, 0, 0);
 		const startSound = this.sound.add('start_game');
 		startSound.play();
-		this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+		this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
 			this.scene.start('MobileCheckScene');
 			this.scene.stop();
 		});
@@ -264,7 +262,7 @@ Forest - Intro Scene Music by "syncopika"
 			this.cameras.main.fadeOut(1000, 0, 0, 0);
 			const startSound = this.sound.add('start_game');
 			startSound.play();
-			this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+			this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
 				this.scene.start(saveData.scene);
 				this.scene.stop();
 

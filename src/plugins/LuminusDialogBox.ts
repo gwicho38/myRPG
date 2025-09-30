@@ -516,8 +516,6 @@ export class LuminusDialogBox {
 		this.dialog.visible = true;
 		this.canShowDialog = false;
 
-		const maxLettersPage = Math.floor(this.textWidth / this.fontWidth) * this.dialogMaxLines;
-
 		// Create pages if necessary
 		if (createText) this.createText();
 		// Animate the text
