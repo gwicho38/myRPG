@@ -25,6 +25,17 @@ const Phaser = {
 				mouse: {
 					disableContextMenu: jest.fn(),
 				},
+				gamepad: {
+					pad1: {
+						id: 'mock-gamepad',
+						index: 0,
+						buttons: [],
+						axes: [],
+						connected: true,
+					},
+					on: jest.fn(),
+					off: jest.fn(),
+				},
 				on: jest.fn(),
 				isActive: true,
 				addPointer: jest.fn(),
@@ -67,6 +78,31 @@ const Phaser = {
 				constructor() {
 					this.x = 0;
 					this.y = 0;
+					this.anims = {
+						play: jest.fn(),
+						currentAnim: { key: '' },
+						animationManager: {
+							exists: jest.fn(() => true),
+						},
+					};
+					this.body = {
+						velocity: { x: 0, y: 0 },
+						maxSpeed: 100,
+					};
+					this.flipX = false;
+					this.visible = true;
+				}
+				setScrollFactor() {
+					return this;
+				}
+				setDepth() {
+					return this;
+				}
+				setOrigin() {
+					return this;
+				}
+				addToUpdateList() {
+					return this;
 				}
 			},
 		},
@@ -77,6 +113,90 @@ const Phaser = {
 	GameObjects: {
 		Components: {
 			TransformMatrix: class TransformMatrix {},
+		},
+		Sprite: class Sprite {
+			constructor(scene, x, y, texture) {
+				this.scene = scene;
+				this.x = x || 0;
+				this.y = y || 0;
+				this.texture = { key: texture };
+				this.anims = {
+					play: jest.fn(),
+					currentAnim: { key: '' },
+					animationManager: {
+						exists: jest.fn(() => true),
+					},
+				};
+				this.flipX = false;
+				this.visible = true;
+			}
+			setScrollFactor() {
+				return this;
+			}
+			setDepth() {
+				return this;
+			}
+			setOrigin() {
+				return this;
+			}
+			addToUpdateList() {
+				return this;
+			}
+		},
+		Container: class Container {
+			constructor(scene, x, y, children) {
+				this.scene = scene;
+				this.x = x || 0;
+				this.y = y || 0;
+				this.children = children || [];
+				this.body = {
+					velocity: { x: 0, y: 0 },
+					maxSpeed: 100,
+				};
+			}
+			add() {
+				return this;
+			}
+			remove() {
+				return this;
+			}
+		},
+		Image: class Image {
+			constructor(scene, x, y, texture) {
+				this.scene = scene;
+				this.x = x || 0;
+				this.y = y || 0;
+				this.texture = texture;
+				this.visible = true;
+			}
+			setScrollFactor() {
+				return this;
+			}
+			setDepth() {
+				return this;
+			}
+			setOrigin() {
+				return this;
+			}
+		},
+		Text: class Text {
+			constructor(scene, x, y, text, style) {
+				this.scene = scene;
+				this.x = x || 0;
+				this.y = y || 0;
+				this.text = text || '';
+				this.style = style || {};
+				this.visible = true;
+			}
+			setScrollFactor() {
+				return this;
+			}
+			setDepth() {
+				return this;
+			}
+			setOrigin() {
+				return this;
+			}
 		},
 	},
 	Math: {

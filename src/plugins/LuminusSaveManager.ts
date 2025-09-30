@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
+import { logger, GameLogCategory } from '../utils/Logger';
 
 // Interface for save data structure
 export interface ISaveData {

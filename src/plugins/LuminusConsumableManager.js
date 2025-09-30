@@ -85,7 +85,7 @@ export class LuminusConsumableManager {
 			case 'sp':
 				console.log(`Recover ${action[2]} SP`);
 				break;
-			case 'atk':
+			case 'atk': {
 				/** @type {ConsumableBonus} */
 				const consumableBonus = player.attributes.bonus.consumable.find((consumableItem) => {
 					return consumableItem.uniqueId === item.buffType.id;
@@ -116,6 +116,7 @@ export class LuminusConsumableManager {
 				}
 
 				break;
+			}
 
 			default:
 				break;

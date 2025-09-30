@@ -103,8 +103,8 @@ export class LuminusFogWarManager {
 		this.renderTexture.setTint(0x0a2948);
 		this.noVisionRT.setTint(0x0a2948);
 
-		this.renderTexture.depth = 99999999999999999999999999;
-		this.noVisionRT.depth = 99999999999999999999999999;
+		this.renderTexture.depth = 999999;
+		this.noVisionRT.depth = 999999;
 
 		this.imageMask = this.scene.add.image(this.player.container.x, this.player.container.y, this.maskTextureName);
 		this.imageMask.scale = 1.5;
