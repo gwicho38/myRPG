@@ -61,6 +61,25 @@ const Phaser = {
 			this.tweens = {
 				add: jest.fn(),
 			};
+			this.plugins = {
+				get: jest.fn(() => ({
+					add: jest.fn(),
+				})),
+			};
+			this.registry = {
+				get: jest.fn(),
+				set: jest.fn(),
+			};
+			this.data = {
+				get: jest.fn(),
+				set: jest.fn(),
+			};
+			this.physics = {
+				world: {
+					on: jest.fn(),
+					off: jest.fn(),
+				},
+			};
 		}
 	},
 	Input: {
