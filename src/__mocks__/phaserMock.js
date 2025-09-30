@@ -32,6 +32,9 @@ const Phaser = {
 						buttons: [],
 						axes: [],
 						connected: true,
+						on: jest.fn(),
+						off: jest.fn(),
+						once: jest.fn(),
 					},
 					on: jest.fn(),
 					off: jest.fn(),
@@ -80,6 +83,22 @@ const Phaser = {
 					off: jest.fn(),
 				},
 			};
+			this.events = {
+				on: jest.fn(),
+				off: jest.fn(),
+				emit: jest.fn(),
+				once: jest.fn(),
+			};
+			this.sound = {
+				add: jest.fn(() => ({
+					volume: 0,
+					play: jest.fn(),
+					stop: jest.fn(),
+					setVolume: jest.fn(),
+				})),
+				play: jest.fn(),
+				stopAll: jest.fn(),
+			};
 		}
 	},
 	Input: {
@@ -94,9 +113,11 @@ const Phaser = {
 	Physics: {
 		Arcade: {
 			Sprite: class Sprite {
-				constructor() {
-					this.x = 0;
-					this.y = 0;
+				constructor(scene, x, y, texture) {
+					this.scene = scene;
+					this.x = x || 0;
+					this.y = y || 0;
+					this.texture = { key: texture };
 					this.anims = {
 						play: jest.fn(),
 						currentAnim: { key: '' },
@@ -227,8 +248,14 @@ const Phaser = {
 		},
 	},
 	Display: {
-		Color: {
-			IntegerToRGB: jest.fn(),
+		Color: class Color {
+			constructor(r, g, b, a) {
+				this.r = r || 0;
+				this.g = g || 0;
+				this.b = b || 0;
+				this.a = a !== undefined ? a : 1;
+			}
+			static IntegerToRGB = jest.fn();
 		},
 	},
 	AUTO: 0,

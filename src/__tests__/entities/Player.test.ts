@@ -9,11 +9,72 @@ const mockScene = {
 				setDepth: jest.fn(() => ({ on: false })),
 			})),
 		})),
+		zone: jest.fn(() => ({
+			setOrigin: jest.fn(),
+			setPosition: jest.fn(),
+		})),
+		container: jest.fn(() => ({
+			setPosition: jest.fn(),
+			add: jest.fn(),
+		})),
 	},
 	physics: {
 		add: {
 			existing: jest.fn(),
 		},
+	},
+	events: {
+		on: jest.fn(),
+		off: jest.fn(),
+		emit: jest.fn(),
+		once: jest.fn(),
+	},
+	input: {
+		keyboard: {
+			createCursorKeys: jest.fn(() => ({
+				left: { isDown: false },
+				right: { isDown: false },
+				up: { isDown: false },
+				down: { isDown: false },
+			})),
+			addKeys: jest.fn(),
+			addKey: jest.fn(() => ({ isDown: false })),
+			on: jest.fn(),
+		},
+		mouse: {
+			disableContextMenu: jest.fn(),
+		},
+		gamepad: {
+			pad1: {
+				id: 'mock-gamepad',
+				index: 0,
+				buttons: [],
+				axes: [],
+				connected: true,
+			},
+			on: jest.fn(),
+			off: jest.fn(),
+		},
+		on: jest.fn(),
+	},
+	map: {
+		worldToTileX: jest.fn(),
+		worldToTileY: jest.fn(),
+	},
+	sys: {
+		game: {
+			device: {
+				os: {
+					desktop: true,
+				},
+			},
+		},
+	},
+	scene: {
+		launch: jest.fn(),
+		stop: jest.fn(),
+		start: jest.fn(),
+		get: jest.fn(),
 	},
 } as any;
 
