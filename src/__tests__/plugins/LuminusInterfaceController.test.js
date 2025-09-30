@@ -11,6 +11,17 @@ describe('LuminusInterfaceController', () => {
 				keyboard: {
 					on: jest.fn(),
 				},
+				gamepad: {
+					pad1: {
+						id: 'mock-gamepad',
+						index: 0,
+						buttons: [],
+						axes: [],
+						connected: true,
+					},
+					on: jest.fn(),
+					off: jest.fn(),
+				},
 			},
 			add: {
 				image: jest.fn().mockReturnValue({
@@ -19,6 +30,11 @@ describe('LuminusInterfaceController', () => {
 					setScale: jest.fn(),
 					setPosition: jest.fn(),
 				}),
+			},
+			plugins: {
+				get: jest.fn(() => ({
+					add: jest.fn(),
+				})),
 			},
 		};
 
