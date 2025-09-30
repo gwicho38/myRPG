@@ -6,7 +6,6 @@
 
 import CONST from './const';
 import EventEmitter from 'eventemitter3';
-import { VirtualJoystick } from './VirtualJoystickPlugin';
 
 /**
  * A `BaseStick` is the base virtual joystick class that all other types of stick extend from.

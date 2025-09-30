@@ -46,7 +46,7 @@ const config = {
 		willReadFrequently: true,
 	},
 	callbacks: {
-		preBoot: function (game) {
+		preBoot: function (_game) {
 			// Set willReadFrequently for Phaser's internal canvas contexts
 			const originalGetContext = HTMLCanvasElement.prototype.getContext;
 			HTMLCanvasElement.prototype.getContext = function (type, attributes) {
@@ -130,4 +130,6 @@ const config = {
 	},
 };
 
+// Game instance is created and automatically starts running
+// eslint-disable-next-line no-unused-vars
 const game = new Phaser.Game(config);

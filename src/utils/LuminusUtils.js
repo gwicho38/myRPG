@@ -30,7 +30,7 @@ export class LuminusUtils {
 	 * @param { any } args
 	 * @returns { function }
 	 */
-	static executeFunctionByName(functionName, context, ...funcArgs) {
+	static executeFunctionByName(functionName, context, ..._funcArgs) {
 		if (functionName) {
 			const args = Array.prototype.slice.call(arguments, 2);
 			const namespaces = functionName.split('.');

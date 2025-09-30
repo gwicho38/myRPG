@@ -1,6 +1,5 @@
 import { isNumber } from 'lodash';
 import { CHATS } from '../consts/DB_SEED/Chats';
-import { Player } from '../entities/Player';
 import { LuminusDialogBox } from './LuminusDialogBox';
 
 /**
@@ -112,7 +111,7 @@ export class LuminusTiledInfoBox {
 				this.luminusDialogBox.chat = zone.chat;
 				this.player.canAtack = false;
 			},
-			(d) => {
+			(_d) => {
 				return this.luminusDialogBox.canShowDialog;
 			}
 		);

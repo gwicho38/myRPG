@@ -11,7 +11,7 @@ export class ButtonPlus extends Phaser.GameObjects.Sprite {
 
 		this.scene.add.existing(this);
 		this.setInteractive();
-		this.on('pointerdown', (pointer) => {
+		this.on('pointerdown', (_pointer) => {
 			LuminusUtils.executeFunctionByName(action, scene, args);
 			this.play({ key: 'touch_button_plus' }).once(
 				Phaser.Animations.Events.ANIMATION_COMPLETE,

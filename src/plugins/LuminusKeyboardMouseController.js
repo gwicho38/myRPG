@@ -1,4 +1,3 @@
-import Phaser from 'phaser';
 import { AttributeSceneName } from '../scenes/AttributeScene';
 import { InventorySceneName } from '../scenes/InventoryScene';
 import { SceneToggleWatcher } from '../scenes/watchers/SceneToggleWatcher';

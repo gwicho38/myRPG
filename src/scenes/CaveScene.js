@@ -6,7 +6,6 @@ import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentPartic
 import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
-import { Item } from '../entities/Item';
 
 export class CaveScene extends Phaser.Scene {
 	constructor() {
@@ -96,7 +95,7 @@ export class CaveScene extends Phaser.Scene {
 		this.themeSound.stop();
 	}
 
-	update(time, delta) {
+	update() {
 		// Cave-specific update logic can be added here
 	}
 }

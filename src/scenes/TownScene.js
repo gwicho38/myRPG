@@ -6,7 +6,6 @@ import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentPartic
 import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
-import { Item } from '../entities/Item';
 
 export class TownScene extends Phaser.Scene {
 	constructor() {
@@ -96,7 +95,7 @@ export class TownScene extends Phaser.Scene {
 		this.themeSound.stop();
 	}
 
-	update(time, delta) {
+	update() {
 		// Town-specific update logic can be added here
 	}
 }

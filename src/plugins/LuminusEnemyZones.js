@@ -1,4 +1,4 @@
-import Phaser, { GameObjects } from 'phaser';
+import Phaser from 'phaser';
 import { AnimationNames } from '../consts/AnimationNames';
 import { EnemiesSeedConfig } from '../consts/enemies/EnemiesSeedConfig';
 import { Enemy } from '../entities/Enemy';
@@ -87,7 +87,6 @@ export class LuminusEnemyZones {
 					const id = infoObj.properties.find((f) => f.name === this.idPropertyName);
 
 					const enemyConfig = EnemiesSeedConfig.find((e) => e.id === parseInt(id.value));
-					console.log(enemyConfig);
 
 					if (enemyConfig) {
 						texture = enemyConfig.texture;

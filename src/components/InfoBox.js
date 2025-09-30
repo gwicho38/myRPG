@@ -1,5 +1,3 @@
-import { NineSlice } from 'phaser3-nineslice';
-
 export class InfoBox {
 	constructor(scene, x, y, width, height, config = { name: '', description: '' }) {
 		/**

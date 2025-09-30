@@ -146,7 +146,7 @@ export class LuminusDungeonGenerator {
 			//weightedIndexes, tileX, tileY, width, height
 
 			// Fill the floor with mostly clean tiles
-			const random = this.groundLayer.weightedRandomize(TILES.FLOOR, x + 1, y + 1, width - 2, height - 2);
+			this.groundLayer.weightedRandomize(TILES.FLOOR, x + 1, y + 1, width - 2, height - 2);
 
 			// Place the room corners tiles
 			this.groundLayer.putTileAt(TILES.WALL.TOP_LEFT, left, top);

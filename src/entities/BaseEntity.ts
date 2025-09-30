@@ -1,5 +1,3 @@
-import uniqid from 'uniqid';
-
 /**
  * Base entity interface for all game entities
  */

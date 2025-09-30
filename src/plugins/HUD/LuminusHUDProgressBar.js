@@ -1,5 +1,3 @@
-import { Player } from '../../entities/Player';
-
 /**
  * This class is responsible for Creating gthe HP and SP Bars on the HUD system.
  * @class

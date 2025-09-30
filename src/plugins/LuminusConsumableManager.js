@@ -1,5 +1,3 @@
-import { Item } from '../entities/Item';
-import { Player } from '../entities/Player';
 import { ConsumableBonus } from '../models/ConsumableBonus';
 import { LuminusEntityTextDisplay } from './LuminusEntityTextDisplay';
 
@@ -22,7 +20,6 @@ export class LuminusConsumableManager {
 				const scriptActions = script.split(' ');
 				switch (scriptActions[0]) {
 					case 'rec':
-						// console.log('Recover');
 						this.recover(item, scriptActions, player);
 						break;
 					case 'buff':
@@ -30,7 +27,7 @@ export class LuminusConsumableManager {
 						break;
 
 					default:
-						console.log('This is not a usable item.');
+						console.warn('This is not a usable item.');
 						break;
 				}
 			});
@@ -50,7 +47,6 @@ export class LuminusConsumableManager {
 		// TODO - Create an animation to display the usage of a consumable.
 		switch (action[1]) {
 			case 'hp':
-				// console.log(`Recover ${action[2]} HP`);
 				player.attributes.health = Math.min(
 					player.attributes.baseHealth,
 					(player.attributes.health += parseInt(action[2]))
@@ -59,10 +55,12 @@ export class LuminusConsumableManager {
 				if (player.luminusHUDProgressBar) player.luminusHUDProgressBar.updateHealth(player.attributes.health);
 				this.luminusEntityTextDisplay.displayDamage(action[2], player, false, true);
 				player.scene.sound.play(item.useSfx);
-				console.log(`Recover ${action[2]} HP`);
 				break;
 			case 'sp':
-				console.log(`Recover ${action[2]} SP`);
+				// SP recovery not yet implemented
+				break;
+			case 'atk':
+				// ATK bonus not yet implemented in recovery
 				break;
 
 			default:
@@ -83,7 +81,7 @@ export class LuminusConsumableManager {
 
 				break;
 			case 'sp':
-				console.log(`Recover ${action[2]} SP`);
+				// SP buff not yet implemented
 				break;
 			case 'atk': {
 				/** @type {ConsumableBonus} */
@@ -92,7 +90,6 @@ export class LuminusConsumableManager {
 				});
 				if (consumableBonus) {
 					player.scene.sound.play(item.useSfx);
-					console.log(`Increased ${action[2]} ATK for ${action[3]} seconds`);
 					consumableBonus.timer.reset({
 						callbackScope: this,
 						delay: consumableBonus.time * 1000, // Time to restore the attributes to it's default value.
@@ -105,7 +102,6 @@ export class LuminusConsumableManager {
 					this.changeStats(player, bonusStatus);
 
 					player.scene.sound.play(item.useSfx);
-					console.log(`Increased ${action[2]} ATK for ${action[3]} seconds`);
 					bonusStatus.timer = player.scene.time.addEvent({
 						callbackScope: this,
 						delay: bonusStatus.time * 1000, // Time to restore the attributes to it's default value.

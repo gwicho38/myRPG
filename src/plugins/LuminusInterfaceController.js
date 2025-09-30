@@ -100,7 +100,7 @@ export class LuminusInterfaceController {
 		//     }
 		// );
 
-		this.scene.input.gamepad.on('connected', (pad) => {
+		this.scene.input.gamepad.on('connected', (_pad) => {
 			this.pad = this.scene.input.gamepad.pad1;
 			this.setGamepadRules();
 		});
@@ -146,7 +146,7 @@ export class LuminusInterfaceController {
 	setGamepadRules() {
 		if (this.pad) {
 			let difference = 0;
-			this.scene.events.on('update', (time, delta) => {
+			this.scene.events.on('update', (time, _delta) => {
 				if (difference === 0 || Math.abs(time - difference) > 75) {
 					difference = time;
 					if (this.pad.axes[0].getValue() === 1) {
@@ -160,7 +160,7 @@ export class LuminusInterfaceController {
 					}
 				}
 			});
-			this.pad.on('down', (pad) => {
+			this.pad.on('down', (_pad) => {
 				if (this.pad.down) {
 					this.moveDown();
 				}
@@ -466,7 +466,7 @@ export class LuminusInterfaceController {
 	 * @param { any } args
 	 * @returns { function }
 	 */
-	executeFunctionByName(functionName, context, args) {
+	executeFunctionByName(functionName, context, _args) {
 		if (functionName) {
 			const functionArgs = Array.prototype.slice.call(arguments, 2);
 			const namespaces = functionName.split('.');

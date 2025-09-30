@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import joystick from '../plugins/VirtualJoystick/VirtualJoystickPlugin';
 import joystick_atlas_image from '../assets/sprites/joystick-0.png';
 import joystick_json from '../assets/sprites/joystick.json';
-import { Player } from '../entities/Player';
 import { LuminusBattleManager } from '../plugins/LuminusBattleManager';
 
 /**
@@ -153,7 +152,7 @@ export class JoystickScene extends Phaser.Scene {
 					this.stick.isDown = false;
 				}
 			});
-			this.input.on('pointerup', (pointer) => {
+			this.input.on('pointerup', () => {
 				if (!this.phantomStick.isDown) {
 					const position_resized =
 						Math.sqrt(this.cameras.main.width ** 2 + this.cameras.main.height ** 2) *
@@ -192,7 +191,7 @@ export class JoystickScene extends Phaser.Scene {
 	 */
 	createButtonActions() {
 		if (this.buttonA) {
-			this.buttonA.on('down', (buttonA) => {
+			this.buttonA.on('down', () => {
 				if (this.player && this.player.active && this.player.canAtack && !this.player.isAtacking) {
 					this.luminusBattleManager.atack(this.player);
 				}

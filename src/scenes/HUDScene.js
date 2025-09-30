@@ -1,10 +1,6 @@
 import Phaser from 'phaser';
-import { ButtonMinus } from '../components/UI/ButtonMinus';
-import { ButtonPlus } from '../components/UI/ButtonPlus';
 import { IconNamesConst } from '../consts/UI/IconNames';
-import { Player } from '../entities/Player';
 import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
-import { LuminusHealthBar } from '../plugins/LuminusHealthBar';
 import { LuminusUtils } from '../utils/LuminusUtils';
 import { AttributeSceneName } from './AttributeScene';
 import { InventorySceneName } from './InventoryScene';
@@ -254,12 +250,12 @@ export class HUDScene extends Phaser.Scene {
 			)
 			.setInteractive();
 
-		this.maximize.on('pointerup', (pointer) => {
+		this.maximize.on('pointerup', () => {
 			this.scale.toggleFullscreen();
 		});
 
 		// Launches Attribute Scene Scene.
-		this.attributesBook.on('pointerup', (pointer) => {
+		this.attributesBook.on('pointerup', () => {
 			if (!this.scene.isVisible(this.attributeSceneName)) {
 				this.scene.launch(this.attributeSceneName, {
 					player: this.player,
@@ -271,7 +267,7 @@ export class HUDScene extends Phaser.Scene {
 		});
 
 		// Launches Inventory Scene.s
-		this.inventoryIcon.on('pointerup', (pointer) => {
+		this.inventoryIcon.on('pointerup', () => {
 			SceneToggleWatcher.toggleScene(this, this.inventorySceneName, this.player);
 		});
 
@@ -286,19 +282,18 @@ export class HUDScene extends Phaser.Scene {
 			this.setGamepadTextures();
 		}
 
-		this.input.gamepad.on('connected', (pad) => {
-			console.log(pad.id);
+		this.input.gamepad.on('connected', () => {
 			this.createInventoryShortcutIcon();
 			this.createAttributesShortcutIcon();
 			this.setGamepadTextures();
 		});
-		this.input.gamepad.on('disconnected', (pad) => {
+		this.input.gamepad.on('disconnected', () => {
 			this.inventoryShortcutIcon.setTexture(this.inventoryShortcutSprite);
 			this.attributesShortcutIcon.setTexture(this.attributesShortcutIconDesktop);
 		});
 
 		// Launch the settings Scene.
-		this.settingsIcon.on('pointerdown', (pointer) => {
+		this.settingsIcon.on('pointerdown', () => {
 			if (!this.scene.isVisible(this.settingSceneName)) {
 				this.scene.launch(this.settingSceneName);
 			} else {
@@ -380,7 +375,6 @@ export class HUDScene extends Phaser.Scene {
 	 * If the gamepad is connected, it should use the gamepad textures.
 	 */
 	setGamepadTextures() {
-		console.log(this.inventoryShortcutIcon);
 		if (this.inventoryShortcutIcon) this.inventoryShortcutIcon.setTexture(this.inventoryShortcutIconXbox);
 		if (this.attributesShortcutIcon) this.attributesShortcutIcon.setTexture(this.attributesShortcutIconXbox);
 		// this.attributesShortcutIconXbox

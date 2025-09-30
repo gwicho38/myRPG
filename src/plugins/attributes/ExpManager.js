@@ -1,5 +1,3 @@
-import { Enemy } from '../../entities/Enemy';
-import { Player } from '../../entities/Player';
 import { LuminusEntityTextDisplay } from '../LuminusEntityTextDisplay';
 
 export class ExpManager {
@@ -95,7 +93,7 @@ export class ExpManager {
 		//     blendMode: 'ADD',
 		// });
 
-		setTimeout((t) => {
+		setTimeout((_t) => {
 			this.particles_logo.destroy();
 		}, 400);
 	}

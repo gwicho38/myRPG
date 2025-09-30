@@ -59,7 +59,7 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
 		this.scene.physics.add.collider(
 			this as any,
 			playerEntity.hitZone as any,
-			(item: any, player: any) => {
+			(item: any, _player: any) => {
 				canCollide = false;
 				this.scene.sound.play('get_items');
 

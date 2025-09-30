@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { ButtonMinus } from '../components/UI/ButtonMinus';
 import { ButtonPlus } from '../components/UI/ButtonPlus';
-import { Player } from '../entities/Player';
 import lodash from 'lodash';
 import { SceneToggleWatcher } from './watchers/SceneToggleWatcher';
 import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
@@ -59,7 +58,6 @@ export class AttributeScene extends Phaser.Scene {
 
 	init(args) {
 		this.player = args.player;
-		console.log('player', this.player);
 		this.player.canMove = false;
 		this.sound.play('turn_page');
 	}
@@ -83,7 +81,7 @@ export class AttributeScene extends Phaser.Scene {
 	createCloseButton() {
 		this.closeButton = this.panelComponent.closeButton;
 
-		this.closeButton.on('pointerdown', (pointer) => {
+		this.closeButton.on('pointerdown', () => {
 			this.closeScene();
 		});
 		const closeAction = {
@@ -210,11 +208,10 @@ export class AttributeScene extends Phaser.Scene {
 	}
 
 	removeAttribute(payload) {
-		console.log(this.lastRawAttributes);
 		this.player.attributesManager.removeAttribute(payload.attribute, 1, this.lastRawAttributes);
 	}
 
-	resizeAll(size) {
+	resizeAll() {
 		const baseX =
 			this.attributesBackground.x + 15 + (this.attributesBackground.width / 2) * this.attributesBackground.scaleX;
 		const baseY = this.attributesBackground.y + 115;

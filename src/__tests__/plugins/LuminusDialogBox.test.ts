@@ -43,13 +43,6 @@ const mockScene = {
 	},
 } as any;
 
-const mockChat = [
-	{
-		message: 'Hello, world!',
-		speaker: 'NPC',
-	},
-];
-
 describe('LuminusDialogBox', () => {
 	let dialogBox: LuminusDialogBox;
 
