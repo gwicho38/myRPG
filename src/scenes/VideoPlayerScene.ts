@@ -93,7 +93,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 		}
 	}
 
-	changeSize(width?: number, height?: number): void {
+	changeSize(_width?: number, _height?: number): void {
 		if (this.cameras.main) {
 			this.closeButton!.destroy();
 			this.createCloseButton();

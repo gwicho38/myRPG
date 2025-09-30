@@ -656,7 +656,7 @@ export class InventoryScene extends Phaser.Scene {
 	 * Resizes everything
 	 * @param size the new size.
 	 */
-	resizeAll(size?: Phaser.Structs.Size): void {
+	resizeAll(_size?: Phaser.Structs.Size): void {
 		if (this.cameras && this.cameras.main) {
 			this.inventoryBackground.setPosition(
 				this.cameras.main.midPoint.x - 512 / 2,
