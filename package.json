@@ -1,184 +1,196 @@
 {
-  "name": "luminus-rpg-template",
-  "version": "0.1.0",
-  "description": "A Luminus Action RPG Template. This is a project that will help you create your Action RPG Game with Phaser and JavaScript.",
-  "main": "electron-main.js",
-  "scripts": {
-    "build": "webpack --config webpack/prod.js",
-    "build:web": "npm run build",
-    "start": "webpack --config webpack/dev.js --watch",
-    "dev": "npm run start",
-    "serve": "node scripts/serve.js",
-    "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint src --ext .js,.ts --fix",
-    "format": "prettier --write 'src/**/*.{js,ts}'",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit",
-    "electron": "npm run build && electron .",
-    "electron:dev": "NODE_ENV=development electron .",
-    "build:desktop": "npm run build && electron-builder",
-    "build:mac": "npm run build && electron-builder --mac",
-    "build:win": "npm run build && electron-builder --win",
-    "build:linux": "npm run build && electron-builder --linux",
-    "build:mobile": "npm run build && npx cap copy",
-    "build:ios": "npm run build && npx cap copy ios && npx cap build ios",
-    "build:android": "npm run build && npx cap copy android && npx cap build android",
-    "open:ios": "npx cap open ios",
-    "open:android": "npx cap open android",
-    "sync:mobile": "npm run build && npx cap sync",
-    "build:all": "npm run build:desktop && npm run build:mobile",
-    "serve:mobile": "npx cap serve",
-    "jsdoc": "npx jsdoc src -r -c jsdoc.config.json && npx browser-sync start --server --files 'docs/*.html' --startPath docs/ --watch 'docs/*.html'",
-    "tutorial": "npx browser-sync start --server --files 'tutorial/*.html' --startPath tutorial/ --watch 'tutorial/*.html'",
-    "serve-tutorial": "cd tutorial-admin && php -S localhost:3500 system/router.php",
-    "wget-tutorial": "wget --mirror --convert-links --adjust-extension --restrict-file-names=windows  --page-requisites --no-parent -e robots=off -P ./  http://localhost:3500 && mv ./localhost+3500 ./tutorial",
-    "distwatch": "npx browser-sync start --server 'dist'  --watch 'dist/*.html'",
-    "publish-git": "npm run build && cd dist && git init && git remote rm pages && git remote add pages https://github.com/SkyAlpha/luminus-rpg.github.io && git add -A . && git commit -a --allow-empty-message -m '' && git push pages master --force && cd .. "
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SkyAlpha/luminus-rpg.git"
-  },
-  "author": "Jonatan Pietroski dos Santos <jonatanpietroski@gmail.com> (https://github.com/SkyAlpha)",
-  "license": "MIT",
-  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-  "bugs": {
-    "url": "https://github.com/SkyAlpha/luminus-rpg/issues"
-  },
-  "homepage": "https://github.com/SkyAlpha/luminus-rpg#readme",
-  "devDependencies": {
-    "@babel/core": "^7.22.1",
-    "@babel/eslint-parser": "^7.28.4",
-    "@babel/preset-env": "^7.28.3",
-    "@capacitor/android": "^7.4.3",
-    "@capacitor/cli": "^7.4.3",
-    "@capacitor/core": "^7.4.3",
-    "@capacitor/ios": "^7.4.3",
-    "@eslint/js": "^9.36.0",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^24.5.2",
-    "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "babel-jest": "^30.1.2",
-    "babel-loader": "^9.1.2",
-    "browser-sync": "^3.0.4",
-    "clean-webpack-plugin": "^4.0.0",
-    "electron": "^38.1.2",
-    "electron-builder": "^26.0.12",
-    "eslint": "^9.36.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.5.1",
-    "jest": "^30.1.3",
-    "jest-environment-jsdom": "^30.1.2",
-    "jsdoc": "^4.0.4",
-    "prettier": "^3.6.2",
-    "raw-loader": "^4.0.2",
-    "terser-webpack-plugin": "^2.3.8",
-    "ts-jest": "^29.4.4",
-    "ts-loader": "^9.5.4",
-    "typescript": "^5.9.2",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^5.2.2",
-    "webpack-merge": "^5.9.0"
-  },
-  "dependencies": {
-    "@mikewesthad/dungeon": "^2.0.1",
-    "css-loader": "^5.1.1",
-    "ink-docstrap": "^0.5.4",
-    "lodash": "^4.17.21",
-    "nes.css": "^2.3.0",
-    "phaser": "^3.90.0",
-    "phaser3-juice-plugin": "git+https://github.com/RetroVX/phaser3-juice-plugin.git",
-    "phaser3-nineslice": "^0.5.0",
-    "phaser3-rex-plugins": "^1.1.41",
-    "uniqid": "^5.3.0",
-    "uuid": "^8.3.2"
-  },
-  "build": {
-    "appId": "com.luminusgames.rpg",
-    "productName": "Luminus RPG",
-    "directories": {
-      "output": "builds"
-    },
-    "files": [
-      "dist/**/*",
-      "electron-main.js",
-      "node_modules/**/*"
-    ],
-    "mac": {
-      "category": "public.app-category.games",
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ]
-    },
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
-    },
-    "linux": {
-      "category": "Game",
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "deb",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "rpm",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  },
-  "overrides": {
-    "braces": "^3.0.3",
-    "micromatch": "^4.0.8",
-    "moment": "^2.30.1"
-  }
+	"name": "luminus-rpg-template",
+	"version": "0.1.0",
+	"description": "A Luminus Action RPG Template. This is a project that will help you create your Action RPG Game with Phaser and JavaScript.",
+	"main": "electron-main.js",
+	"scripts": {
+		"build": "webpack --config webpack/prod.js",
+		"build:web": "npm run build",
+		"start": "webpack --config webpack/dev.js --watch",
+		"dev": "npm run start",
+		"serve": "node scripts/serve.js",
+		"lint": "eslint src --ext .js,.ts",
+		"lint:fix": "eslint src --ext .js,.ts --fix",
+		"format": "prettier --write 'src/**/*.{js,ts}'",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"typecheck": "tsc --noEmit",
+		"electron": "npm run build && electron .",
+		"electron:dev": "NODE_ENV=development electron .",
+		"build:desktop": "npm run build && electron-builder",
+		"build:mac": "npm run build && electron-builder --mac",
+		"build:win": "npm run build && electron-builder --win",
+		"build:linux": "npm run build && electron-builder --linux",
+		"build:mobile": "npm run build && npx cap copy",
+		"build:ios": "npm run build && npx cap copy ios && npx cap build ios",
+		"build:android": "npm run build && npx cap copy android && npx cap build android",
+		"open:ios": "npx cap open ios",
+		"open:android": "npx cap open android",
+		"sync:mobile": "npm run build && npx cap sync",
+		"build:all": "npm run build:desktop && npm run build:mobile",
+		"serve:mobile": "npx cap serve",
+		"jsdoc": "npx jsdoc src -r -c jsdoc.config.json && npx browser-sync start --server --files 'docs/*.html' --startPath docs/ --watch 'docs/*.html'",
+		"tutorial": "npx browser-sync start --server --files 'tutorial/*.html' --startPath tutorial/ --watch 'tutorial/*.html'",
+		"serve-tutorial": "cd tutorial-admin && php -S localhost:3500 system/router.php",
+		"wget-tutorial": "wget --mirror --convert-links --adjust-extension --restrict-file-names=windows  --page-requisites --no-parent -e robots=off -P ./  http://localhost:3500 && mv ./localhost+3500 ./tutorial",
+		"distwatch": "npx browser-sync start --server 'dist'  --watch 'dist/*.html'",
+		"publish-git": "npm run build && cd dist && git init && git remote rm pages && git remote add pages https://github.com/SkyAlpha/luminus-rpg.github.io && git add -A . && git commit -a --allow-empty-message -m '' && git push pages master --force && cd .. ",
+		"prepare": "husky"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/SkyAlpha/luminus-rpg.git"
+	},
+	"author": "Jonatan Pietroski dos Santos <jonatanpietroski@gmail.com> (https://github.com/SkyAlpha)",
+	"license": "MIT",
+	"licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+	"bugs": {
+		"url": "https://github.com/SkyAlpha/luminus-rpg/issues"
+	},
+	"homepage": "https://github.com/SkyAlpha/luminus-rpg#readme",
+	"devDependencies": {
+		"@babel/core": "^7.22.1",
+		"@babel/eslint-parser": "^7.28.4",
+		"@babel/preset-env": "^7.28.3",
+		"@capacitor/android": "^7.4.3",
+		"@capacitor/cli": "^7.4.3",
+		"@capacitor/core": "^7.4.3",
+		"@capacitor/ios": "^7.4.3",
+		"@eslint/js": "^9.36.0",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^24.5.2",
+		"@types/uuid": "^10.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.44.1",
+		"@typescript-eslint/parser": "^8.44.1",
+		"babel-jest": "^30.1.2",
+		"babel-loader": "^9.1.2",
+		"browser-sync": "^3.0.4",
+		"clean-webpack-plugin": "^4.0.0",
+		"electron": "^38.1.2",
+		"electron-builder": "^26.0.12",
+		"eslint": "^9.36.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.4",
+		"file-loader": "^6.2.0",
+		"html-webpack-plugin": "^5.5.1",
+		"husky": "^9.1.7",
+		"jest": "^30.1.3",
+		"jest-environment-jsdom": "^30.1.2",
+		"jsdoc": "^4.0.4",
+		"lint-staged": "^16.2.3",
+		"prettier": "^3.6.2",
+		"raw-loader": "^4.0.2",
+		"terser-webpack-plugin": "^2.3.8",
+		"ts-jest": "^29.4.4",
+		"ts-loader": "^9.5.4",
+		"typescript": "^5.9.2",
+		"webpack": "^5.74.0",
+		"webpack-cli": "^4.10.0",
+		"webpack-dev-server": "^5.2.2",
+		"webpack-merge": "^5.9.0"
+	},
+	"dependencies": {
+		"@mikewesthad/dungeon": "^2.0.1",
+		"css-loader": "^5.1.1",
+		"ink-docstrap": "^0.5.4",
+		"lodash": "^4.17.21",
+		"nes.css": "^2.3.0",
+		"phaser": "^3.90.0",
+		"phaser3-juice-plugin": "git+https://github.com/RetroVX/phaser3-juice-plugin.git",
+		"phaser3-nineslice": "^0.5.0",
+		"phaser3-rex-plugins": "^1.1.41",
+		"uniqid": "^5.3.0",
+		"uuid": "^8.3.2"
+	},
+	"build": {
+		"appId": "com.luminusgames.rpg",
+		"productName": "Luminus RPG",
+		"directories": {
+			"output": "builds"
+		},
+		"files": [
+			"dist/**/*",
+			"electron-main.js",
+			"node_modules/**/*"
+		],
+		"mac": {
+			"category": "public.app-category.games",
+			"target": [
+				{
+					"target": "dmg",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				},
+				{
+					"target": "zip",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				}
+			]
+		},
+		"win": {
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				},
+				{
+					"target": "portable",
+					"arch": [
+						"x64",
+						"ia32"
+					]
+				}
+			]
+		},
+		"linux": {
+			"category": "Game",
+			"target": [
+				{
+					"target": "AppImage",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "deb",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "rpm",
+					"arch": [
+						"x64"
+					]
+				}
+			]
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true
+		}
+	},
+	"overrides": {
+		"braces": "^3.0.3",
+		"micromatch": "^4.0.8",
+		"moment": "^2.30.1"
+	},
+	"lint-staged": {
+		"*.{js,ts}": [
+			"eslint --fix",
+			"prettier --write"
+		],
+		"*.{json,md,yml,yaml}": [
+			"prettier --write"
+		]
+	}
 }
