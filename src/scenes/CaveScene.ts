@@ -6,32 +6,43 @@ import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentPartic
 import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
+import { Player } from '../entities/Player';
+import { IGameScene } from '../types/SceneTypes';
 
-export class OverworldScene extends Phaser.Scene {
+export class CaveScene extends Phaser.Scene implements IGameScene {
+	public player: Player | null = null;
+	public map?: Phaser.Tilemaps.Tilemap;
+	public mapCreator?: LuminusMapCreator;
+	public joystickScene: any;
+	public particles!: LuminusEnvironmentParticles;
+	public themeSound!: Phaser.Sound.BaseSound;
+	public enemies: any[] = [];
+	public luminusEnemyZones!: LuminusEnemyZones;
+	public saveManager!: LuminusSaveManager;
+
 	constructor() {
 		super({
-			key: 'OverworldScene',
+			key: 'CaveScene',
 		});
-		this.player = null;
 	}
 
-	preload() {
+	preload(): void {
 		this.load.scenePlugin('animatedTiles', AnimatedTiles, 'animatedTiles', 'animatedTiles');
 	}
 
-	create() {
+	create(): void {
 		this.cameras.main.setZoom(2.5);
 
-		this.mapCreator = new LuminusMapCreator(this, 'overworld');
+		this.mapCreator = new LuminusMapCreator(this, 'cave_dungeon');
 		this.mapCreator.create();
 
 		// Store map reference for other systems
 		this.map = this.mapCreator.map;
 
 		const camera = this.cameras.main;
-		camera.startFollow(this.player.container);
+		camera.startFollow(this.player!.container);
 
-		const luminusWarp = new LuminusWarp(this, this.player, this.mapCreator.map);
+		const luminusWarp = new LuminusWarp(this, this.player!, this.mapCreator.map);
 		luminusWarp.createWarps();
 		const interactiveMarkers = new LuminusObjectMarker(this, this.mapCreator.map);
 		interactiveMarkers.create();
@@ -46,12 +57,12 @@ export class OverworldScene extends Phaser.Scene {
 
 		this.scene.launch('HUDScene', { player: this.player });
 
-		this.sys.animatedTiles.init(this.mapCreator.map);
+		(this.sys as any).animatedTiles.init(this.mapCreator.map);
 		this.particles = new LuminusEnvironmentParticles(this, this.mapCreator.map);
 		this.particles.create();
 
 		this.sound.volume = 0.35;
-		this.themeSound = this.sound.add('forest', {
+		this.themeSound = this.sound.add('dungeon_ambient', {
 			loop: true,
 		});
 		this.themeSound.play();
@@ -66,8 +77,8 @@ export class OverworldScene extends Phaser.Scene {
 		this.setupSaveKeybinds();
 	}
 
-	setupSaveKeybinds() {
-		this.input.keyboard.on('keydown', (event) => {
+	setupSaveKeybinds(): void {
+		this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
 			if (event.ctrlKey && event.key === 's') {
 				event.preventDefault();
 				this.saveManager.saveGame(false);
@@ -91,11 +102,11 @@ export class OverworldScene extends Phaser.Scene {
 		});
 	}
 
-	stopSceneMusic() {
+	stopSceneMusic(): void {
 		this.themeSound.stop();
 	}
 
-	update() {
-		// Overworld-specific update logic can be added here
+	update(): void {
+		// Cave-specific update logic can be added here
 	}
 }

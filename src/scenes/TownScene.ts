@@ -7,22 +7,40 @@ import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
 import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 
-export class CaveScene extends Phaser.Scene {
+export class TownScene extends Phaser.Scene {
+	player: any;
+	mapCreator: LuminusMapCreator | null;
+	map: Phaser.Tilemaps.Tilemap | null;
+	joystickScene: Phaser.Scene | null;
+	particles: LuminusEnvironmentParticles | null;
+	themeSound: Phaser.Sound.BaseSound | null;
+	enemies: any[];
+	luminusEnemyZones: LuminusEnemyZones | null;
+	saveManager: LuminusSaveManager | null;
+
 	constructor() {
 		super({
-			key: 'CaveScene',
+			key: 'TownScene',
 		});
 		this.player = null;
+		this.mapCreator = null;
+		this.map = null;
+		this.joystickScene = null;
+		this.particles = null;
+		this.themeSound = null;
+		this.enemies = [];
+		this.luminusEnemyZones = null;
+		this.saveManager = null;
 	}
 
-	preload() {
+	preload(): void {
 		this.load.scenePlugin('animatedTiles', AnimatedTiles, 'animatedTiles', 'animatedTiles');
 	}
 
-	create() {
+	create(): void {
 		this.cameras.main.setZoom(2.5);
 
-		this.mapCreator = new LuminusMapCreator(this, 'cave_dungeon');
+		this.mapCreator = new LuminusMapCreator(this, 'town');
 		this.mapCreator.create();
 
 		// Store map reference for other systems
@@ -51,7 +69,7 @@ export class CaveScene extends Phaser.Scene {
 		this.particles.create();
 
 		this.sound.volume = 0.35;
-		this.themeSound = this.sound.add('dungeon_ambient', {
+		this.themeSound = this.sound.add('path_to_lake_land', {
 			loop: true,
 		});
 		this.themeSound.play();
@@ -66,36 +84,36 @@ export class CaveScene extends Phaser.Scene {
 		this.setupSaveKeybinds();
 	}
 
-	setupSaveKeybinds() {
-		this.input.keyboard.on('keydown', (event) => {
+	setupSaveKeybinds(): void {
+		this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
 			if (event.ctrlKey && event.key === 's') {
 				event.preventDefault();
-				this.saveManager.saveGame(false);
+				this.saveManager!.saveGame(false);
 			}
 			if (event.ctrlKey && event.key === 'l') {
 				event.preventDefault();
-				const saveData = this.saveManager.loadGame(false);
+				const saveData = this.saveManager!.loadGame(false);
 				if (saveData) {
-					this.saveManager.applySaveData(saveData);
+					this.saveManager!.applySaveData(saveData);
 				}
 			}
 			if (event.key === 'F5') {
 				event.preventDefault();
-				const saveData = this.saveManager.loadGame(true);
+				const saveData = this.saveManager!.loadGame(true);
 				if (saveData) {
-					this.saveManager.applySaveData(saveData);
+					this.saveManager!.applySaveData(saveData);
 				} else {
-					this.saveManager.showSaveNotification('No checkpoint found', true);
+					this.saveManager!.showSaveNotification('No checkpoint found', true);
 				}
 			}
 		});
 	}
 
-	stopSceneMusic() {
-		this.themeSound.stop();
+	stopSceneMusic(): void {
+		this.themeSound!.stop();
 	}
 
-	update() {
-		// Cave-specific update logic can be added here
+	update(): void {
+		// Town-specific update logic can be added here
 	}
 }
