@@ -1,0 +1,53 @@
+name: Question
+description: Ask a question about using the template
+title: '[Question]: '
+labels: ['question']
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Have a question about how to use Luminus RPG? Ask away!
+
+    - type: textarea
+      id: question
+      attributes:
+          label: Question
+          description: What would you like to know?
+          placeholder: How do I...?
+      validations:
+          required: true
+
+    - type: dropdown
+      id: category
+      attributes:
+          label: Category
+          description: What is your question about?
+          options:
+              - Getting Started
+              - Game Mechanics
+              - Plugin Usage
+              - TypeScript/JavaScript
+              - Building/Deployment
+              - Mobile (iOS/Android)
+              - Desktop (Electron)
+              - Configuration
+              - Performance
+              - Other
+      validations:
+          required: true
+
+    - type: textarea
+      id: context
+      attributes:
+          label: Additional Context
+          description: Provide any additional context that might help us answer your question
+          placeholder: I'm trying to...
+
+    - type: checkboxes
+      id: checklist
+      attributes:
+          label: Checklist
+          options:
+              - label: I have checked the [README](../blob/master/README.md)
+              - label: I have checked existing issues and discussions
+              - label: I have checked the [documentation](../blob/master/docs)

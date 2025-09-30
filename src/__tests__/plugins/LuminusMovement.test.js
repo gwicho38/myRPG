@@ -24,6 +24,17 @@ describe('LuminusMovement', () => {
 					addKey: jest.fn(() => ({ isDown: false })),
 					on: jest.fn(),
 				},
+				gamepad: {
+					pad1: {
+						id: 'mock-gamepad',
+						index: 0,
+						buttons: [],
+						axes: [],
+						connected: true,
+					},
+					on: jest.fn(),
+					off: jest.fn(),
+				},
 				isActive: true,
 				addPointer: jest.fn(),
 			},
