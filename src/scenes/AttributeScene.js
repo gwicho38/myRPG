@@ -215,6 +215,10 @@ export class AttributeScene extends Phaser.Scene {
 	}
 
 	resizeAll(size) {
+		const baseX =
+			this.attributesBackground.x + 15 + (this.attributesBackground.width / 2) * this.attributesBackground.scaleX;
+		const baseY = this.attributesBackground.y + 115;
+
 		if (this.atackText) this.atackText.setPosition(baseX, baseY);
 		if (this.defenseText) this.defenseText.setPosition(baseX, this.atackText.y + this.atackText.height + 5);
 		if (this.maxHealthText) this.maxHealthText.setPosition(baseX, this.defenseText.y + this.defenseText.height + 5);

@@ -19,7 +19,13 @@
       "Bash(npm audit:*)",
       "Bash(npm run test:coverage:*)",
       "Bash(npm update:*)",
-      "Bash(npm run start:*)"
+      "Bash(npm run start:*)",
+      "Bash(awk:*)",
+      "Bash(grep:*)",
+      "Bash(gh issue create:*)",
+      "Bash(git rm:*)",
+      "Bash(npm run lint:fix:*)",
+      "Bash(npm run format:*)"
     ],
     "deny": [],
     "ask": []

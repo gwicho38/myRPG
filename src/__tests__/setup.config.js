@@ -4,45 +4,7 @@ beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-// Mock Phaser for testing
-global.Phaser = {
-	Scene: class Scene {
-		constructor() {
-			this.add = {
-				text: jest.fn(),
-				image: jest.fn(),
-				sprite: jest.fn(),
-			};
-			this.input = {
-				keyboard: {
-					addKeys: jest.fn(),
-					createCursorKeys: jest.fn(),
-					on: jest.fn(),
-					addKey: jest.fn(),
-				},
-			};
-			this.time = {
-				addEvent: jest.fn(),
-				delayedCall: jest.fn(),
-				now: Date.now(),
-			};
-			this.scene = {
-				key: 'TestScene',
-			};
-		}
-	},
-	Input: {
-		Keyboard: {
-			KeyCodes: {
-				SHIFT: 16,
-				ENTER: 13,
-				SPACE: 32,
-			},
-		},
-	},
-	Physics: {
-		Arcade: {
-			Sprite: class Sprite {},
-		},
-	},
-};
+// Import the Phaser mock and set as global
+// Note: phaser module is already mocked via jest.config.js moduleNameMapper
+const PhaserMock = require('../__mocks__/phaserMock');
+global.Phaser = PhaserMock;

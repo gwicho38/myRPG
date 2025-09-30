@@ -269,7 +269,7 @@ export class LuminusDialogBox {
 			32
 		) as IDialog;
 
-		this.dialog.setScrollFactor(0, 0).setOrigin(0, 0).setDepth(99999999999999999);
+		this.dialog.setScrollFactor(0, 0).setOrigin(0, 0).setDepth(999999);
 		this.dialog.visible = false;
 	}
 
@@ -284,7 +284,7 @@ export class LuminusDialogBox {
 		);
 		this.leftPortraitImage.setScrollFactor(0, 0);
 		this.leftPortraitImage.setOrigin(0, 0);
-		this.leftPortraitImage.setDepth(99999999999999999);
+		this.leftPortraitImage.setDepth(999999);
 		this.leftPortraitImage.visible = false;
 
 		this.rightPortraitImage = this.scene.add.image(
@@ -294,7 +294,7 @@ export class LuminusDialogBox {
 		);
 		this.rightPortraitImage.setScrollFactor(0, 0);
 		this.rightPortraitImage.setOrigin(1, 0);
-		this.rightPortraitImage.setDepth(99999999999999999);
+		this.rightPortraitImage.setDepth(999999);
 		this.rightPortraitImage.visible = false;
 
 		this.leftNameText = this.scene.add.text(
@@ -309,7 +309,7 @@ export class LuminusDialogBox {
 		);
 		this.leftNameText.setScrollFactor(0, 0);
 		this.leftNameText.setOrigin(0, 0);
-		this.leftNameText.setDepth(99999999999999999);
+		this.leftNameText.setDepth(999999);
 		this.leftNameText.visible = false;
 
 		this.rightNameText = this.scene.add.text(
@@ -324,7 +324,7 @@ export class LuminusDialogBox {
 		);
 		this.rightNameText.setScrollFactor(0, 0);
 		this.rightNameText.setOrigin(1, 0);
-		this.rightNameText.setDepth(99999999999999999);
+		this.rightNameText.setDepth(999999);
 		this.rightNameText.visible = false;
 	}
 
@@ -336,7 +336,7 @@ export class LuminusDialogBox {
 			.image(this.cameraWidth - this.margin * 4, this.cameraHeight - this.margin * 4, this.actionButtonSpriteName)
 			.setScrollFactor(0, 0)
 			.setOrigin(0.5, 0.5)
-			.setDepth(99999999999999999);
+			.setDepth(999999);
 
 		this.actionButton.visible = false;
 
@@ -344,7 +344,7 @@ export class LuminusDialogBox {
 			.sprite(this.cameraWidth / 2, this.cameraHeight / 2, this.interactionSpriteName)
 			.setScrollFactor(0, 0)
 			.setOrigin(0.5, 0.5)
-			.setDepth(99999999999999999);
+			.setDepth(999999);
 
 		this.interactionIcon.visible = false;
 		this.interactionIcon.anims.play(this.animationIteractionIconName);
@@ -537,7 +537,7 @@ export class LuminusDialogBox {
 			color: this.fontColor.rgba,
 		}) as IDialogTextMessage;
 
-		this.dialog.textMessage.setScrollFactor(0, 0).setDepth(99999999999999999).setOrigin(0, 0);
+		this.dialog.textMessage.setScrollFactor(0, 0).setDepth(999999).setOrigin(0, 0);
 	}
 
 	/**

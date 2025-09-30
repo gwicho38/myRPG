@@ -29,6 +29,7 @@ module.exports = [
 				HTMLCanvasElement: 'readonly',
 				process: 'readonly',
 				navigator: 'readonly',
+				performance: 'readonly',
 			},
 		},
 		plugins: {
@@ -67,6 +68,7 @@ module.exports = [
 				HTMLCanvasElement: 'readonly',
 				process: 'readonly',
 				navigator: 'readonly',
+				performance: 'readonly',
 			},
 		},
 		plugins: {
