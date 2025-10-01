@@ -94,6 +94,9 @@ export class AttributeScene extends Phaser.Scene {
 		this.createAttributesButtons();
 		this.createAttributesInfo();
 		this.scale.on('resize', this.resizeAll, this);
+
+		// Position everything correctly on initial create
+		this.resizeAll();
 	}
 
 	createCloseButton(): void {
