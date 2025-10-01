@@ -1,6 +1,6 @@
 {
 	"name": "luminus-rpg-template",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A Luminus Action RPG Template. This is a project that will help you create your Action RPG Game with Phaser and JavaScript.",
 	"main": "electron-main.js",
 	"scripts": {

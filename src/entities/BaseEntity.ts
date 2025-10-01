@@ -96,5 +96,5 @@ export const BaseEntity: IBaseEntity = {
 	isRunning: false,
 	baseSpeed: 200,
 	swimSpeed: 100,
-	runSpeed: 300,
+	runSpeed: 1000,
 };

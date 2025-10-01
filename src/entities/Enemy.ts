@@ -108,7 +108,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		this.scene.add.existing(this.container);
 		this.scene.physics.add.existing(this.container);
 
-		const idleDown = `${this.idlePrefixAnimation}${this.downAnimationSufix}`;
+		const idleDown = `${this.idlePrefixAnimation}-${this.downAnimationSufix}`;
 		const idleAnimation = texture ? `${texture}-${idleDown}` : `bat-${idleDown}`;
 
 		this.anims.play(idleAnimation);
