@@ -73,7 +73,8 @@ export class ExpManager {
 	static levelUpEffects(entity: Entity): void {
 		entity.scene.sound.play('level_up');
 		this.displayText = new LuminusEntityTextDisplay(entity.scene);
-		this.displayText.displayDamage('LEVEL UP!!', entity);
+		// Display 999 as a placeholder for "LEVEL UP!!"
+		this.displayText.displayDamage(999, entity);
 
 		const origin = entity.getTopLeft();
 		const textures = entity.scene.textures;
@@ -86,6 +87,15 @@ export class ExpManager {
 					pixel = textures.getPixel(x, y, entity.texture.key) as Phaser.Display.Color;
 					return vec.setTo(x + origin.x, y + origin.y);
 				} while (pixel.alpha < 255);
+			},
+			getPoints: (quantity: number) => {
+				const points: Phaser.Geom.Point[] = [];
+				for (let i = 0; i < quantity; i++) {
+					const vec = new Phaser.Math.Vector2();
+					logoSource.getRandomPoint(vec);
+					points.push(new Phaser.Geom.Point(vec.x, vec.y));
+				}
+				return points;
 			},
 		};
 
