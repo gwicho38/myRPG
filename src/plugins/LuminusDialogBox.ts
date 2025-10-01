@@ -262,11 +262,14 @@ export class LuminusDialogBox {
 		this.dialog = this.scene.add.nineslice(
 			this.margin,
 			this.cameraHeight - this.dialogHeight - this.margin,
-			this.cameraWidth - this.margin * 2,
-			this.dialogHeight,
-			this.dialogSpriteName,
-			60,
-			32
+			this.dialogSpriteName, // texture key - must come before dimensions
+			undefined, // frame - use undefined for single-frame textures
+			this.cameraWidth - this.margin * 2, // width
+			this.dialogHeight, // height
+			60, // leftWidth
+			60, // rightWidth
+			32, // topHeight
+			32 // bottomHeight
 		) as IDialog;
 
 		this.dialog.setScrollFactor(0, 0).setOrigin(0, 0).setDepth(999999);
@@ -484,14 +487,15 @@ export class LuminusDialogBox {
 	 * Check for button presses to advance dialog
 	 */
 	checkButtonDown(): void {
-		console.log('[LuminusDialogBox] checkButtonDown called', {
-			isOverlapingChat: this.isOverlapingChat,
-			showRandomChat: this.showRandomChat,
-			dialogVisible: this.dialog?.visible,
-			chatLength: this.chat.length,
-			currentChatIndex: this.currentChat?.index,
-			buttonPressed: this.checkButtonsPressed(),
-		});
+		// Only log when there's actual dialog activity (not every frame)
+		// console.log('[LuminusDialogBox] checkButtonDown called', {
+		// 	isOverlapingChat: this.isOverlapingChat,
+		// 	showRandomChat: this.showRandomChat,
+		// 	dialogVisible: this.dialog?.visible,
+		// 	chatLength: this.chat.length,
+		// 	currentChatIndex: this.currentChat?.index,
+		// 	buttonPressed: this.checkButtonsPressed(),
+		// });
 
 		if ((this.isOverlapingChat || this.showRandomChat) && this.checkButtonsPressed() && !this.dialog.visible) {
 			// First time, show the Dialog.

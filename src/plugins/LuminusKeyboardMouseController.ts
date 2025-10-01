@@ -94,10 +94,12 @@ export class LuminusKeyboardMouseController {
 			}
 			// I key (73) - Inventory (only block if canMove is false)
 			if (keydown.keyCode === 73 && this.player && this.player.active && this.player.canMove) {
+				console.log('[KeyboardController] Inventory (I) key pressed - toggling scene');
 				SceneToggleWatcher.toggleScene(this.scene, this.inventorySceneName, this.player);
 			}
 			// U key (85) - Attributes (only block if canMove is false)
 			if (keydown.keyCode === 85 && this.player && this.player.active && this.player.canMove) {
+				console.log('[KeyboardController] Attributes (U) key pressed - toggling scene');
 				SceneToggleWatcher.toggleScene(this.scene, this.attributeSceneName, this.player);
 			}
 		});

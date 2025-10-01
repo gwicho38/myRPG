@@ -48,7 +48,8 @@
 			"Bash(npx eslint:*)",
 			"Bash(git checkout:*)",
 			"Bash(npx webpack serve:*)",
-			"Bash(npm run serve:*)"
+			"Bash(npm run serve:*)",
+			"Bash(pkill:*)"
 		],
 		"deny": [],
 		"ask": []

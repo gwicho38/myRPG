@@ -79,11 +79,14 @@ export class InfoBox {
 			.nineslice(
 				this.x,
 				this.y,
-				this.panelMaxWidth,
-				this.panelMaxHeight, // the width and height of your object
-				this.backgroundTexture, // a key to an already loaded image
-				this.nineSliceOffset, // the width and height to offset for a corner slice
-				this.nineSliceOffset // (optional) pixels to offset when computing the safe usage area
+				this.backgroundTexture, // texture key - must come before dimensions
+				undefined, // frame - use undefined for single-frame textures
+				this.panelMaxWidth, // width
+				this.panelMaxHeight, // height
+				this.nineSliceOffset, // leftWidth
+				this.nineSliceOffset, // rightWidth
+				this.nineSliceOffset, // topHeight
+				this.nineSliceOffset // bottomHeight
 			)
 			.setScrollFactor(0, 0)
 			.setOrigin(0, 0);
