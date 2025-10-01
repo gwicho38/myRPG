@@ -80,6 +80,16 @@ export class LuminusEntityTextDisplay {
 	 * @param isHealing Whether this is healing
 	 */
 	displayDamage(damage: number, target: any, isCritical: boolean = false, isHealing: boolean = false): void {
+		console.log('[EntityTextDisplay] displayDamage called:', {
+			damage,
+			targetX: target.container?.x,
+			targetY: target.container?.y,
+			isCritical,
+			isHealing,
+			sceneActive: this.scene?.scene?.isActive(),
+			sceneKey: this.scene?.scene?.key,
+		});
+
 		const position = {
 			x: target.container.x,
 			y: target.container.y - 10,
@@ -93,6 +103,14 @@ export class LuminusEntityTextDisplay {
 		if (isCritical) {
 			// this.fontColor = this.criticalDamageColor;
 			criticalSprite = this.scene.add.sprite(position.x, position.y, 'critical_2x');
+			criticalSprite.setDepth(10000); // Ensure it's on top
+			console.log('[EntityTextDisplay] Critical sprite created:', {
+				x: criticalSprite.x,
+				y: criticalSprite.y,
+				visible: criticalSprite.visible,
+				active: criticalSprite.active,
+				depth: criticalSprite.depth,
+			});
 		}
 
 		if (isHealing) {
@@ -107,6 +125,18 @@ export class LuminusEntityTextDisplay {
 		});
 
 		damageSprite.setOrigin(0.5, 1);
+		damageSprite.setDepth(10000); // Ensure it's on top
+
+		console.log('[EntityTextDisplay] Damage text created:', {
+			text: damageSprite.text,
+			x: damageSprite.x,
+			y: damageSprite.y,
+			visible: damageSprite.visible,
+			active: damageSprite.active,
+			depth: damageSprite.depth,
+			color: this.fontColor,
+		});
+
 		if (criticalSprite) {
 			if (damage.toString().length < 3) {
 				criticalSprite.setOrigin(0.55, 0.65);

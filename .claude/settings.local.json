@@ -46,7 +46,9 @@
 			"Read(//Users/lefv/repos/Outlet/**)",
 			"Bash(flutter analyze:*)",
 			"Bash(npx eslint:*)",
-			"Bash(git checkout:*)"
+			"Bash(git checkout:*)",
+			"Bash(npx webpack serve:*)",
+			"Bash(npm run serve:*)"
 		],
 		"deny": [],
 		"ask": []
