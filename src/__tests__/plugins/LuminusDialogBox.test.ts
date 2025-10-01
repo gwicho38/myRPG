@@ -50,6 +50,11 @@ describe('LuminusDialogBox', () => {
 			tweens: {
 				add: jest.fn(),
 			},
+			time: {
+				addEvent: jest.fn().mockReturnValue({
+					remove: jest.fn(),
+				}),
+			},
 		};
 
 		mockPlayer = {
@@ -303,6 +308,44 @@ describe('LuminusDialogBox', () => {
 
 			// This should not throw an error
 			expect(() => newDialogBox.animateText()).not.toThrow();
+		});
+
+		it('should handle undefined text parameter in setText', () => {
+			// This tests the fix for the bug where text was undefined
+			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
+			expect(() => newDialogBox.setText(undefined as any, false)).not.toThrow();
+		});
+
+		it('should handle null text parameter in setText', () => {
+			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
+			expect(() => newDialogBox.setText(null as any, false)).not.toThrow();
+		});
+
+		it('should populate pagesMessage from dialogMessage when empty', () => {
+			// Test the core logic without calling create() which needs full mocks
+			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
+
+			// Initialize dialog object manually (normally done in createDialogueBox)
+			newDialogBox.dialog = {
+				visible: false,
+				x: 0,
+				y: 0,
+				scaleX: 1,
+			} as any;
+
+			// Set dialog message but leave pagesMessage empty (simulates the bug)
+			newDialogBox.dialogMessage = 'Test message from dialog';
+			newDialogBox.pagesMessage = [];
+			newDialogBox.pagesNumber = 0;
+
+			// Call showDialog - it should populate pagesMessage from dialogMessage
+			// This is the fix: showDialog now checks if pagesMessage is empty and populates it
+			newDialogBox.showDialog(false); // false = don't try to create text element
+
+			// Verify pagesMessage was populated from dialogMessage
+			expect(newDialogBox.pagesMessage.length).toBe(1);
+			expect(newDialogBox.pagesMessage[0]).toBe('Test message from dialog');
+			expect(newDialogBox.pagesNumber).toBe(1);
 		});
 	});
 });

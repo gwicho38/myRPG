@@ -403,6 +403,22 @@ export class LuminusDialogBox {
 	 * Set text content with optional typewriter animation
 	 */
 	setText(text: string, animate: boolean = false): void {
+		// Safety check: ensure text is defined
+		if (text === undefined || text === null) {
+			console.warn('[LuminusDialogBox] setText called with undefined/null text - using empty string', {
+				text,
+				animate,
+			});
+			text = '';
+		}
+
+		console.log('[LuminusDialogBox] setText called', {
+			textLength: text.length,
+			animate,
+			dialogExists: !!this.dialog,
+			textMessageExists: !!this.dialog?.textMessage,
+			textMessageActive: this.dialog?.textMessage?.active,
+		});
 		// Reset the dialog
 		this.eventCounter = 0;
 		this.animationText = text.split('');
@@ -420,6 +436,12 @@ export class LuminusDialogBox {
 			this.isAnimatingText = false;
 			if (this.dialog && this.dialog.textMessage) {
 				this.dialog.textMessage.text = text;
+				console.log('[LuminusDialogBox] Text set directly (no animation)');
+			} else {
+				console.warn('[LuminusDialogBox] Cannot set text - dialog or textMessage is null', {
+					dialogExists: !!this.dialog,
+					textMessageExists: !!this.dialog?.textMessage,
+				});
 			}
 		}
 	}
@@ -428,7 +450,13 @@ export class LuminusDialogBox {
 	 * Animate text character by character (typewriter effect)
 	 */
 	animateText(): void {
-		if (!this.dialog || !this.dialog.textMessage) return;
+		if (!this.dialog || !this.dialog.textMessage) {
+			console.warn('[LuminusDialogBox] animateText called but dialog or textMessage is null - skipping', {
+				dialogExists: !!this.dialog,
+				textMessageExists: !!this.dialog?.textMessage,
+			});
+			return;
+		}
 
 		this.eventCounter++;
 		this.dialog.textMessage.setText(this.dialog.textMessage.text + this.animationText[this.eventCounter - 1]);
@@ -436,6 +464,7 @@ export class LuminusDialogBox {
 
 		// Stops the text animation.
 		if (this.eventCounter === this.animationText.length) {
+			console.log('[LuminusDialogBox] Text animation completed');
 			this.isAnimatingText = false;
 			this.timedEvent?.remove();
 		}
@@ -457,6 +486,7 @@ export class LuminusDialogBox {
 	checkButtonDown(): void {
 		if ((this.isOverlapingChat || this.showRandomChat) && this.checkButtonsPressed() && !this.dialog.visible) {
 			// First time, show the Dialog.
+			console.log('[LuminusDialogBox] Opening dialog (first time)');
 			this.currentChat = this.chat[0];
 			this.dialogMessage = this.currentChat.message;
 			this.checkSpeaker();
@@ -470,6 +500,7 @@ export class LuminusDialogBox {
 			this.player.canBlock = false;
 		} else if (this.isAnimatingText && this.checkButtonsPressed()) {
 			// Skips the typing animation.
+			console.log('[LuminusDialogBox] Skipping text animation (space pressed during typing)');
 			this.setText(this.pagesMessage[this.currentPage], false);
 		} else if (
 			!this.isAnimatingText &&
@@ -480,11 +511,13 @@ export class LuminusDialogBox {
 			this.dialog.textMessage.active
 		) {
 			// Has more pages.
+			console.log(`[LuminusDialogBox] Advancing to next page (${this.currentPage + 1}/${this.pagesNumber})`);
 			this.currentPage++;
 			this.dialog.textMessage.text = '';
 			this.setText(this.pagesMessage[this.currentPage], true);
 		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1) {
 			const index = this.currentChat.index;
+			console.log(`[LuminusDialogBox] Advancing to next chat message (${index + 1}/${this.chat.length})`);
 			this.currentChat = this.chat[index + 1];
 			this.dialogMessage = this.currentChat.message;
 			this.pagesMessage = [];
@@ -497,6 +530,7 @@ export class LuminusDialogBox {
 			this.dialog.textMessage.active
 		) {
 			// Close dialog
+			console.log('[LuminusDialogBox] Closing dialog (final page)');
 			this.dialog.visible = false;
 			this.actionButton.visible = false;
 			this.isOverlapingChat = false;
@@ -509,6 +543,16 @@ export class LuminusDialogBox {
 			this.player.canAtack = true;
 			this.player.canBlock = true;
 			this.scene.events.emit('dialogComplete');
+		} else if (this.checkButtonsPressed()) {
+			// Log when button is pressed but no action taken
+			console.log('[LuminusDialogBox] Button pressed but no action taken', {
+				isAnimatingText: this.isAnimatingText,
+				currentPage: this.currentPage,
+				pagesNumber: this.pagesNumber,
+				dialogVisible: this.dialog?.visible,
+				textMessageExists: !!this.dialog?.textMessage,
+				textMessageActive: this.dialog?.textMessage?.active,
+			});
 		}
 	}
 
@@ -516,20 +560,43 @@ export class LuminusDialogBox {
 	 * Show dialog with optional text creation
 	 */
 	showDialog(createText: boolean = true): void {
+		console.log('[LuminusDialogBox] showDialog called', {
+			createText,
+			textMessageExists: !!this.dialog?.textMessage,
+			pagesCount: this.pagesMessage.length,
+			firstPage: this.pagesMessage[0],
+			dialogMessage: this.dialogMessage,
+		});
 		this.currentPage = 0;
 		this.dialog.visible = true;
 		this.canShowDialog = false;
 
 		// Create pages if necessary
 		if (createText) this.createText();
-		// Animate the text
-		this.setText(this.pagesMessage[0], true);
+
+		// Populate pagesMessage from dialogMessage if it's empty
+		// (For now, we treat the entire message as a single page)
+		if (this.pagesMessage.length === 0 && this.dialogMessage) {
+			console.log('[LuminusDialogBox] pagesMessage empty, populating from dialogMessage');
+			this.pagesMessage = [this.dialogMessage];
+			this.pagesNumber = 1;
+		}
+
+		// Animate the text - but only if we have pages to show
+		if (this.pagesMessage.length > 0) {
+			this.setText(this.pagesMessage[0], true);
+		} else {
+			console.warn(
+				'[LuminusDialogBox] showDialog called but pagesMessage is empty and no dialogMessage - cannot set text'
+			);
+		}
 	}
 
 	/**
 	 * Create text element for dialog
 	 */
 	createText(): void {
+		console.log('[LuminusDialogBox] createText called - creating new textMessage element');
 		this.dialog.textMessage = this.scene.add.text(this.margin * 2, this.dialog.y + this.margin * 2.5, '', {
 			wordWrap: {
 				width: this.textWidth,
@@ -540,6 +607,10 @@ export class LuminusDialogBox {
 		}) as IDialogTextMessage;
 
 		this.dialog.textMessage.setScrollFactor(0, 0).setDepth(999999).setOrigin(0, 0);
+		console.log('[LuminusDialogBox] textMessage created successfully', {
+			exists: !!this.dialog.textMessage,
+			active: this.dialog.textMessage?.active,
+		});
 	}
 
 	/**
