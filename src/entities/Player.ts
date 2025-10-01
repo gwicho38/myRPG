@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
-import { AttributesManager } from '../plugins/attributes/AttributesManager';
 import { ENTITIES } from '../consts/Entities';
+import { AttributesManager } from '../plugins/attributes/AttributesManager';
 import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
 import { LuminusHealthBar } from '../plugins/LuminusHealthBar';
 import { LuminusKeyboardMouseController } from '../plugins/LuminusKeyboardMouseController';
 import { LuminusMovement } from '../plugins/LuminusMovement';
+import { IInventoryItem } from '../types/ItemTypes';
 import { BaseEntity, IBaseEntity } from './BaseEntity';
 import { EntityAttributes, IEntityAttributes } from './EntityAttributes';
-import { IInventoryItem } from '../types/ItemTypes';
 
 /**
  * Player class extending Phaser's Arcade Sprite with game-specific functionality
@@ -149,7 +149,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 				follow: this.container,
 				speed: 2,
 				scale: { start: 0.1, end: 0.25 },
-				frequency: 300,
+				frequency: 1000,
 				quantity: 20,
 				lifespan: 1000,
 				rotate: { min: 0, max: 360 },

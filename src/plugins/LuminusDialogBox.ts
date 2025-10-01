@@ -163,7 +163,7 @@ export class LuminusDialogBox {
 		/**
 		 * Color of the font.
 		 */
-		this.fontColor = new Phaser.Display.Color(255, 255, 255, 1);
+		this.fontColor = new Phaser.Display.Color(0, 0, 0, 255);
 
 		/**
 		 * Letter spacing.

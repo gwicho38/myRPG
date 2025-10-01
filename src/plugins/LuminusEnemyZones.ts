@@ -102,7 +102,7 @@ export class LuminusEnemyZones {
 							texture ? texture : 'bat',
 							parseInt(id.value)
 						);
-						const idleDown = `${this.idlePrefixAnimation}${this.downAnimationSufix}`;
+						const idleDown = `${this.idlePrefixAnimation}-${this.downAnimationSufix}`;
 						const idleAnimation = texture ? `${texture}-${idleDown}` : `bat-${idleDown}`;
 						enemy.anims.play(idleAnimation);
 						enemy.body.setSize(enemy.width, enemy.height);

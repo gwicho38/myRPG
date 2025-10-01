@@ -159,11 +159,13 @@ export class LuminusMovement extends AnimationNames {
 			this.player.isSwimming = true;
 			this.player.isRunning = false; // Can't run while swimming
 			this.player.speed = this.player.swimSpeed || 100;
+			this.updateBodyMaxSpeed(this.player.speed);
 			console.log('Player entered water - swimming mode activated');
 		} else if (!shouldBeSwimming && wasSwimming) {
 			// Exit swimming mode
 			this.player.isSwimming = false;
 			this.player.speed = this.player.baseSpeed || 200;
+			this.updateBodyMaxSpeed(this.player.speed);
 			console.log('Player left water - swimming mode deactivated');
 		}
 	}
@@ -178,6 +180,8 @@ export class LuminusMovement extends AnimationNames {
 			if (this.player && this.player.isRunning) {
 				this.player.isRunning = false;
 				this.player.speed = this.player.baseSpeed || 200;
+				this.updateBodyMaxSpeed(this.player.speed);
+				console.log('[LuminusMovement] Running disabled (swimming)');
 			}
 			return;
 		}
@@ -190,6 +194,7 @@ export class LuminusMovement extends AnimationNames {
 		if (isShiftDown && !wasShiftDown) {
 			this.player.isRunning = !this.player.isRunning;
 			this.player.speed = this.player.isRunning ? this.player.runSpeed || 300 : this.player.baseSpeed || 200;
+			this.updateBodyMaxSpeed(this.player.speed);
 			console.log(
 				`[LuminusMovement] Running toggled ${this.player.isRunning ? 'ON' : 'OFF'} - Speed: ${this.player.speed}`
 			);
@@ -197,6 +202,15 @@ export class LuminusMovement extends AnimationNames {
 
 		// Store shift state for next frame
 		this.player.wasShiftDown = isShiftDown;
+	}
+
+	/**
+	 * Update the physics body maxSpeed to match the current speed
+	 */
+	updateBodyMaxSpeed(speed: number): void {
+		if (this.player.container?.body) {
+			(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = speed;
+		}
 	}
 
 	/**
