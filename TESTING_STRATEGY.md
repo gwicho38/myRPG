@@ -9,10 +9,15 @@
     - Root cause: Chat state not properly cleaned up after dialog closed
     - Fix: Added state cleanup in `checkButtonDown()` when closing dialog
 
-2. **Menu Popups Not Showing** ❌ PENDING
+2. **Menu Popups Not Showing** 🔄 INVESTIGATING
     - U and I keys should open attribute/inventory menus
-    - Menus may be hidden, offset, or z-index issues
-    - Location: Check `SceneToggleWatcher` and scene positioning
+    - Key bindings verified in `LuminusKeyboardMouseController.ts:86-92`
+    - Scene toggle logic in `SceneToggleWatcher.ts:5-16`
+    - Possible causes:
+        - Camera positioning/scroll factor issues
+        - Z-index/depth ordering problems
+        - Scene launch/visibility state issues
+    - Next steps: Manual testing to reproduce, add logging to scene lifecycle
 
 3. **Block Toggle Bug** ✅ FIXED
     - Pressing K (block) was toggling movement/attack abilities inappropriately
