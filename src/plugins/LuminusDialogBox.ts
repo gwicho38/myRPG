@@ -418,7 +418,9 @@ export class LuminusDialogBox {
 		} else {
 			if (this.timedEvent) this.timedEvent.remove();
 			this.isAnimatingText = false;
-			this.dialog.textMessage!.text = text;
+			if (this.dialog && this.dialog.textMessage) {
+				this.dialog.textMessage.text = text;
+			}
 		}
 	}
 
@@ -426,8 +428,10 @@ export class LuminusDialogBox {
 	 * Animate text character by character (typewriter effect)
 	 */
 	animateText(): void {
+		if (!this.dialog || !this.dialog.textMessage) return;
+
 		this.eventCounter++;
-		this.dialog.textMessage!.setText(this.dialog.textMessage!.text + this.animationText[this.eventCounter - 1]);
+		this.dialog.textMessage.setText(this.dialog.textMessage.text + this.animationText[this.eventCounter - 1]);
 		this.luminusTypingSoundManager.type(this.animationText[this.eventCounter - 1]);
 
 		// Stops the text animation.

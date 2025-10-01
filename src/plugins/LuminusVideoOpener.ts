@@ -38,7 +38,7 @@ export class LuminusVideoOpener {
 		const video = properties.find((p) => p.name === this.videoIdProperty);
 		if (video && video.name) {
 			this.scene.scene.launch('VideoPlayerScene', {
-				player: this.scene.player,
+				player: (this.scene as any).player,
 				videoId: video.value,
 			});
 		}

@@ -56,10 +56,10 @@ export class LuminusTypingSoundManager {
 	 */
 	create(): void {
 		this.spaceAudioManager = this.scene.sound.add(this.spaceSoundName);
-		this.spaceAudioManager.volume = this.typingSoundVolume;
+		(this.spaceAudioManager as any).volume = this.typingSoundVolume;
 		for (let i = 0; i < this.typingKeySounds.length; i++) {
 			const audio = this.scene.sound.add(this.typingKeySounds[i]);
-			audio.volume = this.typingSoundVolume;
+			(audio as any).volume = this.typingSoundVolume;
 			this.letterAudios.push(audio);
 		}
 	}

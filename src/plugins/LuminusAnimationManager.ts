@@ -69,22 +69,22 @@ export class LuminusAnimationManager extends AnimationNames {
 
 		if (numAngle > -0.66 && numAngle < 0.66) {
 			// Right direction
-			this.entity.anims.play(animation + this.rightAnimationSufix, true);
+			this.entity.anims.play(animation + '-' + this.rightAnimationSufix, true);
 			this.entity.flipX = false;
 		} else if (numAngle > -2.33 && numAngle < -0.66) {
 			// Up direction
-			this.entity.anims.play(animation + this.upAnimationSufix, true);
+			this.entity.anims.play(animation + '-' + this.upAnimationSufix, true);
 		} else if ((numAngle < -2.33 && numAngle >= -3.14) || (numAngle <= 3.14 && numAngle > 2.33)) {
 			// Left direction
-			if (this.entity.anims.animationManager.exists(animation + this.leftAnimationSufix)) {
-				this.entity.anims.play(animation + this.leftAnimationSufix, true);
+			if (this.entity.anims.animationManager.exists(animation + '-' + this.leftAnimationSufix)) {
+				this.entity.anims.play(animation + '-' + this.leftAnimationSufix, true);
 			} else {
-				this.entity.anims.play(animation + this.rightAnimationSufix, true);
+				this.entity.anims.play(animation + '-' + this.rightAnimationSufix, true);
 				this.entity.flipX = true;
 			}
 		} else if (numAngle <= 2.33 && numAngle > 0.66) {
 			// Down direction
-			this.entity.anims.play(animation + this.downAnimationSufix, true);
+			this.entity.anims.play(animation + '-' + this.downAnimationSufix, true);
 		}
 
 		if (this.entity.anims.currentAnim) {
@@ -117,6 +117,7 @@ export class LuminusAnimationManager extends AnimationNames {
 
 		if (this.entity.anims?.animationManager.exists(animation)) {
 			this.entity.anims.play(animation, true);
+			this.entity.flipX = false;
 		} else {
 			// Fallback to right animation with flip
 			const rightAnimation = `${texture}-${this.walkPrefixAnimation}-${this.rightAnimationSufix}`;
