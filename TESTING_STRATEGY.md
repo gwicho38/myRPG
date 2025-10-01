@@ -1,5 +1,27 @@
 # Testing & QA Strategy
 
+## Recently Fixed Issues
+
+### 2025-10-01 Session 2:
+
+4. **Menu Positioning Bug** ✅ FIXED
+    - Inventory and Attribute menus appeared off-screen (bottom right)
+    - Root cause: `resizeAll()` was only called on resize events, not on initial create
+    - Fix: Added `resizeAll()` call at end of `create()` in both scenes
+    - Location: `InventoryScene.ts:241`, `AttributeScene.ts:99`
+
+5. **Shift-to-Run Activation Bug** ✅ FIXED
+    - Shift only worked after pressing another key (U, I, K)
+    - Root cause: `updateRunningState()` required both shift AND movement keys
+    - Fix: Changed shift to toggle mode (press once to enable, press again to disable)
+    - Location: `LuminusMovement.ts:56-62`
+
+6. **Shift-to-Run Toggle Bug** ✅ FIXED
+    - Could not untoggle running mode once activated
+    - Root cause: Running state was tied to both shift AND movement keys being down
+    - Fix: Shift now acts as independent toggle, persists regardless of movement
+    - Location: `LuminusMovement.ts:176-183`
+
 ## Current Issues (2025-10-01)
 
 ### Control System Bugs Identified:

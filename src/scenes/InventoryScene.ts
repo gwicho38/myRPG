@@ -236,6 +236,9 @@ export class InventoryScene extends Phaser.Scene {
 		}
 
 		this.registerKeyboardShortcuts();
+
+		// Position everything correctly on initial create
+		this.resizeAll();
 	}
 
 	registerKeyboardShortcuts(): void {

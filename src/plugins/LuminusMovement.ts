@@ -52,6 +52,15 @@ export class LuminusMovement extends AnimationNames {
 		 */
 		this.shiftKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
+		// Set up shift key toggle for running
+		this.shiftKey.on('down', () => {
+			if (!this.player.isSwimming) {
+				this.player.isRunning = !this.player.isRunning;
+				this.player.speed = this.player.isRunning ? this.player.runSpeed || 300 : this.player.baseSpeed || 200;
+				console.log(`Running mode ${this.player.isRunning ? 'enabled' : 'disabled'}`);
+			}
+		});
+
 		/**
 		 * Virtual joystick plugin
 		 */
@@ -162,19 +171,12 @@ export class LuminusMovement extends AnimationNames {
 
 	/**
 	 * Update the player's running state based on shift key
+	 * Note: Shift now acts as a toggle (press once to enable, press again to disable)
 	 */
 	updateRunningState(): void {
-		if (!this.player || this.player.isSwimming) return;
-
-		const wasRunning = this.player.isRunning;
-		const shouldBeRunning = this.shiftKey.isDown && this.isAnyKeyDown();
-
-		if (shouldBeRunning && !wasRunning) {
-			// Enter running mode
-			this.player.isRunning = true;
-			this.player.speed = this.player.runSpeed || 300;
-		} else if (!shouldBeRunning && wasRunning) {
-			// Exit running mode
+		// Running state is now managed by shift key toggle in constructor
+		// This method just ensures running is disabled when swimming
+		if (this.player && this.player.isSwimming && this.player.isRunning) {
 			this.player.isRunning = false;
 			this.player.speed = this.player.baseSpeed || 200;
 		}
@@ -182,17 +184,11 @@ export class LuminusMovement extends AnimationNames {
 
 	/**
 	 * Update running speed based on shift key state
+	 * @deprecated This method is no longer needed as running is now a toggle
 	 */
 	updateRunningSpeed(): void {
-		if (!this.player || this.player.isSwimming) return;
-
-		if (this.shiftKey.isDown) {
-			this.player.isRunning = true;
-			this.player.speed = this.player.runSpeed || 300;
-		} else {
-			this.player.isRunning = false;
-			this.player.speed = this.player.baseSpeed || 200;
-		}
+		// Running speed is now managed by shift key toggle in constructor
+		// Keeping this method for backward compatibility but it does nothing
 	}
 
 	/**
