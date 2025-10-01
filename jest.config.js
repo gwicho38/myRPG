@@ -2,21 +2,19 @@ module.exports = {
 	testEnvironment: 'jsdom',
 	roots: ['<rootDir>/src'],
 	testMatch: ['**/__tests__/**/*.{js,ts}', '**/?(*.)+(spec|test).{js,ts}'],
-	testPathIgnorePatterns: ['/node_modules/', 'setup.config.js'],
+	testPathIgnorePatterns: ['/node_modules/', 'setup.config.ts'],
 	transform: {
 		'^.+\\.js$': 'babel-jest',
 		'^.+\\.ts$': 'ts-jest',
 	},
-	transformIgnorePatterns: [
-		'node_modules/(?!(phaser3-juice-plugin|phaser3-nineslice|phaser3-rex-plugins)/)',
-	],
+	transformIgnorePatterns: ['node_modules/(?!(phaser3-juice-plugin|phaser3-nineslice|phaser3-rex-plugins)/)'],
 	moduleNameMapper: {
-		'\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/styleMock.js',
-		'\\.(gif|ttf|eot|svg|png|jpg|jpeg|mp4)$': '<rootDir>/src/__mocks__/fileMock.js',
-		'^phaser$': '<rootDir>/src/__mocks__/phaserMock.js',
-		'^phaser3-juice-plugin$': '<rootDir>/src/__mocks__/phaserJuiceMock.js',
-		'^phaser3-nineslice$': '<rootDir>/src/__mocks__/ninesliceMock.js',
-		'^phaser3-rex-plugins/plugins/(.*)$': '<rootDir>/src/__mocks__/rexPluginsMock.js',
+		'\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/styleMock.ts',
+		'\\.(gif|ttf|eot|svg|png|jpg|jpeg|mp4)$': '<rootDir>/src/__mocks__/fileMock.ts',
+		'^phaser$': '<rootDir>/src/__mocks__/phaserMock.ts',
+		'^phaser3-juice-plugin$': '<rootDir>/src/__mocks__/phaserJuiceMock.ts',
+		'^phaser3-nineslice$': '<rootDir>/src/__mocks__/ninesliceMock.ts',
+		'^phaser3-rex-plugins/plugins/(.*)$': '<rootDir>/src/__mocks__/rexPluginsMock.ts',
 	},
 	collectCoverageFrom: [
 		'src/**/*.{js,ts}',
@@ -29,5 +27,5 @@ module.exports = {
 	],
 	coverageDirectory: 'coverage',
 	coverageReporters: ['text', 'lcov', 'html'],
-	setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.config.js'],
+	setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.config.ts'],
 };

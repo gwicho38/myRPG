@@ -391,4 +391,4 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 	PluginManager.register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
 };
 
-export = AnimatedTiles;
+export default AnimatedTiles;
