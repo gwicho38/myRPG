@@ -362,6 +362,15 @@ export class LuminusBattleManager extends AnimationNames {
 	 * @param atacker the atacker.
 	 */
 	atack(atacker: any): void {
+		console.log('[BattleManager] Attack attempted:', {
+			canAtack: atacker.canAtack,
+			canMove: atacker.canMove,
+			canBlock: atacker.canBlock,
+			isBlocking: atacker.isBlocking,
+			isAtacking: atacker.isAtacking,
+			isSwimming: atacker.isSwimming,
+		});
+
 		if (atacker.canAtack && atacker.canMove) {
 			this.phaserJuice = new PhaserJuice(atacker.scene, atacker.scene.plugins);
 			atacker.isAtacking = true;

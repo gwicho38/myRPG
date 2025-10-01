@@ -21,7 +21,7 @@ module.exports = merge(base, {
 			new TerserPlugin({
 				terserOptions: {
 					compress: {
-						drop_console: true,
+						drop_console: false, // Temporarily enabled for debugging
 					},
 					output: {
 						comments: false,
