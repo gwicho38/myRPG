@@ -473,6 +473,10 @@ export class LuminusDialogBox {
 
 		if (animate) {
 			this.isAnimatingText = true;
+			if (this.dialog && this.dialog.textMessage) {
+				this.dialog.textMessage.visible = true;
+				this.dialog.textMessage.setText(''); // Clear text before animation starts
+			}
 			this.timedEvent = this.scene.time.addEvent({
 				delay: this.typewriterDelay,
 				callback: this.animateText,
@@ -483,6 +487,7 @@ export class LuminusDialogBox {
 		} else {
 			this.isAnimatingText = false;
 			if (this.dialog && this.dialog.textMessage) {
+				this.dialog.textMessage.visible = true;
 				this.dialog.textMessage.setText(text);
 				console.log('[LuminusDialogBox] Text set directly (no animation):', text.substring(0, 50));
 			} else {
@@ -599,6 +604,7 @@ export class LuminusDialogBox {
 			// Close dialog
 			console.log('[LuminusDialogBox] Closing dialog (final page)');
 			this.dialog.visible = false;
+			this.dialog.textMessage.visible = false;
 			this.actionButton.visible = false;
 			this.isOverlapingChat = false;
 			this.showRandomChat = false;
