@@ -92,7 +92,7 @@
 	},
 	"dependencies": {
 		"@mikewesthad/dungeon": "^2.0.1",
-		"css-loader": "^5.1.1",
+		"css-loader": "^7.1.2",
 		"ink-docstrap": "^0.5.4",
 		"lodash": "^4.17.21",
 		"nes.css": "^2.3.0",
