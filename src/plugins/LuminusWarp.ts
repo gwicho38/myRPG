@@ -35,7 +35,7 @@ export class LuminusWarp {
 	/**
 	 * Duration of the fade time of the camera.
 	 */
-	defaultFadeTime: number = 1000;
+	defaultFadeTime: number = 300;
 
 	/**
 	 * Duration of the fade out time of the camera.

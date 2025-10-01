@@ -23,7 +23,7 @@ class Logger {
 	private static instance: Logger;
 	private logLevel: LogLevel = LogLevel.INFO;
 	private logBuffer: LogEntry[] = [];
-	private maxBufferSize = 1000;
+	private maxBufferSize = 300;
 	private categories: Set<string> = new Set();
 	private enabledCategories: Set<string> = new Set(['*']);
 	private isProduction = process.env.NODE_ENV === 'production';

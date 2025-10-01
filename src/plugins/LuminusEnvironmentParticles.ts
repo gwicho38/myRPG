@@ -139,7 +139,7 @@ export class LuminusEnvironmentParticles {
 			speedY: { min: 5, max: 20 },
 			x: { min: -(width / 2), max: width / 2 },
 			y: { min: -(height / 2), max: height / 2 },
-			lifespan: 10000,
+			lifespan: 3000,
 			scale: { start: 1.3, end: 0.7 },
 			alpha: { start: 0.4, end: 1 },
 			radial: true,

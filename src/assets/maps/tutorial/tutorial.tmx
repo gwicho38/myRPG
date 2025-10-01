@@ -47,7 +47,7 @@
   <tile id="1320" terrain=",1,,"/>
   <tile id="1321" terrain="1,,,"/>
  </tileset>
- <tileset firstgid="1958" name="inner" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="1000" columns="40">
+ <tileset firstgid="1958" name="inner" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="300" columns="40">
   <image source="../tilesets/Inner-extruded.png" width="720" height="450"/>
   <terraintypes>
    <terrain name="Carpet" tile="321"/>
