@@ -335,8 +335,14 @@ export class LuminusBattleManager extends AnimationNames {
 	stopBlock(blocker: any): void {
 		if (blocker.isBlocking) {
 			blocker.isBlocking = false;
-			blocker.canMove = true;
-			blocker.canAtack = true;
+
+			// Only re-enable abilities if no other system has disabled them
+			// Check canBlock as a proxy: if it's false, dialog/menu has disabled all abilities
+			if (blocker.canBlock !== false) {
+				blocker.canMove = true;
+				blocker.canAtack = true;
+			}
+			// If canBlock is false, leave canMove/canAtack as they are (disabled by dialog/menu)
 
 			// Remove visual feedback
 			blocker.clearTint();

@@ -14,11 +14,12 @@
     - Menus may be hidden, offset, or z-index issues
     - Location: Check `SceneToggleWatcher` and scene positioning
 
-3. **Block Toggle Bug** ❌ PENDING
-    - Pressing K (block) seems to toggle movement/attack abilities
-    - Root cause: `stopBlock()` unconditionally re-enables abilities
-    - This conflicts with dialog system which also disables abilities
-    - Location: `LuminusBattleManager.ts:334-350`
+3. **Block Toggle Bug** ✅ FIXED
+    - Pressing K (block) was toggling movement/attack abilities inappropriately
+    - Root cause: `stopBlock()` unconditionally re-enabled abilities
+    - This conflicted with dialog system which also disables abilities
+    - Fix: Check `canBlock` status before re-enabling abilities in `stopBlock()`
+    - Location: `LuminusBattleManager.ts:340-350`
 
 ## Root Cause Analysis
 
@@ -163,10 +164,10 @@ src/plugins/attributes/ExpManager.ts:110 - EmitZoneData type mismatch
 ### Immediate (This Sprint):
 
 1. ✅ Fix dialog state cleanup bug
-2. ❌ Create `PlayerCapabilityManager` class
-3. ❌ Refactor `block()`/`stopBlock()` to use capability manager
-4. ❌ Fix menu scene positioning issues
-5. ❌ Add integration tests for all control combinations
+2. ✅ Fix block toggle bug (stopBlock re-enabling during dialog)
+3. ✅ Create integration test suite for control interactions
+4. ❌ Fix menu scene positioning issues (U/I keys)
+5. 🔄 Consider refactoring to `PlayerCapabilityManager` for long-term maintainability
 
 ### Short-term (Next 2 Sprints):
 

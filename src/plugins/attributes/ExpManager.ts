@@ -107,7 +107,7 @@ export class ExpManager {
 			scale: { start: 0, end: 0.15, ease: 'Quad.easeOut' },
 			alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
 			blendMode: 'ADD',
-			emitZone: { type: 'random', source: logoSource },
+			emitZone: { type: 'edge', source: logoSource, quantity: 1 } as any,
 		});
 
 		// let particles = entity.scene.add.particles('flares');
