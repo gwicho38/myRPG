@@ -83,6 +83,8 @@ export class LuminusDialogBox {
 	public animationText: string[];
 	public eventCounter: number;
 	public timedEvent: Phaser.Time.TimerEvent | null;
+	public typewriterDelay: number;
+	public justFastForwarded: boolean;
 
 	/**
 	 * This class allows one to create Dialogs.
@@ -207,6 +209,16 @@ export class LuminusDialogBox {
 		this.animationText = [];
 		this.eventCounter = 0;
 		this.timedEvent = null;
+
+		/**
+		 * Delay between each character in the typewriter effect (in milliseconds)
+		 */
+		this.typewriterDelay = 50;
+
+		/**
+		 * Flag to track if we just fast-forwarded text
+		 */
+		this.justFastForwarded = false;
 
 		// Initialize dialog objects (will be created in create method)
 		this.dialog = null as any;
@@ -377,9 +389,33 @@ export class LuminusDialogBox {
 	}
 
 	/**
+	 * Check if any input buttons were just pressed (new press, not held)
+	 */
+	checkButtonsJustPressed(): boolean {
+		return (
+			Phaser.Input.Keyboard.JustDown(this.keyObj) ||
+			this.isMobileButtonJustPressed() ||
+			(this.gamepad && this.gamepad.A)
+		);
+	}
+
+	/**
 	 * Check if mobile buttons are pressed
 	 */
 	isMobileButtonPressed(): boolean {
+		return (
+			(this.buttonA && this.buttonA.isDown) ||
+			(this.buttonB && this.buttonB.isDown) ||
+			(this.gamepad && this.gamepad.A)
+		);
+	}
+
+	/**
+	 * Check if mobile buttons were just pressed
+	 */
+	isMobileButtonJustPressed(): boolean {
+		// For mobile buttons, we'll use the same logic for now
+		// TODO: Implement proper "just pressed" detection for mobile buttons
 		return (
 			(this.buttonA && this.buttonA.isDown) ||
 			(this.buttonB && this.buttonB.isDown) ||
@@ -421,7 +457,16 @@ export class LuminusDialogBox {
 			dialogExists: !!this.dialog,
 			textMessageExists: !!this.dialog?.textMessage,
 			textMessageActive: this.dialog?.textMessage?.active,
+			wasAnimating: this.isAnimatingText,
 		});
+
+		// IMPORTANT: Stop any existing animation first
+		if (this.timedEvent) {
+			this.timedEvent.destroy();
+			this.timedEvent = null;
+			console.log('[LuminusDialogBox] Stopped existing timer');
+		}
+
 		// Reset the dialog
 		this.eventCounter = 0;
 		this.animationText = text.split('');
@@ -429,17 +474,17 @@ export class LuminusDialogBox {
 		if (animate) {
 			this.isAnimatingText = true;
 			this.timedEvent = this.scene.time.addEvent({
-				delay: 50,
+				delay: this.typewriterDelay,
 				callback: this.animateText,
 				callbackScope: this,
 				repeat: this.animationText.length - 1,
 			});
+			console.log('[LuminusDialogBox] Started text animation with delay:', this.typewriterDelay);
 		} else {
-			if (this.timedEvent) this.timedEvent.remove();
 			this.isAnimatingText = false;
 			if (this.dialog && this.dialog.textMessage) {
-				this.dialog.textMessage.text = text;
-				console.log('[LuminusDialogBox] Text set directly (no animation)');
+				this.dialog.textMessage.setText(text);
+				console.log('[LuminusDialogBox] Text set directly (no animation):', text.substring(0, 50));
 			} else {
 				console.warn('[LuminusDialogBox] Cannot set text - dialog or textMessage is null', {
 					dialogExists: !!this.dialog,
@@ -477,8 +522,9 @@ export class LuminusDialogBox {
 	 * Main update loop for dialog system
 	 */
 	checkUpdate(): void {
-		if (this.actionButton && this.player && this.player.canMove && this.canShowDialog) {
-			// Handle dialog button interactions
+		if (this.actionButton && this.player) {
+			// Always check for dialog button interactions when dialog system is active
+			// This allows fast-forwarding and dialog advancement even when canShowDialog is false
 			this.checkButtonDown();
 		}
 	}
@@ -487,17 +533,34 @@ export class LuminusDialogBox {
 	 * Check for button presses to advance dialog
 	 */
 	checkButtonDown(): void {
-		// Only log when there's actual dialog activity (not every frame)
-		// console.log('[LuminusDialogBox] checkButtonDown called', {
-		// 	isOverlapingChat: this.isOverlapingChat,
-		// 	showRandomChat: this.showRandomChat,
-		// 	dialogVisible: this.dialog?.visible,
-		// 	chatLength: this.chat.length,
-		// 	currentChatIndex: this.currentChat?.index,
-		// 	buttonPressed: this.checkButtonsPressed(),
-		// });
+		// Fast-forward: Skip animation if space is pressed during typing
+		if (this.isAnimatingText) {
+			console.log('[LuminusDialogBox] Currently animating, checking for fast-forward...', {
+				buttonPressed: this.checkButtonsPressed(),
+				keyDown: this.keyObj.isDown,
+				currentPage: this.currentPage,
+				hasPages: this.pagesMessage.length > 0,
+			});
 
-		if ((this.isOverlapingChat || this.showRandomChat) && this.checkButtonsPressed() && !this.dialog.visible) {
+			if (this.checkButtonsPressed()) {
+				console.log('[LuminusDialogBox] ⚡ Fast-forwarding text animation!');
+				this.setText(this.pagesMessage[this.currentPage], false);
+				this.justFastForwarded = true;
+				return; // Exit early to prevent other actions
+			}
+		}
+
+		// Use JustPressed for dialog advancement, OR allow held button if we just fast-forwarded
+		const shouldAdvance = this.checkButtonsJustPressed() || (this.justFastForwarded && this.checkButtonsPressed());
+
+		if (!shouldAdvance) {
+			return; // No new button press, exit early
+		}
+
+		// Clear the fast-forward flag since we're now advancing
+		this.justFastForwarded = false;
+
+		if ((this.isOverlapingChat || this.showRandomChat) && !this.dialog.visible) {
 			// First time, show the Dialog.
 			console.log('[LuminusDialogBox] Opening dialog (first time)');
 			this.currentChat = this.chat[0];
@@ -511,14 +574,9 @@ export class LuminusDialogBox {
 			this.player.canMove = false;
 			this.player.canAtack = false;
 			this.player.canBlock = false;
-		} else if (this.isAnimatingText && this.checkButtonsPressed()) {
-			// Skips the typing animation.
-			console.log('[LuminusDialogBox] Skipping text animation (space pressed during typing)');
-			this.setText(this.pagesMessage[this.currentPage], false);
 		} else if (
 			!this.isAnimatingText &&
 			this.currentPage !== this.pagesNumber - 1 &&
-			this.checkButtonsPressed() &&
 			this.dialog.visible &&
 			this.dialog.textMessage &&
 			this.dialog.textMessage.active
@@ -528,8 +586,8 @@ export class LuminusDialogBox {
 			this.currentPage++;
 			this.dialog.textMessage.text = '';
 			this.setText(this.pagesMessage[this.currentPage], true);
-		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1 && this.checkButtonsPressed()) {
-			// FIXED: Added button press check to prevent auto-advance
+		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1) {
+			// Advance to next chat message
 			const index = this.currentChat.index;
 			console.log(`[LuminusDialogBox] Advancing to next chat message (${index + 1}/${this.chat.length})`);
 			this.currentChat = this.chat[index + 1];
@@ -537,12 +595,7 @@ export class LuminusDialogBox {
 			this.pagesMessage = [];
 			this.setText('', false);
 			this.showDialog(false);
-		} else if (
-			this.checkButtonsPressed() &&
-			this.dialog.visible &&
-			this.dialog.textMessage &&
-			this.dialog.textMessage.active
-		) {
+		} else if (this.dialog.visible && this.dialog.textMessage && this.dialog.textMessage.active) {
 			// Close dialog
 			console.log('[LuminusDialogBox] Closing dialog (final page)');
 			this.dialog.visible = false;
@@ -550,7 +603,7 @@ export class LuminusDialogBox {
 			this.isOverlapingChat = false;
 			this.showRandomChat = false;
 
-			// FIXED: Clean up chat state to prevent reopening
+			// Clean up chat state to prevent reopening
 			this.chat = [];
 			this.currentChat = null;
 			this.dialogMessage = '';
@@ -566,19 +619,6 @@ export class LuminusDialogBox {
 			this.player.canAtack = true;
 			this.player.canBlock = true;
 			this.scene.events.emit('dialogComplete');
-		} else if (this.checkButtonsPressed()) {
-			// Log when button is pressed but no action taken
-			console.log('[LuminusDialogBox] Button pressed but no action taken', {
-				isAnimatingText: this.isAnimatingText,
-				currentPage: this.currentPage,
-				pagesNumber: this.pagesNumber,
-				dialogVisible: this.dialog?.visible,
-				textMessageExists: !!this.dialog?.textMessage,
-				textMessageActive: this.dialog?.textMessage?.active,
-				isOverlapingChat: this.isOverlapingChat,
-				showRandomChat: this.showRandomChat,
-				chatLength: this.chat.length,
-			});
 		}
 	}
 
