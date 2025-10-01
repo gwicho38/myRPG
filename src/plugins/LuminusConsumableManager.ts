@@ -100,7 +100,7 @@ export class LuminusConsumableManager {
 					player.scene.sound.play(item.useSfx);
 					consumableBonus.timer.reset({
 						callbackScope: this,
-						delay: consumableBonus.time * 1000, // Time to restore the attributes to it's default value.
+						delay: consumableBonus.time * 300, // Time to restore the attributes to it's default value.
 						callback: this.changeStats, // Callback
 						args: [player, consumableBonus, -1], // Params
 					});
@@ -112,7 +112,7 @@ export class LuminusConsumableManager {
 					player.scene.sound.play(item.useSfx);
 					bonusStatus.timer = player.scene.time.addEvent({
 						callbackScope: this,
-						delay: bonusStatus.time * 1000, // Time to restore the attributes to it's default value.
+						delay: bonusStatus.time * 300, // Time to restore the attributes to it's default value.
 						callback: this.changeStats, // Callback
 						args: [player, bonusStatus, -1], // Params
 					});

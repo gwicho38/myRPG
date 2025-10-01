@@ -56,7 +56,7 @@ export class LuminusEntityTextDisplay {
 	 * The amount of time that the vertical movement will take to finish.
 	 * @default
 	 */
-	verticalMovementDuration: number = 1000;
+	verticalMovementDuration: number = 300;
 
 	/**
 	 * Space between lines of the dialog text.
@@ -103,7 +103,7 @@ export class LuminusEntityTextDisplay {
 		if (isCritical) {
 			// this.fontColor = this.criticalDamageColor;
 			criticalSprite = this.scene.add.sprite(position.x, position.y, 'critical_2x');
-			criticalSprite.setDepth(10000); // Ensure it's on top
+			criticalSprite.setDepth(3000); // Ensure it's on top
 			console.log('[EntityTextDisplay] Critical sprite created:', {
 				x: criticalSprite.x,
 				y: criticalSprite.y,
@@ -125,7 +125,7 @@ export class LuminusEntityTextDisplay {
 		});
 
 		damageSprite.setOrigin(0.5, 1);
-		damageSprite.setDepth(10000); // Ensure it's on top
+		damageSprite.setDepth(3000); // Ensure it's on top
 
 		console.log('[EntityTextDisplay] Damage text created:', {
 			text: damageSprite.text,

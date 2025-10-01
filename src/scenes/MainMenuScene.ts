@@ -236,7 +236,7 @@ Forest - Intro Scene Music by "syncopika"
 
 	startGame(): void {
 		this.themeSound!.stop();
-		this.cameras.main.fadeOut(1000, 0, 0, 0);
+		this.cameras.main.fadeOut(300, 0, 0, 0);
 		const startSound = this.sound.add('start_game');
 		startSound.play();
 		this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -253,7 +253,7 @@ Forest - Intro Scene Music by "syncopika"
 		const saveData = this.saveManager!.loadGame(false);
 		if (saveData) {
 			this.themeSound!.stop();
-			this.cameras.main.fadeOut(1000, 0, 0, 0);
+			this.cameras.main.fadeOut(300, 0, 0, 0);
 			const startSound = this.sound.add('start_game');
 			startSound.play();
 			this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {

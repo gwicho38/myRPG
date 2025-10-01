@@ -51,9 +51,9 @@ export class LuminusSaveManager {
 		this.checkpointKey = 'luminus_rpg_checkpoint';
 
 		/**
-		 * Interval in milliseconds for automatic checkpoints (30 seconds for testing, change to 3*60*1000 for production)
+		 * Interval in milliseconds for automatic checkpoints (30 seconds for testing, change to 3*60*300 for production)
 		 */
-		this.checkpointInterval = 30 * 1000; // 30 seconds for easier testing
+		this.checkpointInterval = 30 * 300; // 30 seconds for easier testing
 
 		/**
 		 * Timer for automatic checkpoints
@@ -105,7 +105,7 @@ export class LuminusSaveManager {
 			return;
 		}
 
-		console.log('Starting auto-save timer with interval:', this.checkpointInterval / 1000, 'seconds');
+		console.log('Starting auto-save timer with interval:', this.checkpointInterval / 300, 'seconds');
 
 		try {
 			this.checkpointTimer = this.scene.time.addEvent({
@@ -335,7 +335,7 @@ export class LuminusSaveManager {
 			targets: notification,
 			alpha: 0,
 			duration: 2000,
-			delay: 1000,
+			delay: 300,
 			onComplete: () => {
 				notification.destroy();
 			},
