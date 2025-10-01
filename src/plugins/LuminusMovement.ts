@@ -52,14 +52,13 @@ export class LuminusMovement extends AnimationNames {
 		 */
 		this.shiftKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
-		// Set up shift key toggle for running
-		this.shiftKey.on('down', () => {
-			if (!this.player.isSwimming) {
-				this.player.isRunning = !this.player.isRunning;
-				this.player.speed = this.player.isRunning ? this.player.runSpeed || 300 : this.player.baseSpeed || 200;
-				console.log(`Running mode ${this.player.isRunning ? 'enabled' : 'disabled'}`);
-			}
-		});
+		// Initialize running state
+		if (this.player.isRunning === undefined) {
+			this.player.isRunning = false;
+		}
+		this.player.wasShiftDown = false;
+
+		console.log('[LuminusMovement] Constructor completed - Shift toggle initialized');
 
 		/**
 		 * Virtual joystick plugin
@@ -174,12 +173,30 @@ export class LuminusMovement extends AnimationNames {
 	 * Note: Shift now acts as a toggle (press once to enable, press again to disable)
 	 */
 	updateRunningState(): void {
-		// Running state is now managed by shift key toggle in constructor
-		// This method just ensures running is disabled when swimming
-		if (this.player && this.player.isSwimming && this.player.isRunning) {
-			this.player.isRunning = false;
-			this.player.speed = this.player.baseSpeed || 200;
+		if (!this.player || this.player.isSwimming) {
+			// Disable running when swimming
+			if (this.player && this.player.isRunning) {
+				this.player.isRunning = false;
+				this.player.speed = this.player.baseSpeed || 200;
+			}
+			return;
 		}
+
+		// Detect shift key press (toggle on press, not hold)
+		const isShiftDown = this.shiftKey.isDown;
+		const wasShiftDown = this.player.wasShiftDown || false;
+
+		// Toggle running when shift is pressed (transition from up to down)
+		if (isShiftDown && !wasShiftDown) {
+			this.player.isRunning = !this.player.isRunning;
+			this.player.speed = this.player.isRunning ? this.player.runSpeed || 300 : this.player.baseSpeed || 200;
+			console.log(
+				`[LuminusMovement] Running toggled ${this.player.isRunning ? 'ON' : 'OFF'} - Speed: ${this.player.speed}`
+			);
+		}
+
+		// Store shift state for next frame
+		this.player.wasShiftDown = isShiftDown;
 	}
 
 	/**
