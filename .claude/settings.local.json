@@ -32,7 +32,21 @@
 			"Bash(test:*)",
 			"Bash(cat:*)",
 			"Bash(npm run build:ios:*)",
-			"Bash(npx husky init:*)"
+			"Bash(npx husky init:*)",
+			"Bash(find:*)",
+			"Bash(while read name)",
+			"Bash(do if find src -name \"$name.js\" -type f)",
+			"Bash(then echo \"$name (has both .js and .ts)\")",
+			"Bash(fi)",
+			"Bash(done)",
+			"Bash(xargs:*)",
+			"Bash(npm start)",
+			"Bash(node:*)",
+			"Bash(git reset:*)",
+			"Read(//Users/lefv/repos/Outlet/**)",
+			"Bash(flutter analyze:*)",
+			"Bash(npx eslint:*)",
+			"Bash(git checkout:*)"
 		],
 		"deny": [],
 		"ask": []
