@@ -63,7 +63,7 @@ export class LuminusBattleManager extends AnimationNames {
 	/**
 	 * The plugin that will make the hit effect to the player and enemy.
 	 */
-	phaserJuice: PhaserJuice | null;
+	phaserJuice: any | null;
 
 	/**
 	 * The atack variation. This number represents a percentage of variation of the damage.
@@ -251,7 +251,8 @@ export class LuminusBattleManager extends AnimationNames {
 			this.luminusEntityTextDisplay.displayDamage(damage, target, isCritical);
 		} else {
 			this.luminusEntityTextDisplay = new LuminusEntityTextDisplay(target.scene);
-			this.luminusEntityTextDisplay.displayDamage('MISS', target);
+			// Display 0 damage for a miss
+			this.luminusEntityTextDisplay.displayDamage(0, target);
 		}
 
 		/**

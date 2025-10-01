@@ -484,6 +484,15 @@ export class LuminusDialogBox {
 	 * Check for button presses to advance dialog
 	 */
 	checkButtonDown(): void {
+		console.log('[LuminusDialogBox] checkButtonDown called', {
+			isOverlapingChat: this.isOverlapingChat,
+			showRandomChat: this.showRandomChat,
+			dialogVisible: this.dialog?.visible,
+			chatLength: this.chat.length,
+			currentChatIndex: this.currentChat?.index,
+			buttonPressed: this.checkButtonsPressed(),
+		});
+
 		if ((this.isOverlapingChat || this.showRandomChat) && this.checkButtonsPressed() && !this.dialog.visible) {
 			// First time, show the Dialog.
 			console.log('[LuminusDialogBox] Opening dialog (first time)');
@@ -515,7 +524,8 @@ export class LuminusDialogBox {
 			this.currentPage++;
 			this.dialog.textMessage.text = '';
 			this.setText(this.pagesMessage[this.currentPage], true);
-		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1) {
+		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1 && this.checkButtonsPressed()) {
+			// FIXED: Added button press check to prevent auto-advance
 			const index = this.currentChat.index;
 			console.log(`[LuminusDialogBox] Advancing to next chat message (${index + 1}/${this.chat.length})`);
 			this.currentChat = this.chat[index + 1];
@@ -535,6 +545,15 @@ export class LuminusDialogBox {
 			this.actionButton.visible = false;
 			this.isOverlapingChat = false;
 			this.showRandomChat = false;
+
+			// FIXED: Clean up chat state to prevent reopening
+			this.chat = [];
+			this.currentChat = null;
+			this.dialogMessage = '';
+			this.pagesMessage = [];
+			this.pagesNumber = 0;
+			this.currentPage = 0;
+
 			if (this.player.container.body && 'maxSpeed' in this.player.container.body) {
 				(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = this.player.speed;
 			}
@@ -552,6 +571,9 @@ export class LuminusDialogBox {
 				dialogVisible: this.dialog?.visible,
 				textMessageExists: !!this.dialog?.textMessage,
 				textMessageActive: this.dialog?.textMessage?.active,
+				isOverlapingChat: this.isOverlapingChat,
+				showRandomChat: this.showRandomChat,
+				chatLength: this.chat.length,
 			});
 		}
 	}
