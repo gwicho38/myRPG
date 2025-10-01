@@ -282,7 +282,7 @@ export class LuminusDialogBox {
 			60, // rightWidth
 			32, // topHeight
 			32 // bottomHeight
-		) as IDialog;
+		) as unknown as IDialog;
 
 		this.dialog.setScrollFactor(0, 0).setOrigin(0, 0).setDepth(999999);
 		this.dialog.visible = false;
@@ -385,14 +385,14 @@ export class LuminusDialogBox {
 	 * Check if any input buttons are currently pressed
 	 */
 	checkButtonsPressed(): boolean {
-		return this.keyObj.isDown || this.isMobileButtonPressed() || (this.gamepad && this.gamepad.A);
+		return !!(this.keyObj.isDown || this.isMobileButtonPressed() || (this.gamepad && this.gamepad.A));
 	}
 
 	/**
 	 * Check if any input buttons were just pressed (new press, not held)
 	 */
 	checkButtonsJustPressed(): boolean {
-		return (
+		return !!(
 			Phaser.Input.Keyboard.JustDown(this.keyObj) ||
 			this.isMobileButtonJustPressed() ||
 			(this.gamepad && this.gamepad.A)
