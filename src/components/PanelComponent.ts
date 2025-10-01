@@ -152,15 +152,29 @@ export class PanelComponent {
 			this.panelMaxWidth = this.scene.cameras.main.width - this.panelScreenMargin * 4;
 			this.panelMaxHeight = this.scene.cameras.main.height - this.panelScreenMargin * 4;
 		}
+
+		// Check if texture exists
+		const textureExists = this.scene.textures.exists(this.inventoryBackgroundTexture);
+		console.log('[PanelComponent] Creating background:', {
+			textureKey: this.inventoryBackgroundTexture,
+			textureExists,
+			sceneKey: this.scene.scene.key,
+			width: this.panelMaxWidth,
+			height: this.panelMaxHeight,
+		});
+
 		this.panelBackground = this.scene.add
 			.nineslice(
 				this.scene.scale.width / 2 - this.panelMaxWidth / 2,
 				this.scene.scale.height / 2 - this.panelMaxHeight / 2,
-				this.panelMaxWidth,
-				this.panelMaxHeight, // the width and height of your object
-				this.inventoryBackgroundTexture, // a key to an already loaded image
-				this.nineSliceOffset, // the width and height to offset for a corner slice
-				this.nineSliceOffset // (optional) pixels to offset when computing the safe usage area
+				this.inventoryBackgroundTexture, // texture key - must come before dimensions
+				undefined, // frame - use undefined for single-frame textures
+				this.panelMaxWidth, // width
+				this.panelMaxHeight, // height
+				this.nineSliceOffset, // leftWidth
+				this.nineSliceOffset, // rightWidth
+				this.nineSliceOffset, // topHeight
+				this.nineSliceOffset // bottomHeight
 			)
 			.setScrollFactor(0, 0)
 			.setOrigin(0, 0);
