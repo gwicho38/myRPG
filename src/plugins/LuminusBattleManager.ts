@@ -431,7 +431,8 @@ export class LuminusBattleManager extends AnimationNames {
 						(_h: any, enemy: any) => {
 							this.takeDamage(atacker, enemy);
 							enemy.canTakeDamage = false;
-							atacker.canAtack = false;
+							// Note: canAtack is already false from line 396, don't set it again here
+							// as it can override the animation completion handler that restores it
 							atackedEnemies.push(enemy);
 						},
 						(_h: any, enemy: any) => {
@@ -453,8 +454,9 @@ export class LuminusBattleManager extends AnimationNames {
 							this.takeDamage(atacker, enemy);
 							enemy.canTakeDamage = false;
 							atackedEnemies.push(enemy);
-							atacker.canAtack = false;
+							// Note: canAtack is already false from line 396, don't set it again here
 							// if (atacker.anims.getProgress() === 1) {
+							// as it can override the animation completion handler that restores it
 							// }
 						},
 						(_h: any, _e: any) => {
