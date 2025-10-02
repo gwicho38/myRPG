@@ -21,6 +21,7 @@ import { AttributeScene } from './scenes/AttributeScene';
 import { TownScene } from './scenes/TownScene';
 import { CaveScene } from './scenes/CaveScene';
 import { OverworldScene } from './scenes/OverworldScene';
+import { GameOverScene } from './scenes/GameOverScene';
 
 // Create canvas with willReadFrequently attribute
 const canvas = document.getElementById('luminus-rpg') as HTMLCanvasElement;
@@ -79,6 +80,7 @@ const config: Phaser.Types.Core.GameConfig = {
 		SettingScene,
 		VideoPlayerScene,
 		AttributeScene,
+		GameOverScene,
 	],
 	input: {
 		gamepad: true,
