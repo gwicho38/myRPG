@@ -477,10 +477,16 @@ export class LuminusBattleManager extends AnimationNames {
 			atacker.once(
 				Phaser.Animations.Events.ANIMATION_COMPLETE,
 				(animationState: any) => {
+					console.log('[BattleManager] Attack animation complete:', {
+						animKey: animationState.key,
+						expectedKey: `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
+						matches: animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
+					});
 					if (animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`) {
 						atacker.isAtacking = false;
 						atacker.container.body.maxSpeed = atacker.speed;
 						atacker.canAtack = true; // Enables the atack once the player finishes the animation
+						console.log('[BattleManager] Attack complete - canAtack restored to true');
 						if (atacker.entityName === this.enemyConstructorName) {
 							hitBoxSprite = this.createHitBox(atacker);
 							hitBoxSprite.anims.play(this.hitboxSpriteName);
