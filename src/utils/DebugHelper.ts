@@ -288,6 +288,37 @@ class DebugHelper {
 	}
 
 	/**
+	 * Safely extract config info without circular references
+	 */
+	private getSafeConfig(): any {
+		if (!this.game?.config) return {};
+
+		return {
+			width: this.game.config.width,
+			height: this.game.config.height,
+			type: this.game.config.type,
+			parent: typeof this.game.config.parent === 'string' ? this.game.config.parent : '[HTMLElement]',
+			physics: this.game.config.physics
+				? {
+						default: (this.game.config.physics as any).default,
+						arcade: (this.game.config.physics as any).arcade
+							? {
+									gravity: (this.game.config.physics as any).arcade.gravity,
+									debug: (this.game.config.physics as any).arcade.debug,
+							  }
+							: undefined,
+				  }
+				: undefined,
+			scale: this.game.config.scale
+				? {
+						mode: (this.game.config.scale as any).mode,
+						autoCenter: (this.game.config.scale as any).autoCenter,
+				  }
+				: undefined,
+		};
+	}
+
+	/**
 	 * Create a comprehensive debug dump of the current game state
 	 */
 	dump(): GameStateDump {
@@ -306,7 +337,7 @@ class DebugHelper {
 			},
 			phaser: {
 				version: Phaser.VERSION,
-				config: this.game?.config || {},
+				config: this.getSafeConfig(),
 				stats: {
 					fps: this.game?.loop.actualFps || 0,
 					delta: this.game?.loop.delta || 0,
