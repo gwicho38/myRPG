@@ -218,6 +218,9 @@ export class LuminusInterfaceController {
 	}
 
 	menuHistoryRetrieve(): void {
+		if (this.menuHistory.length === 0) {
+			return;
+		}
 		const history = this.menuHistory[this.menuHistory.length - 1];
 		this.removeCurrentSelectionHighlight();
 		this.currentElementAction = history.currentElementAction;
@@ -228,7 +231,7 @@ export class LuminusInterfaceController {
 		if (this.currentElementAction && this.currentElementAction.element) {
 			this.updateHighlightedElement(this.currentElementAction.element);
 		}
-		delete this.menuHistory[this.menuHistory.length - 1];
+		this.menuHistory.pop();
 	}
 
 	/**
@@ -476,15 +479,20 @@ export class LuminusInterfaceController {
 	 * @param _args
 	 * @returns
 	 */
-	executeFunctionByName(functionName: string, context: any, _args: any): any {
+	executeFunctionByName(functionName: string, context: any, args: any): any {
 		if (functionName) {
-			const functionArgs = Array.prototype.slice.call(arguments, 2);
 			const namespaces = functionName.split('.');
 			const func = namespaces.pop()!;
 			for (let i = 0; i < namespaces.length; i++) {
 				context = context[namespaces[i]];
+				if (!context) {
+					return null; // Namespace doesn't exist
+				}
 			}
-			return context[func].apply(context, functionArgs);
+			if (context && typeof context[func] === 'function') {
+				return context[func].apply(context, args);
+			}
+			return null; // Function doesn't exist
 		} else {
 			return null;
 		}
