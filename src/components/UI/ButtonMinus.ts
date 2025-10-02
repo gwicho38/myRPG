@@ -17,8 +17,8 @@ export class ButtonMinus extends Phaser.GameObjects.Sprite {
 			LuminusUtils.executeFunctionByName(action, scene, args);
 			this.play({ key: 'touch_button_minus' }).once(
 				Phaser.Animations.Events.ANIMATION_COMPLETE,
-				(animationState: Phaser.Animations.AnimationState) => {
-					if (animationState.key === `touch_button_minus`) {
+				(_animationState: Phaser.Animations.AnimationState, _frame: Phaser.Animations.AnimationFrame) => {
+					if (this.anims.currentAnim?.key === `touch_button_minus`) {
 						this.play('init_button_minus');
 					}
 				}

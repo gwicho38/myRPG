@@ -116,10 +116,11 @@ export class LuminusHealthBar extends Phaser.GameObjects.Sprite {
 	 * Gets the correct color, based on the red and green values, so the bar goes from Green (Full health) to RED (Low Health).
 	 * @param r red value.
 	 * @param g green value.
+	 * @param b blue value.
 	 * @returns The new RGB Value
 	 */
-	rgbToHex(r: number, g: number): number {
-		const hex = '0x' + ((1 << 24) + (r << 16) + (g << 8)).toString(16).slice(1);
+	rgbToHex(r: number, g: number, b: number): number {
+		const hex = '0x' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 		return parseInt(hex, 16);
 	}
 }
