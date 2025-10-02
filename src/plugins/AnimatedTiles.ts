@@ -47,7 +47,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 	followTimeScale: boolean;
 
 	constructor(scene: Phaser.Scene, pluginManager: Phaser.Plugins.PluginManager) {
-		super(scene, pluginManager);
+		super(scene, pluginManager, 'AnimatedTiles');
 
 		// TileMap the plugin belong to.
 		// TODO: Array or object for multiple tilemaps support
@@ -161,7 +161,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 			scope.active = true;
 		} else {
 			scope.activeLayer[layerIndex] = true;
-			scope.animatedTiles.forEach((animatedTile) => {
+			(scope as MapAnimData).animatedTiles.forEach((animatedTile) => {
 				this.updateLayer(animatedTile, animatedTile.tiles[layerIndex]);
 			});
 		}
@@ -264,7 +264,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 		map.tilesets.forEach(
 			// Go through the data stored on each tile (not tile on the tilemap but tile in the tileset)
 			(tileset) => {
-				const tileData = tileset.tileData;
+				const tileData: any = tileset.tileData;
 				Object.keys(tileData).forEach((index) => {
 					let indexNum = parseInt(index);
 					// If tile has animation info we'll dive into it
@@ -361,7 +361,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 			mapAnimData.animatedTiles.forEach((tileAnimData) => {
 				tileAnimData.tiles.forEach((tiles, layerIndex) => {
 					const layer = mapAnimData.map.layers[layerIndex];
-					if (layer.type === 'StaticTilemapLayer') {
+					if (layer.tilemapLayer && (layer.tilemapLayer as any).type === 'StaticTilemapLayer') {
 						return;
 					}
 					for (let x = chkX; x < chkX + chkW; x++) {
@@ -388,7 +388,7 @@ class AnimatedTiles extends Phaser.Plugins.ScenePlugin {
 //  Static function called by the PluginFile Loader.
 (AnimatedTiles as any).register = function (PluginManager: Phaser.Plugins.PluginManager) {
 	//  Register this plugin with the PluginManager, so it can be added to Scenes.
-	PluginManager.register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
+	(PluginManager as any).register('AnimatedTiles', AnimatedTiles, 'animatedTiles');
 };
 
 export default AnimatedTiles;
