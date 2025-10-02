@@ -490,7 +490,9 @@ export class LuminusInterfaceController {
 				}
 			}
 			if (context && typeof context[func] === 'function') {
-				return context[func].apply(context, args);
+				// Ensure args is an array for apply()
+				const argsArray = Array.isArray(args) ? args : args ? [args] : [];
+				return context[func].apply(context, argsArray);
 			}
 			return null; // Function doesn't exist
 		} else {
