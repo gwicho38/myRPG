@@ -52,7 +52,7 @@ export class LuminusGamePadController extends AnimationNames {
 	 * @param player the player object
 	 */
 	constructor(scene: Phaser.Scene, player: any) {
-		super(null);
+		super();
 		this.scene = scene;
 		this.player = player;
 		this.inventorySceneName = InventorySceneName;

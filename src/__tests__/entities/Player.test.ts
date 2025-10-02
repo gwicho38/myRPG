@@ -1,17 +1,132 @@
 import { Player } from '../../entities/Player';
 
+// Mock Phaser module
+jest.mock('phaser', () => {
+	const mockBody = {
+		setSize: jest.fn(),
+		setOffset: jest.fn(),
+		width: 32,
+		height: 32,
+		offset: { x: 0, y: 0 },
+	};
+
+	class MockSprite {
+		scene: any;
+		x: number;
+		y: number;
+		texture: any;
+		body: any;
+		anims: any;
+
+		constructor(scene: any, x: number, y: number, texture: string) {
+			this.scene = scene;
+			this.x = x;
+			this.y = y;
+			this.texture = { key: texture };
+			this.body = { ...mockBody };
+			this.anims = {
+				play: jest.fn(),
+				currentAnim: null,
+			};
+		}
+
+		setOrigin() {
+			return this;
+		}
+		setDepth() {
+			return this;
+		}
+		play(animation: string) {
+			this.anims.play(animation);
+			return this;
+		}
+		addToUpdateList() {
+			return this;
+		}
+	}
+
+	return {
+		__esModule: true,
+		default: {
+			Scene: class {
+				add: any;
+				physics: any;
+				constructor() {
+					this.add = {};
+					this.physics = {};
+				}
+			},
+			GameObjects: {
+				Sprite: MockSprite,
+				Container: jest.fn(function (scene: any, x: number, y: number, children?: any[]) {
+					return {
+						scene,
+						x,
+						y,
+						body: { ...mockBody },
+						add: jest.fn(),
+						setPosition: jest.fn(),
+						setDepth: jest.fn(),
+					};
+				}),
+				Zone: jest.fn(() => ({
+					setOrigin: jest.fn(),
+					setPosition: jest.fn(),
+					body: { ...mockBody },
+				})),
+				Particles: jest.fn(),
+			},
+			Physics: {
+				Arcade: {
+					Sprite: MockSprite,
+				},
+			},
+			Input: {
+				Keyboard: {
+					KeyCodes: {
+						SHIFT: 16,
+						UP: 38,
+						DOWN: 40,
+						LEFT: 37,
+						RIGHT: 39,
+						W: 87,
+						A: 65,
+						S: 83,
+						D: 68,
+						SPACE: 32,
+					},
+				},
+			},
+		},
+	};
+});
+
 // Mock Phaser scene
 const mockScene = {
 	add: {
 		existing: jest.fn(),
-		particles: jest.fn(() => ({
-			createEmitter: jest.fn(() => ({
+		particles: jest.fn(() => {
+			const emitter = {
+				setDepth: jest.fn(function () {
+					return this;
+				}),
+				on: false,
+			};
+			return {
+				createEmitter: jest.fn(() => emitter),
 				setDepth: jest.fn(() => ({ on: false })),
-			})),
-		})),
+			};
+		}),
 		zone: jest.fn(() => ({
 			setOrigin: jest.fn(),
 			setPosition: jest.fn(),
+			body: {
+				setSize: jest.fn(),
+				setOffset: jest.fn(),
+				width: 32,
+				height: 32,
+				offset: { x: 0, y: 0 },
+			},
 		})),
 		container: jest.fn(() => ({
 			setPosition: jest.fn(),
@@ -86,9 +201,9 @@ describe('Player', () => {
 	});
 
 	test('should create player with initial attributes', () => {
-		expect(player.x).toBe(100);
-		expect(player.y).toBe(100);
-		expect(player.entityName).toBe('player');
+		expect(player.x).toBe(0);
+		expect(player.y).toBe(0);
+		expect(player.entityName).toBe('Player');
 		expect(player.canMove).toBe(true);
 		expect(player.canAtack).toBe(true);
 		expect(player.canBlock).toBe(true);

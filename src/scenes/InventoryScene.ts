@@ -494,7 +494,7 @@ export class InventoryScene extends Phaser.Scene {
 					this.player.items[i].id
 				);
 				const text = this.add
-					.text(item.x, item.y + 15 + (item.height * item.scaleY) / 2, this.player.items[i].count)
+					.text(item.x, item.y + 15 + (item.height * item.scaleY) / 2, this.player.items[i].count.toString())
 					.setOrigin(0.5, 0.5);
 				// Sets the slot item;
 				slot.item = item;
