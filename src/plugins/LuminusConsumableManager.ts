@@ -60,7 +60,7 @@ export class LuminusConsumableManager {
 				);
 				player.healthBar.update(player.attributes.health);
 				if (player.luminusHUDProgressBar) player.luminusHUDProgressBar.updateHealth(player.attributes.health);
-				this.luminusEntityTextDisplay.displayDamage(action[2], player, false, true);
+				this.luminusEntityTextDisplay.displayDamage(parseInt(action[2], 10), player, false, true);
 				player.scene.sound.play(item.useSfx);
 				break;
 			case 'sp':
@@ -106,7 +106,12 @@ export class LuminusConsumableManager {
 					});
 				} else {
 					// Add the item
-					const bonusStatus = new ConsumableBonus(item.buffType.id, 'atack', action[2], action[3]);
+					const bonusStatus = new ConsumableBonus(
+						item.buffType.id,
+						'atack',
+						parseInt(action[2], 10),
+						parseInt(action[3], 10)
+					);
 					this.changeStats(player, bonusStatus);
 
 					player.scene.sound.play(item.useSfx);
