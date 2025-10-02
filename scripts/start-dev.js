@@ -11,51 +11,20 @@ try {
     process.exit(1);
 }
 
-// Clean any problematic options
-const cleanConfig = (obj) => {
-    if (!obj || typeof obj !== 'object') {
-        return obj;
-    }
-
-    // Handle arrays
-    if (Array.isArray(obj)) {
-        return obj.map(item => cleanConfig(item));
-    }
-
-    // Don't clean webpack plugin instances or functions
-    if (typeof obj.apply === 'function' || typeof obj === 'function') {
-        return obj;
-    }
-
-    // Don't clean class instances
-    if (obj.constructor && obj.constructor !== Object && obj.constructor !== Array) {
-        return obj;
-    }
-
-    // Handle plain objects
-    const cleaned = { ...obj };
-    delete cleaned._assetEmittingPreviousFiles;
-
-    Object.keys(cleaned).forEach(key => {
-        if (typeof cleaned[key] === 'object' && cleaned[key] !== null) {
-            cleaned[key] = cleanConfig(cleaned[key]);
-        }
-    });
-
-    return cleaned;
-};
-
-const cleanedConfig = cleanConfig(config);
+// Remove problematic _assetEmittingPreviousFiles property if it exists
+if (config && config._assetEmittingPreviousFiles) {
+    delete config._assetEmittingPreviousFiles;
+}
 
 let compiler;
 try {
-    compiler = webpack(cleanedConfig);
+    compiler = webpack(config);
 } catch (error) {
     console.error('Error creating webpack compiler:', error);
     process.exit(1);
 }
 
-const devServerOptions = cleanedConfig.devServer || {};
+const devServerOptions = config.devServer || {};
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 const runServer = async () => {

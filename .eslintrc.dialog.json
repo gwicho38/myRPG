@@ -1,0 +1,17 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "Phaser": "readonly",
+    "window": "readonly",
+    "console": "readonly",
+    "setInterval": "readonly",
+    "clearInterval": "readonly"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-unused-vars": "off"
+  }
+}
