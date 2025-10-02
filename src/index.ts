@@ -22,6 +22,8 @@ import { TownScene } from './scenes/TownScene';
 import { CaveScene } from './scenes/CaveScene';
 import { OverworldScene } from './scenes/OverworldScene';
 import { GameOverScene } from './scenes/GameOverScene';
+import { logger } from './utils/Logger';
+import { debugHelper } from './utils/DebugHelper';
 
 // Create canvas with willReadFrequently attribute
 const canvas = document.getElementById('luminus-rpg') as HTMLCanvasElement;
@@ -141,6 +143,10 @@ try {
 
 	// Make game globally available for debugging
 	(window as any).game = game;
+
+	// Initialize debug utilities
+	logger.setupConsoleCommands();
+	debugHelper.initialize(game);
 
 	// Handle uncaught game errors
 	game.events.on('error', (error: Error) => {
