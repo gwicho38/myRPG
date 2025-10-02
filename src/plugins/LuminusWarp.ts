@@ -3,7 +3,7 @@ interface WarpPoint extends Phaser.GameObjects.Zone {
 }
 
 interface PlayerWithMovement extends Phaser.GameObjects.GameObject {
-	container: Phaser.Physics.Arcade.Body & Phaser.GameObjects.Container;
+	container: Phaser.GameObjects.Container & { body: Phaser.Physics.Arcade.Body };
 	luminusMovement: any;
 	destroy(): void;
 }
@@ -119,7 +119,7 @@ export class LuminusWarp {
 				scale: { start: 1.3, end: 0.8 },
 				alpha: { start: 1, end: 0.7 },
 				// radial: true,
-				rotation: 180,
+				// rotation: 180, // Not a valid ParticleEmitterConfig property
 			};
 			this.scene.add.particles(
 				warp.x! + warp.width! / 2,
