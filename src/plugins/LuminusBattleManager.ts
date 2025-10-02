@@ -474,36 +474,63 @@ export class LuminusBattleManager extends AnimationNames {
 				}
 			});
 
-			atacker.once(
-				Phaser.Animations.Events.ANIMATION_COMPLETE,
-				(animationState: any) => {
-					console.log('[BattleManager] Attack animation complete:', {
-						animKey: animationState.key,
-						expectedKey: `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
-						matches: animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
-					});
-					if (animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`) {
-						atacker.isAtacking = false;
-						atacker.container.body.maxSpeed = atacker.speed;
-						atacker.canAtack = true; // Enables the atack once the player finishes the animation
-						console.log('[BattleManager] Attack complete - canAtack restored to true');
-						if (atacker.entityName === this.enemyConstructorName) {
-							hitBoxSprite = this.createHitBox(atacker);
-							hitBoxSprite.anims.play(this.hitboxSpriteName);
-							setTimeout((_time) => {
-								this.resetEnemyState(atackedEnemies);
-								hitBoxSprite!.destroy();
-							}, this.enemyHitboxLifetime);
-						}
-
-						if (hitBoxSprite && hitBoxSprite.active && atacker.entityName !== this.enemyConstructorName)
-							hitBoxSprite.destroy();
-
-						this.resetEnemyState(atackedEnemies);
+			// Create a handler we can reference for removal
+			let attackCompleted = false;
+			const completeAttackHandler = (animationState: any) => {
+				console.log('[BattleManager] Animation complete event:', {
+					animKey: animationState.key,
+					expectedKey: `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
+					matches: animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`,
+					attackCompleted,
+				});
+				if (animationState.key === `${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`) {
+					if (attackCompleted) {
+						console.log('[BattleManager] Attack already completed, skipping');
+						return;
 					}
-				},
-				this
-			);
+					attackCompleted = true;
+
+					// Remove the listener since we're done
+					atacker.off(Phaser.Animations.Events.ANIMATION_COMPLETE, completeAttackHandler);
+
+					atacker.isAtacking = false;
+					atacker.container.body.maxSpeed = atacker.speed;
+					atacker.canAtack = true; // Enables the atack once the player finishes the animation
+					console.log('[BattleManager] Attack complete - canAtack restored to true');
+					if (atacker.entityName === this.enemyConstructorName) {
+						hitBoxSprite = this.createHitBox(atacker);
+						hitBoxSprite.anims.play(this.hitboxSpriteName);
+						setTimeout((_time) => {
+							this.resetEnemyState(atackedEnemies);
+							hitBoxSprite!.destroy();
+						}, this.enemyHitboxLifetime);
+					}
+
+					if (hitBoxSprite && hitBoxSprite.active && atacker.entityName !== this.enemyConstructorName)
+						hitBoxSprite.destroy();
+
+					this.resetEnemyState(atackedEnemies);
+				}
+			};
+
+			atacker.on(Phaser.Animations.Events.ANIMATION_COMPLETE, completeAttackHandler, this);
+
+			// Fallback timeout to ensure canAtack is restored even if animation doesn't complete properly
+			setTimeout(() => {
+				if (!attackCompleted) {
+					console.log('[BattleManager] Attack timeout fallback - forcing completion');
+					attackCompleted = true;
+					atacker.off(Phaser.Animations.Events.ANIMATION_COMPLETE, completeAttackHandler);
+					atacker.isAtacking = false;
+					atacker.container.body.maxSpeed = atacker.speed;
+					atacker.canAtack = true;
+
+					if (hitBoxSprite && hitBoxSprite.active && atacker.entityName !== this.enemyConstructorName)
+						hitBoxSprite.destroy();
+
+					this.resetEnemyState(atackedEnemies);
+				}
+			}, 1000);
 
 			atacker.anims.play(`${texture}-${this.atkPrefixAnimation}-${atackAnimation[2]}`, true);
 		}
