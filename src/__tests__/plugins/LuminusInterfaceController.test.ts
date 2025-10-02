@@ -18,6 +18,8 @@ describe('LuminusInterfaceController', () => {
 						buttons: [],
 						axes: [],
 						connected: true,
+						on: jest.fn(),
+						off: jest.fn(),
 					},
 					on: jest.fn(),
 					off: jest.fn(),
@@ -61,9 +63,9 @@ describe('LuminusInterfaceController', () => {
 			expect(controller.currentElementAction).toBe(null);
 			expect(controller.closeAction).toBe(null);
 			expect(controller.menuHistory).toEqual([]);
-			expect(controller.currentRow).toBe(0);
-			expect(controller.currentColumn).toBe(0);
-			expect(controller.currentRowSize).toBe(0);
+			expect(controller.currentLinePosition).toBe(0);
+			expect(controller.currentMatrixRow).toBe(0);
+			expect(controller.currentMatrixCol).toBe(0);
 		});
 
 		it('should set up keyboard listener', () => {
@@ -78,68 +80,94 @@ describe('LuminusInterfaceController', () => {
 				[[{ element: mockElement, action: 'action1' }], [{ element: mockElement, action: 'action2' }]],
 				[[{ element: mockElement, action: 'action3' }], [{ element: mockElement, action: 'action4' }]],
 			];
-			controller.currentRowSize = 2;
+			controller.currentElementAction = { element: mockElement, action: 'action1', context: null, args: null };
+			mockScene.sound = { play: jest.fn() };
 		});
 
 		describe('moveUp', () => {
 			it('should move up when not at top', () => {
-				controller.currentRow = 1;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 1;
 				controller.moveUp();
-				expect(controller.currentRow).toBe(0);
+				expect(controller.currentMatrixRow).toBe(0);
 			});
 
 			it('should not move up when at top', () => {
-				controller.currentRow = 0;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
 				controller.moveUp();
-				expect(controller.currentRow).toBe(0);
+				expect(controller.currentMatrixRow).toBe(0);
 			});
 
 			it('should not move when no elements exist', () => {
 				controller.interfaceElements = [];
+				controller.currentLinePosition = 0;
 				controller.moveUp();
-				expect(controller.currentRow).toBe(0);
+				expect(controller.currentMatrixRow).toBe(0);
 			});
 		});
 
 		describe('moveDown', () => {
 			it('should move down when not at bottom', () => {
-				controller.currentRow = 0;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
 				controller.moveDown();
-				expect(controller.currentRow).toBe(1);
+				expect(controller.currentMatrixRow).toBe(1);
 			});
 
 			it('should not move down when at bottom', () => {
-				controller.currentRow = 1;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 1;
 				controller.moveDown();
-				expect(controller.currentRow).toBe(1);
+				expect(controller.currentMatrixRow).toBe(1);
 			});
 		});
 
 		describe('moveLeft', () => {
 			it('should move left when not at leftmost', () => {
-				controller.currentColumn = 1;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
+				controller.currentMatrixCol = 0;
+				controller.interfaceElements[0][0] = [
+					{ element: mockElement, action: 'action1', context: null, args: null },
+					{ element: mockElement, action: 'action2', context: null, args: null },
+				];
+				controller.currentMatrixCol = 1;
 				controller.moveLeft();
-				expect(controller.currentColumn).toBe(0);
+				expect(controller.currentMatrixCol).toBe(0);
 			});
 
 			it('should not move left when at leftmost', () => {
-				controller.currentColumn = 0;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
+				controller.currentMatrixCol = 0;
 				controller.moveLeft();
-				expect(controller.currentColumn).toBe(0);
+				expect(controller.currentMatrixCol).toBe(0);
 			});
 		});
 
 		describe('moveRight', () => {
 			it('should move right when not at rightmost', () => {
-				controller.currentColumn = 0;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
+				controller.currentMatrixCol = 0;
+				controller.interfaceElements[0][0] = [
+					{ element: mockElement, action: 'action1', context: null, args: null },
+					{ element: mockElement, action: 'action2', context: null, args: null },
+				];
 				controller.moveRight();
-				expect(controller.currentColumn).toBe(1);
+				expect(controller.currentMatrixCol).toBe(1);
 			});
 
 			it('should not move right when at rightmost', () => {
-				controller.currentColumn = 1;
+				controller.currentLinePosition = 0;
+				controller.currentMatrixRow = 0;
+				controller.interfaceElements[0][0] = [
+					{ element: mockElement, action: 'action1', context: null, args: null },
+				];
+				controller.currentMatrixCol = 0;
 				controller.moveRight();
-				expect(controller.currentColumn).toBe(1);
+				expect(controller.currentMatrixCol).toBe(0);
 			});
 		});
 	});
@@ -225,6 +253,14 @@ describe('LuminusInterfaceController', () => {
 	});
 
 	describe('close', () => {
+		beforeEach(() => {
+			controller.outlineEffect = {
+				outlinePostFxPlugin: {
+					destroy: jest.fn(),
+				},
+			};
+		});
+
 		it('should execute close action when available', () => {
 			controller.closeAction = {
 				action: 'closeFunction',
@@ -235,6 +271,7 @@ describe('LuminusInterfaceController', () => {
 
 			controller.close();
 
+			expect(controller.outlineEffect.outlinePostFxPlugin.destroy).toHaveBeenCalled();
 			expect(controller.executeFunctionByName).toHaveBeenCalledWith(
 				'closeFunction',
 				controller.closeAction.context,
@@ -245,82 +282,106 @@ describe('LuminusInterfaceController', () => {
 		it('should handle missing close action gracefully', () => {
 			controller.closeAction = null;
 			expect(() => controller.close()).not.toThrow();
+			expect(controller.outlineEffect.outlinePostFxPlugin.destroy).toHaveBeenCalled();
 		});
 
 		it('should handle close action without action property', () => {
 			controller.closeAction = {};
 			expect(() => controller.close()).not.toThrow();
+			expect(controller.outlineEffect.outlinePostFxPlugin.destroy).toHaveBeenCalled();
 		});
 	});
 
 	describe('highlight management', () => {
 		beforeEach(() => {
-			controller.highlightElement = mockScene.add.image();
+			mockScene.sys = {};
+			controller.outlineEffect = {
+				applyEffect: jest.fn(),
+				removeEffect: jest.fn(),
+			};
+			controller.currentElementAction = { element: mockElement, action: 'test', context: null, args: null };
 		});
 
 		it('should update highlight position', () => {
 			controller.updateHighlightedElement(mockElement);
-
-			expect(controller.highlightElement.setPosition).toHaveBeenCalledWith(100, 100);
-			expect(controller.highlightElement.setScale).toHaveBeenCalled();
+			expect(controller.outlineEffect.applyEffect).toHaveBeenCalledWith(mockElement);
 		});
 
 		it('should create highlight if it does not exist', () => {
-			controller.highlightElement = null;
 			controller.updateHighlightedElement(mockElement);
-
-			expect(mockScene.add.image).toHaveBeenCalled();
+			expect(controller.outlineEffect.applyEffect).toHaveBeenCalledWith(mockElement);
 		});
 
 		it('should remove highlight when requested', () => {
 			controller.removeCurrentSelectionHighlight();
-			expect(controller.highlightElement.destroy).toHaveBeenCalled();
-			expect(controller.highlightElement).toBe(null);
+			expect(controller.outlineEffect.removeEffect).toHaveBeenCalledWith(mockElement);
 		});
 
 		it('should handle removing non-existent highlight', () => {
-			controller.highlightElement = null;
+			controller.currentElementAction = null;
 			expect(() => controller.removeCurrentSelectionHighlight()).not.toThrow();
 		});
 	});
 
 	describe('menu history', () => {
-		it('should add to menu history', () => {
-			const menuState = {
-				currentRow: 1,
-				currentColumn: 2,
-				currentElementAction: { action: 'test' },
+		beforeEach(() => {
+			mockScene.sys = {};
+			controller.outlineEffect = {
+				removeEffect: jest.fn(),
+				applyEffect: jest.fn(),
 			};
-			controller.currentRow = menuState.currentRow;
-			controller.currentColumn = menuState.currentColumn;
-			controller.currentElementAction = menuState.currentElementAction;
+		});
+
+		it('should add to menu history', () => {
+			controller.currentLinePosition = 1;
+			controller.currentMatrixRow = 2;
+			controller.currentMatrixCol = 3;
+			controller.currentElementAction = { element: mockElement, action: 'test', context: null, args: null };
+			controller.closeAction = { action: 'close' };
 
 			controller.menuHistoryAdd();
 
 			expect(controller.menuHistory).toHaveLength(1);
-			expect(controller.menuHistory[0]).toEqual(menuState);
+			expect(controller.menuHistory[0]).toEqual({
+				currentLinePosition: 1,
+				currentMatrixRow: 2,
+				currentMatrixCol: 3,
+				currentElementAction: { element: mockElement, action: 'test', context: null, args: null },
+				closeAction: { action: 'close' },
+			});
 		});
 
 		it('should retrieve from menu history', () => {
-			const menuState = {
-				currentRow: 1,
-				currentColumn: 2,
-				currentElementAction: { action: 'test' },
+			const menuState: any = {
+				currentLinePosition: 1,
+				currentMatrixRow: 2,
+				currentMatrixCol: 3,
+				currentElementAction: { element: mockElement, action: 'test', context: null, args: null },
+				closeAction: { action: 'close' },
 			};
 			controller.menuHistory.push(menuState);
+			controller.outlineEffect.applyEffect = jest.fn();
 
 			controller.menuHistoryRetrieve();
 
-			expect(controller.currentRow).toBe(1);
-			expect(controller.currentColumn).toBe(2);
-			expect(controller.currentElementAction).toEqual({ action: 'test' });
+			expect(controller.currentLinePosition).toBe(1);
+			expect(controller.currentMatrixRow).toBe(2);
+			expect(controller.currentMatrixCol).toBe(3);
+			expect(controller.currentElementAction).toEqual({
+				element: mockElement,
+				action: 'test',
+				context: null,
+				args: null,
+			});
+			expect(controller.closeAction).toEqual({ action: 'close' });
 			expect(controller.menuHistory).toHaveLength(0);
 		});
 
 		it('should handle empty menu history', () => {
 			controller.menuHistoryRetrieve();
-			expect(controller.currentRow).toBe(0);
-			expect(controller.currentColumn).toBe(0);
+			expect(controller.currentLinePosition).toBe(0);
+			expect(controller.currentMatrixRow).toBe(0);
+			expect(controller.currentMatrixCol).toBe(0);
 		});
 	});
 

@@ -4,47 +4,60 @@ describe('LuminusDialogBox', () => {
 	let dialogBox: any;
 	let mockScene: any;
 	let mockPlayer: any;
-	let mockDialogText: any;
 
 	beforeEach(() => {
-		mockDialogText = {
-			setText: jest.fn().mockReturnThis(),
-			setOrigin: jest.fn().mockReturnThis(),
-			setWordWrapWidth: jest.fn().mockReturnThis(),
-			setDepth: jest.fn().mockReturnThis(),
-			setPosition: jest.fn().mockReturnThis(),
-			destroy: jest.fn(),
-		};
-
+		// Mock Phaser scene
 		mockScene = {
 			add: {
-				text: jest.fn().mockReturnValue(mockDialogText),
+				text: jest.fn().mockReturnValue({
+					setText: jest.fn().mockReturnThis(),
+					setOrigin: jest.fn().mockReturnThis(),
+					setDepth: jest.fn().mockReturnThis(),
+					setPosition: jest.fn().mockReturnThis(),
+					setScrollFactor: jest.fn().mockReturnThis(),
+					destroy: jest.fn(),
+					text: '',
+					visible: true,
+					active: true,
+				}),
 				image: jest.fn().mockReturnValue({
 					setOrigin: jest.fn().mockReturnThis(),
 					setDepth: jest.fn().mockReturnThis(),
 					setPosition: jest.fn().mockReturnThis(),
 					setScale: jest.fn().mockReturnThis(),
 					destroy: jest.fn(),
+					visible: false,
 				}),
-				nineslice: jest.fn().mockReturnValue({
+				sprite: jest.fn().mockReturnValue({
 					setOrigin: jest.fn().mockReturnThis(),
 					setDepth: jest.fn().mockReturnThis(),
 					setPosition: jest.fn().mockReturnThis(),
+					setScale: jest.fn().mockReturnThis(),
 					destroy: jest.fn(),
+					visible: false,
+					play: jest.fn(),
 				}),
 			},
 			input: {
 				keyboard: {
-					on: jest.fn(),
-					off: jest.fn(),
-					removeListener: jest.fn(),
+					addKey: jest.fn().mockReturnValue({
+						isDown: false,
+					}),
 				},
+				gamepad: {
+					pad1: null,
+				},
+			},
+			events: {
+				on: jest.fn(),
+				once: jest.fn(),
+				off: jest.fn(),
+				emit: jest.fn(),
 			},
 			cameras: {
 				main: {
-					midPoint: { x: 400, y: 300 },
-					height: 600,
 					width: 800,
+					height: 600,
 				},
 			},
 			tweens: {
@@ -52,11 +65,18 @@ describe('LuminusDialogBox', () => {
 			},
 			time: {
 				addEvent: jest.fn().mockReturnValue({
+					destroy: jest.fn(),
 					remove: jest.fn(),
+				}),
+			},
+			sound: {
+				add: jest.fn().mockReturnValue({
+					play: jest.fn(),
 				}),
 			},
 		};
 
+		// Mock player
 		mockPlayer = {
 			container: {
 				body: {
@@ -76,276 +96,320 @@ describe('LuminusDialogBox', () => {
 	describe('constructor', () => {
 		it('should initialize with default values', () => {
 			expect(dialogBox.scene).toBe(mockScene);
-			expect(dialogBox.fontFamily).toBe('"Press Start 2P"');
-			expect(dialogBox.currentText).toBe('');
-			expect(dialogBox.currentCharacterIndex).toBe(0);
-			expect(dialogBox.dialogBoxOpened).toBe(false);
-			expect(dialogBox.dialogBoxOpenedAndWaitingInteraction).toBe(false);
-			expect(dialogBox.isTypingText).toBe(false);
+			expect(dialogBox.player).toBe(mockPlayer);
+			expect(dialogBox.fontFamily).toBe("'Press Start 2P'");
+			expect(dialogBox.canShowDialog).toBe(true);
+			expect(dialogBox.isAnimatingText).toBe(false);
+			expect(dialogBox.chat).toEqual([]);
+			expect(dialogBox.pagesMessage).toEqual([]);
+			expect(dialogBox.currentPage).toBe(0);
+		});
+
+		it('should set up dialog properties', () => {
+			expect(dialogBox.dialogHeight).toBe(150);
+			expect(dialogBox.margin).toBe(15);
+			expect(dialogBox.typewriterDelay).toBe(50);
 		});
 	});
 
 	describe('openDialogModal', () => {
-		it('should open dialog modal with text', () => {
+		it('should set up chat data when canShowDialog is true', () => {
+			dialogBox.canShowDialog = true;
 			const callback = jest.fn();
+
 			dialogBox.openDialogModal('Test message', callback);
 
-			expect(dialogBox.dialogBoxOpened).toBe(true);
-			expect(dialogBox.currentText).toBe('Test message');
-			expect(mockScene.add.nineslice).toHaveBeenCalled();
-			expect(mockScene.add.text).toHaveBeenCalled();
+			expect(dialogBox.chat).toEqual([{ message: 'Test message', index: 0 }]);
+			expect(dialogBox.isOverlapingChat).toBe(true);
+			expect(dialogBox.showRandomChat).toBe(true);
+			expect(mockScene.events.once).toHaveBeenCalledWith('dialogComplete', callback);
 		});
 
-		it('should start typing animation', () => {
-			jest.useFakeTimers();
-			dialogBox.openDialogModal('Hello', jest.fn());
+		it('should not set up chat when canShowDialog is false', () => {
+			dialogBox.canShowDialog = false;
+			dialogBox.openDialogModal('Test message');
 
-			expect(dialogBox.isTypingText).toBe(true);
-			expect(dialogBox.currentCharacterIndex).toBe(0);
-
-			jest.advanceTimersByTime(100);
-			expect(mockDialogText.setText).toHaveBeenCalled();
-
-			jest.useRealTimers();
+			expect(dialogBox.chat).toEqual([]);
 		});
 
-		it('should handle dialog already open', () => {
-			dialogBox.dialogBoxOpened = true;
-			dialogBox.openDialogModal('Test', jest.fn());
-			// Should handle gracefully without errors
-			expect(dialogBox.currentText).toBe('Test');
+		it('should work without callback', () => {
+			dialogBox.canShowDialog = true;
+			dialogBox.openDialogModal('Test message');
+
+			expect(dialogBox.chat).toEqual([{ message: 'Test message', index: 0 }]);
+			expect(mockScene.events.once).not.toHaveBeenCalled();
 		});
 	});
 
-	describe('closeDialogModal', () => {
+	describe('setText', () => {
 		beforeEach(() => {
-			dialogBox.openDialogModal('Test', jest.fn());
+			// Mock the dialog object
+			dialogBox.dialog = {
+				textMessage: {
+					setText: jest.fn().mockReturnThis(),
+					setVisible: jest.fn().mockReturnThis(),
+					text: '',
+					visible: false,
+				},
+				visible: true,
+			};
 		});
 
-		it('should close dialog and clean up', () => {
-			dialogBox.closeDialogModal();
+		it('should set text without animation', () => {
+			dialogBox.setText('Hello World', false);
 
-			expect(dialogBox.dialogBoxOpened).toBe(false);
-			expect(dialogBox.currentText).toBe('');
-			expect(dialogBox.currentCharacterIndex).toBe(0);
-			expect(dialogBox.isTypingText).toBe(false);
+			expect(dialogBox.isAnimatingText).toBe(false);
+			expect(dialogBox.dialog.textMessage.setText).toHaveBeenCalledWith('Hello World');
+			expect(dialogBox.dialog.textMessage.visible).toBe(true);
 		});
 
-		it('should destroy dialog elements', () => {
-			const background = dialogBox.dialogBoxModalBackground;
-			const text = dialogBox.dialogText;
-			const interaction = dialogBox.interactionIcon;
+		it('should set text with animation', () => {
+			dialogBox.setText('Hello', true);
 
-			dialogBox.closeDialogModal();
-
-			expect(background.destroy).toHaveBeenCalled();
-			expect(text.destroy).toHaveBeenCalled();
-			expect(interaction.destroy).toHaveBeenCalled();
-		});
-
-		it('should execute callback if provided', () => {
-			const callback = jest.fn();
-			dialogBox.callback = callback;
-			dialogBox.closeDialogModal();
-
-			expect(callback).toHaveBeenCalled();
-			expect(dialogBox.callback).toBe(null);
-		});
-
-		it('should handle closing when not open', () => {
-			dialogBox.dialogBoxOpened = false;
-			expect(() => dialogBox.closeDialogModal()).not.toThrow();
-		});
-	});
-
-	describe('text typing animation', () => {
-		beforeEach(() => {
-			jest.useFakeTimers();
-		});
-
-		afterEach(() => {
-			jest.useRealTimers();
-		});
-
-		it('should type text character by character', () => {
-			const text = 'Hello';
-			dialogBox.openDialogModal(text, jest.fn());
-
-			for (let i = 1; i <= text.length; i++) {
-				jest.advanceTimersByTime(50);
-				expect(mockDialogText.setText).toHaveBeenCalledWith(text.substring(0, i));
-			}
-
-			expect(dialogBox.isTypingText).toBe(false);
-			expect(dialogBox.dialogBoxOpenedAndWaitingInteraction).toBe(true);
-		});
-
-		it('should handle empty text', () => {
-			dialogBox.openDialogModal('', jest.fn());
-			jest.advanceTimersByTime(100);
-			expect(dialogBox.isTypingText).toBe(false);
-		});
-
-		it('should stop typing when dialog is closed', () => {
-			dialogBox.openDialogModal('Long text message', jest.fn());
-			jest.advanceTimersByTime(50);
-
-			dialogBox.closeDialogModal();
-
-			jest.advanceTimersByTime(200);
-			// Should not continue typing after close
-			expect(dialogBox.currentCharacterIndex).toBe(0);
-		});
-	});
-
-	describe('keyboard interaction', () => {
-		let keyboardCallback: any;
-
-		beforeEach(() => {
-			dialogBox.openDialogModal('Test message', jest.fn());
-			keyboardCallback = mockScene.input.keyboard.on.mock.calls[0][1];
-		});
-
-		it('should skip typing animation on keypress', () => {
-			dialogBox.isTypingText = true;
-			keyboardCallback({ keyCode: 32 }); // Space
-
-			expect(dialogBox.isTypingText).toBe(false);
-			expect(dialogBox.currentCharacterIndex).toBe(dialogBox.currentText.length);
-			expect(mockDialogText.setText).toHaveBeenCalledWith('Test message');
-		});
-
-		it('should close dialog on keypress when typing complete', () => {
-			dialogBox.isTypingText = false;
-			dialogBox.dialogBoxOpenedAndWaitingInteraction = true;
-
-			keyboardCallback({ keyCode: 13 }); // Enter
-
-			expect(dialogBox.dialogBoxOpened).toBe(false);
-		});
-
-		it('should ignore keypress when dialog not open', () => {
-			dialogBox.dialogBoxOpened = false;
-			keyboardCallback({ keyCode: 32 });
-			// Should not throw error
-			expect(dialogBox.dialogBoxOpened).toBe(false);
-		});
-	});
-
-	describe('interaction icon', () => {
-		beforeEach(() => {
-			dialogBox.openDialogModal('Test', jest.fn());
-		});
-
-		it('should create interaction icon', () => {
-			expect(mockScene.add.image).toHaveBeenCalledWith(
-				expect.any(Number),
-				expect.any(Number),
-				'dialog_interaction'
-			);
-		});
-
-		it('should animate interaction icon', () => {
-			expect(mockScene.tweens.add).toHaveBeenCalledWith(
+			expect(dialogBox.isAnimatingText).toBe(true);
+			expect(dialogBox.animationText).toEqual(['H', 'e', 'l', 'l', 'o']);
+			expect(mockScene.time.addEvent).toHaveBeenCalledWith(
 				expect.objectContaining({
-					targets: dialogBox.interactionIcon,
-					loop: -1,
-					yoyo: true,
+					delay: dialogBox.typewriterDelay,
+					repeat: 4, // length - 1
 				})
 			);
 		});
 
-		it('should position interaction icon correctly', () => {
-			const icon = dialogBox.interactionIcon;
-			expect(icon.setPosition).toHaveBeenCalled();
-			expect(icon.setDepth).toHaveBeenCalledWith(99999);
+		it('should handle undefined text gracefully', () => {
+			expect(() => dialogBox.setText(undefined, false)).not.toThrow();
+			expect(dialogBox.animationText).toEqual([]);
+		});
+
+		it('should handle null text gracefully', () => {
+			expect(() => dialogBox.setText(null, false)).not.toThrow();
+			expect(dialogBox.animationText).toEqual([]);
+		});
+
+		it('should stop existing timer when called during animation', () => {
+			const mockTimer = { destroy: jest.fn(), remove: jest.fn() };
+			dialogBox.timedEvent = mockTimer;
+
+			dialogBox.setText('New text', false);
+
+			expect(mockTimer.destroy).toHaveBeenCalled();
+			expect(dialogBox.timedEvent).toBe(null);
 		});
 	});
 
-	describe('modal positioning', () => {
-		it('should position dialog at bottom of screen', () => {
-			dialogBox.openDialogModal('Test', jest.fn());
-
-			const expectedY = mockScene.cameras.main.height - 80;
-			expect(dialogBox.dialogBoxModalBackground.setPosition).toHaveBeenCalledWith(
-				mockScene.cameras.main.midPoint.x,
-				expectedY
-			);
+	describe('animateText', () => {
+		beforeEach(() => {
+			dialogBox.dialog = {
+				textMessage: {
+					setText: jest.fn().mockReturnThis(),
+					text: '',
+					visible: true,
+				},
+			};
+			dialogBox.luminusTypingSoundManager = {
+				type: jest.fn(),
+			};
 		});
 
-		it('should set correct text wrap width', () => {
-			dialogBox.openDialogModal('Test', jest.fn());
-			expect(mockDialogText.setWordWrapWidth).toHaveBeenCalledWith(452);
+		it('should animate text character by character', () => {
+			dialogBox.animationText = ['H', 'e', 'l', 'l', 'o'];
+			dialogBox.eventCounter = 0;
+
+			dialogBox.animateText();
+			expect(dialogBox.eventCounter).toBe(1);
+			expect(dialogBox.dialog.textMessage.setText).toHaveBeenCalledWith('H');
+
+			// Update text to simulate setText behavior
+			dialogBox.dialog.textMessage.text = 'H';
+			dialogBox.animateText();
+			expect(dialogBox.eventCounter).toBe(2);
+			expect(dialogBox.dialog.textMessage.setText).toHaveBeenCalledWith('He');
+		});
+
+		it('should stop animation when complete', () => {
+			dialogBox.animationText = ['H', 'i'];
+			dialogBox.eventCounter = 1;
+			dialogBox.timedEvent = { remove: jest.fn() };
+
+			dialogBox.animateText();
+
+			expect(dialogBox.eventCounter).toBe(2);
+			expect(dialogBox.isAnimatingText).toBe(false);
+			expect(dialogBox.timedEvent.remove).toHaveBeenCalled();
+		});
+
+		it('should handle missing dialog gracefully', () => {
+			dialogBox.dialog = null;
+			dialogBox.animationText = ['H'];
+
+			expect(() => dialogBox.animateText()).not.toThrow();
 		});
 	});
 
-	describe('null safety', () => {
-		it('should not crash when setText is called before textMessage is created', () => {
-			// Create a new dialog box without opening the modal
-			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
-
-			// Ensure textMessage is null
-			if (newDialogBox.dialog) {
-				newDialogBox.dialog.textMessage = null;
-			}
-
-			// This should not throw an error
-			expect(() => newDialogBox.setText('Test text', false)).not.toThrow();
-		});
-
-		it('should not crash when animateText is called before textMessage is created', () => {
-			// Create a new dialog box
-			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
-
-			// Set up animation state
-			newDialogBox.animationText = ['T', 'e', 's', 't'];
-			newDialogBox.eventCounter = 0;
-
-			// Ensure textMessage is null
-			if (newDialogBox.dialog) {
-				newDialogBox.dialog.textMessage = null;
-			}
-
-			// This should not throw an error
-			expect(() => newDialogBox.animateText()).not.toThrow();
-		});
-
-		it('should handle undefined text parameter in setText', () => {
-			// This tests the fix for the bug where text was undefined
-			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
-			expect(() => newDialogBox.setText(undefined as any, false)).not.toThrow();
-		});
-
-		it('should handle null text parameter in setText', () => {
-			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
-			expect(() => newDialogBox.setText(null as any, false)).not.toThrow();
-		});
-
-		it('should populate pagesMessage from dialogMessage when empty', () => {
-			// Test the core logic without calling create() which needs full mocks
-			const newDialogBox = new LuminusDialogBox(mockScene, mockPlayer);
-
-			// Initialize dialog object manually (normally done in createDialogueBox)
-			newDialogBox.dialog = {
+	describe('showDialog', () => {
+		beforeEach(() => {
+			dialogBox.dialog = {
+				textMessage: null,
 				visible: false,
-				x: 0,
-				y: 0,
-				scaleX: 1,
-			} as any;
+				y: 100,
+			};
+			dialogBox.dialogMessage = 'Test message';
+			dialogBox.setText = jest.fn();
+		});
 
-			// Set dialog message but leave pagesMessage empty (simulates the bug)
-			newDialogBox.dialogMessage = 'Test message from dialog';
-			newDialogBox.pagesMessage = [];
-			newDialogBox.pagesNumber = 0;
+		it('should show dialog and create text', () => {
+			dialogBox.showDialog(true);
 
-			// Call showDialog - it should populate pagesMessage from dialogMessage
-			// This is the fix: showDialog now checks if pagesMessage is empty and populates it
-			newDialogBox.showDialog(false); // false = don't try to create text element
+			expect(dialogBox.dialog.visible).toBe(true);
+			expect(dialogBox.canShowDialog).toBe(false);
+			expect(dialogBox.currentPage).toBe(0);
+			expect(mockScene.add.text).toHaveBeenCalled();
+		});
 
-			// Verify pagesMessage was populated from dialogMessage
-			expect(newDialogBox.pagesMessage.length).toBe(1);
-			expect(newDialogBox.pagesMessage[0]).toBe('Test message from dialog');
-			expect(newDialogBox.pagesNumber).toBe(1);
+		it('should populate pagesMessage from dialogMessage if empty', () => {
+			dialogBox.pagesMessage = [];
+			dialogBox.dialogMessage = 'Test message';
+
+			dialogBox.showDialog(false);
+
+			expect(dialogBox.pagesMessage).toEqual(['Test message']);
+			expect(dialogBox.pagesNumber).toBe(1);
+		});
+
+		it('should animate first page', () => {
+			dialogBox.pagesMessage = ['Page 1', 'Page 2'];
+			dialogBox.showDialog(false);
+
+			expect(dialogBox.setText).toHaveBeenCalledWith('Page 1', true);
+		});
+	});
+
+	describe('checkButtonDown', () => {
+		beforeEach(() => {
+			dialogBox.dialog = {
+				textMessage: {
+					text: '',
+					active: true,
+					visible: true,
+				},
+				visible: false,
+			};
+			dialogBox.checkButtonsPressed = jest.fn().mockReturnValue(false);
+			dialogBox.checkButtonsJustPressed = jest.fn().mockReturnValue(false);
+			dialogBox.keyObj = { isDown: false };
+		});
+
+		it('should fast-forward animation when button pressed during typing', () => {
+			dialogBox.isAnimatingText = true;
+			dialogBox.pagesMessage = ['Test message'];
+			dialogBox.currentPage = 0;
+			dialogBox.checkButtonsPressed.mockReturnValue(true);
+			dialogBox.setText = jest.fn();
+
+			dialogBox.checkButtonDown();
+
+			expect(dialogBox.setText).toHaveBeenCalledWith('Test message', false);
+			expect(dialogBox.justFastForwarded).toBe(true);
+		});
+
+		it('should show dialog on first button press', () => {
+			dialogBox.isOverlapingChat = true;
+			dialogBox.chat = [{ message: 'Hello', index: 0 }];
+			dialogBox.checkButtonsJustPressed.mockReturnValue(true);
+			dialogBox.checkSpeaker = jest.fn();
+			dialogBox.showDialog = jest.fn();
+
+			dialogBox.checkButtonDown();
+
+			expect(dialogBox.currentChat).toEqual({ message: 'Hello', index: 0 });
+			expect(dialogBox.dialogMessage).toBe('Hello');
+			expect(dialogBox.showDialog).toHaveBeenCalled();
+			expect(mockPlayer.canMove).toBe(false);
+		});
+
+		it('should advance to next page when available', () => {
+			dialogBox.isAnimatingText = false;
+			dialogBox.dialog.visible = true;
+			dialogBox.currentPage = 0;
+			dialogBox.pagesNumber = 2;
+			dialogBox.pagesMessage = ['Page 1', 'Page 2'];
+			dialogBox.checkButtonsJustPressed.mockReturnValue(true);
+			dialogBox.setText = jest.fn();
+
+			dialogBox.checkButtonDown();
+
+			expect(dialogBox.currentPage).toBe(1);
+			expect(dialogBox.setText).toHaveBeenCalledWith('Page 2', true);
+		});
+
+		it('should close dialog on final page', () => {
+			dialogBox.isAnimatingText = false;
+			dialogBox.dialog.visible = true;
+			dialogBox.dialog.textMessage.visible = true;
+			dialogBox.actionButton = { visible: true };
+			dialogBox.currentPage = 1;
+			dialogBox.pagesNumber = 2;
+			dialogBox.chat = [{ message: 'Test', index: 0 }];
+			dialogBox.currentChat = { message: 'Test', index: 0 };
+			dialogBox.checkButtonsJustPressed.mockReturnValue(true);
+
+			dialogBox.checkButtonDown();
+
+			expect(dialogBox.dialog.visible).toBe(false);
+			expect(dialogBox.isOverlapingChat).toBe(false);
+			expect(mockPlayer.canMove).toBe(true);
+			expect(mockScene.events.emit).toHaveBeenCalledWith('dialogComplete');
+		});
+
+		it('should advance to next chat message', () => {
+			dialogBox.isAnimatingText = false;
+			dialogBox.dialog.visible = true;
+			dialogBox.currentPage = 0;
+			dialogBox.pagesNumber = 1;
+			dialogBox.chat = [
+				{ message: 'First', index: 0 },
+				{ message: 'Second', index: 1 },
+			];
+			dialogBox.currentChat = { message: 'First', index: 0 };
+			dialogBox.checkButtonsJustPressed.mockReturnValue(true);
+			dialogBox.setText = jest.fn();
+			dialogBox.showDialog = jest.fn();
+
+			dialogBox.checkButtonDown();
+
+			expect(dialogBox.currentChat).toEqual({ message: 'Second', index: 1 });
+			expect(dialogBox.dialogMessage).toBe('Second');
+			expect(dialogBox.showDialog).toHaveBeenCalledWith(false);
+		});
+	});
+
+	describe('checkButtonsPressed', () => {
+		beforeEach(() => {
+			dialogBox.keyObj = { isDown: false };
+		});
+
+		it('should return true when keyboard key is down', () => {
+			dialogBox.keyObj.isDown = true;
+			expect(dialogBox.checkButtonsPressed()).toBe(true);
+		});
+
+		it('should return false when no buttons pressed', () => {
+			expect(dialogBox.checkButtonsPressed()).toBe(false);
+		});
+	});
+
+	describe('isDialogActive', () => {
+		beforeEach(() => {
+			dialogBox.dialog = { visible: false };
+		});
+
+		it('should return true when dialog is visible', () => {
+			dialogBox.dialog.visible = true;
+			expect(dialogBox.isDialogActive()).toBe(true);
+		});
+
+		it('should return false when dialog is not visible', () => {
+			expect(dialogBox.isDialogActive()).toBe(false);
 		});
 	});
 });
