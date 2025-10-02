@@ -62,12 +62,29 @@ export class LuminusKeyboardMouseController {
 		this.scene.input.keyboard!.on('keydown', (keydown: KeyboardEvent) => {
 			// J key (74) or Space (32) - Attack
 			if (keydown.keyCode === 32 || keydown.keyCode === 74) {
+				const attackAllowed = !!(
+					this.player &&
+					this.player.active &&
+					this.player.canAtack &&
+					this.player.canMove &&
+					!this.player.isSwimming
+				);
 				console.log('[KeyboardController] Attack key pressed (J or Space):', {
 					hasPlayer: !!this.player,
 					active: this.player?.active,
 					canAtack: this.player?.canAtack,
 					canMove: this.player?.canMove,
 					isSwimming: this.player?.isSwimming,
+					attackAllowed,
+					failedConditions: !attackAllowed
+						? [
+								!this.player && 'no player',
+								this.player && !this.player.active && 'not active',
+								this.player && !this.player.canAtack && 'canAtack=false',
+								this.player && !this.player.canMove && 'canMove=false',
+								this.player && this.player.isSwimming && 'swimming',
+							].filter(Boolean)
+						: [],
 				});
 			}
 
