@@ -542,7 +542,10 @@ export class LuminusBattleManager extends AnimationNames {
 		}
 
 		// Show death animation/effect
-		this.phaserJuice!.add(player).flash({ repeat: 3, duration: 200 });
+		if (!this.phaserJuice) {
+			this.phaserJuice = new PhaserJuice(scene, scene.plugins);
+		}
+		this.phaserJuice.add(player).flash({ repeat: 3, duration: 200 });
 
 		// Delay before showing game over screen
 		setTimeout(() => {
