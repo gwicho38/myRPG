@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "webpack --config webpack/prod.js",
 		"build:web": "npm run build",
-		"start": "webpack --config webpack/dev.js --watch",
+		"start": "node scripts/start-dev.js",
 		"dev": "npm run start",
 		"serve": "node scripts/serve.js",
 		"lint": "eslint src --ext .js,.ts",
