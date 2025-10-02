@@ -7,9 +7,9 @@ interface TiledProperty {
 }
 
 /**
- * Interface for Tiled objects
+ * Interface for Tiled objects with particle properties
  */
-interface TiledObject {
+interface TiledParticleObject {
 	x: number;
 	y: number;
 	width: number;
@@ -76,8 +76,9 @@ export class LuminusEnvironmentParticles {
 	create(): void {
 		const zones = this.map.getObjectLayer(this.particlesObjectLayerName);
 		if (zones && zones.objects && zones.objects.length > 0) {
-			zones.objects.forEach((zone: TiledObject) => {
-				zone.properties.forEach((property: TiledProperty) => {
+			zones.objects.forEach((zone: any) => {
+				const particleZone = zone as TiledParticleObject;
+				particleZone.properties.forEach((property: TiledProperty) => {
 					if (property.value === this.dustParticleSprite) {
 						this.makeDust(zone.width, zone.height, zone.x, zone.y);
 					} else if (property.value === this.cloudParticleName) {
@@ -113,7 +114,7 @@ export class LuminusEnvironmentParticles {
 			scale: 0.8,
 			alpha: { start: 0.5, end: 0.7 },
 			radial: true,
-			rotation: 180,
+			// rotation: 180, // Not a valid ParticleEmitterConfig property
 		});
 
 		// Clouds should always cast shadows above everything else in the map.
@@ -143,7 +144,7 @@ export class LuminusEnvironmentParticles {
 			scale: { start: 1.3, end: 0.7 },
 			alpha: { start: 0.4, end: 1 },
 			radial: true,
-			rotation: 180,
+			// rotation: 180, // Not a valid ParticleEmitterConfig property
 		});
 		this.dustParticles = this.scene.add.particles(originX + width / 2, originY + height / 2, 'dust', {
 			angle: { min: 0, max: 360 },
@@ -158,7 +159,7 @@ export class LuminusEnvironmentParticles {
 			scale: { start: 1.3, end: 0.7 },
 			alpha: { start: 0.4, end: 1 },
 			radial: true,
-			rotation: 180,
+			// rotation: 180, // Not a valid ParticleEmitterConfig property
 		});
 	}
 }
