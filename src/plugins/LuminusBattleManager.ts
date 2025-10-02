@@ -237,14 +237,20 @@ export class LuminusBattleManager extends AnimationNames {
 			this.phaserJuice!.add(target).flash();
 			atacker.scene.sound.add(damageName).play();
 			if (target.attributes.health <= 0) {
-				if (atacker.entityName === ENTITIES.Player) {
-					ExpManager.addExp(atacker, target.exp);
+				if (target.entityName === ENTITIES.Player) {
+					// Player died - trigger game over
+					this.handlePlayerDeath(target);
+				} else {
+					// Enemy died
+					if (atacker.entityName === ENTITIES.Player) {
+						ExpManager.addExp(atacker, target.exp);
+					}
+					setTimeout((_t) => {
+						if (target.entityName === this.enemyConstructorName) target.dropItems();
+						target.anims.stop();
+						target.destroyAll();
+					}, 100);
 				}
-				setTimeout((_t) => {
-					if (target.entityName === this.enemyConstructorName) target.dropItems();
-					target.anims.stop();
-					target.destroyAll();
-				}, 100);
 			}
 			// Not very Optimized.
 			this.luminusEntityTextDisplay = new LuminusEntityTextDisplay(target.scene);
@@ -494,5 +500,46 @@ export class LuminusBattleManager extends AnimationNames {
 				e.canTakeDamage = true;
 			});
 		}
+	}
+
+	/**
+	 * Handles player death by launching the GameOver scene
+	 * @param player The player entity that died
+	 */
+	handlePlayerDeath(player: any): void {
+		console.log('[BattleManager] Player died - triggering game over');
+
+		// Disable player controls
+		player.canMove = false;
+		player.canAtack = false;
+		player.canBlock = false;
+
+		// Stop player animations
+		player.anims.stop();
+
+		// Fade out music if it exists
+		const scene = player.scene;
+		if (scene.themeSound && scene.themeSound.isPlaying) {
+			scene.tweens.add({
+				targets: scene.themeSound,
+				volume: 0,
+				duration: 1000,
+				ease: 'Power2',
+			});
+		}
+
+		// Show death animation/effect
+		this.phaserJuice!.add(player).flash({ repeat: 3, duration: 200 });
+
+		// Delay before showing game over screen
+		setTimeout(() => {
+			// Launch GameOver scene with current scene data
+			scene.scene.launch('GameOverScene', {
+				playerLevel: player.attributes.level,
+				lastScene: scene.scene.key,
+			});
+			// Pause the current scene
+			scene.scene.pause();
+		}, 1500);
 	}
 }
