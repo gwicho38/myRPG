@@ -1,13 +1,17 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(git commit:*)",
-      "Bash(make:*)",
-      "Bash(cat:*)",
-      "Bash(lsof:*)",
-      "Bash(xargs kill:*)"
-    ],
-    "deny": [],
-    "ask": []
-  }
+	"permissions": {
+		"allow": [
+			"Bash(git commit:*)",
+			"Bash(make:*)",
+			"Bash(cat:*)",
+			"Bash(lsof:*)",
+			"Bash(xargs kill:*)",
+			"Bash(npm install:*)",
+			"Bash(npx playwright install:*)",
+			"Bash(npm run test:integration:*)",
+			"Bash(npm run test:e2e:*)"
+		],
+		"deny": [],
+		"ask": []
+	}
 }

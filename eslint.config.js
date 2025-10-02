@@ -117,6 +117,10 @@ module.exports = [
 			'*.config.js',
 			'electron-main.js',
 			'src/plugins/AnimatedTiles.js',
+			'tests/**',
+			'playwright.config.ts',
+			'playwright-report/**',
+			'test-results/**',
 		],
 	},
 ];

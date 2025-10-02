@@ -33,6 +33,17 @@ describe('Player Controls Integration Tests', () => {
 					setScrollFactor: jest.fn().mockReturnThis(),
 					destroy: jest.fn(),
 				}),
+				sprite: jest.fn().mockReturnValue({
+					setOrigin: jest.fn().mockReturnThis(),
+					setDepth: jest.fn().mockReturnThis(),
+					setPosition: jest.fn().mockReturnThis(),
+					setScrollFactor: jest.fn().mockReturnThis(),
+					setVisible: jest.fn().mockReturnThis(),
+					destroy: jest.fn(),
+					visible: false,
+					x: 0,
+					y: 0,
+				}),
 				nineslice: jest.fn().mockReturnValue({
 					setOrigin: jest.fn().mockReturnThis(),
 					setDepth: jest.fn().mockReturnThis(),
