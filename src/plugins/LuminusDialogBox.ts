@@ -577,6 +577,7 @@ export class LuminusDialogBox {
 			}
 			// Disable player input capabilities during dialog
 			this.player.canMove = false;
+			console.log('[DialogBox] Setting canAtack = false (starting dialog)');
 			this.player.canAtack = false;
 			this.player.canBlock = false;
 		} else if (
@@ -621,6 +622,7 @@ export class LuminusDialogBox {
 				(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = this.player.speed;
 			}
 			// Re-enable player input capabilities
+			console.log('[DialogBox] Setting canAtack = true (dialog complete)');
 			this.player.canMove = true;
 			this.player.canAtack = true;
 			this.player.canBlock = true;

@@ -60,8 +60,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		// Has to call this method, so the animations work properly.
 		this.addToUpdateList();
 
+		console.log('[Player] Constructor - before BaseEntity assign:', { canAtack: this.canAtack });
 		// Here are all classes that this Player Extends.
 		Object.assign(this, BaseEntity);
+		console.log('[Player] Constructor - after BaseEntity assign:', { canAtack: this.canAtack });
 
 		/**
 		 * The entity attributes.
@@ -131,6 +133,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		 * This object is responsible for moving the entity.
 		 */
 		this.luminusMovement = new LuminusMovement(this.scene, this, this.joystickScene);
+		console.log('[Player] Constructor - after luminusMovement created:', { canAtack: this.canAtack });
 
 		this.play('character-idle-down');
 
