@@ -316,10 +316,17 @@ export class LuminusBattleManager extends AnimationNames {
 	 * @param blocker the entity that will block.
 	 */
 	block(blocker: any): void {
+		console.log('[BattleManager] Block called:', {
+			canBlock: blocker.canBlock,
+			canMove: blocker.canMove,
+			isAtacking: blocker.isAtacking,
+			canAtack: blocker.canAtack,
+		});
 		if (blocker.canBlock && blocker.canMove && !blocker.isAtacking) {
 			blocker.isBlocking = true;
 			blocker.canMove = false;
 			blocker.canAtack = false;
+			console.log('[BattleManager] Blocking started - canAtack set to false');
 
 			const texture = blocker.texture.key;
 
@@ -339,6 +346,11 @@ export class LuminusBattleManager extends AnimationNames {
 	 * @param blocker the entity that will stop blocking.
 	 */
 	stopBlock(blocker: any): void {
+		console.log('[BattleManager] StopBlock called:', {
+			isBlocking: blocker.isBlocking,
+			canBlock: blocker.canBlock,
+			canAtack: blocker.canAtack,
+		});
 		if (blocker.isBlocking) {
 			blocker.isBlocking = false;
 
@@ -347,6 +359,7 @@ export class LuminusBattleManager extends AnimationNames {
 			if (blocker.canBlock !== false) {
 				blocker.canMove = true;
 				blocker.canAtack = true;
+				console.log('[BattleManager] Blocking stopped - canAtack set to true');
 			}
 			// If canBlock is false, leave canMove/canAtack as they are (disabled by dialog/menu)
 

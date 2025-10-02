@@ -350,7 +350,7 @@ const startMonitoring = () => {
                 textContent: dialogBox.dialog?.textMessage?.text?.substring(0, 50) + '...'
             });
         }
-    }, 1000);
+    }, 300);
 };
 
 const stopMonitoring = () => {

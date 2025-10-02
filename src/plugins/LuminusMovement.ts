@@ -190,13 +190,25 @@ export class LuminusMovement extends AnimationNames {
 		const isShiftDown = this.shiftKey.isDown;
 		const wasShiftDown = this.player.wasShiftDown || false;
 
+		// Debug: Log shift key state changes
+		if (isShiftDown !== wasShiftDown) {
+			console.log('[LuminusMovement] Shift key state changed:', {
+				isShiftDown,
+				wasShiftDown,
+				currentRunning: this.player.isRunning,
+				currentSpeed: this.player.speed,
+			});
+		}
+
 		// Toggle running when shift is pressed (transition from up to down)
 		if (isShiftDown && !wasShiftDown) {
+			const previousRunning = this.player.isRunning;
+			const previousCanAtack = this.player.canAtack;
 			this.player.isRunning = !this.player.isRunning;
 			this.player.speed = this.player.isRunning ? this.player.runSpeed || 300 : this.player.baseSpeed || 200;
 			this.updateBodyMaxSpeed(this.player.speed);
 			console.log(
-				`[LuminusMovement] Running toggled ${this.player.isRunning ? 'ON' : 'OFF'} - Speed: ${this.player.speed}`
+				`[LuminusMovement] Running toggled: ${previousRunning} -> ${this.player.isRunning} - Speed: ${this.player.speed}, MaxSpeed: ${(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed}, canAtack: ${previousCanAtack} -> ${this.player.canAtack}`
 			);
 		}
 
