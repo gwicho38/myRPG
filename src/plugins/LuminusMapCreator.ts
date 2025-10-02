@@ -3,6 +3,14 @@ import { Player } from '../entities/Player';
 import { TilesetImageConfig } from '../models/TilesetImageConfig';
 
 /**
+ * Interface for Tiled layer properties
+ */
+interface TiledProperty {
+	name: string;
+	value: string | number | boolean;
+}
+
+/**
  * @class
  */
 export class LuminusMapCreator {
@@ -91,11 +99,11 @@ export class LuminusMapCreator {
 
 		this.map.layers.forEach((layer) => {
 			const currentLayer = this.map!.createLayer(layer.name, this.map!.tilesets);
-			const depth = layer.properties.find((f) => f.name === this.depthProperty);
+			const depth = (layer.properties as TiledProperty[]).find((f) => f.name === this.depthProperty);
 			if (depth) {
-				currentLayer!.depth = depth.value;
+				currentLayer!.depth = depth.value as number;
 			}
-			const collides = layer.properties.find((f) => f.name === this.collisionPropperty);
+			const collides = (layer.properties as TiledProperty[]).find((f) => f.name === this.collisionPropperty);
 
 			// If you want to see the Collision layer the alpha should be higher than zero.
 			if (collides && collides.value) {

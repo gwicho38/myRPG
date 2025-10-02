@@ -7,6 +7,7 @@ export interface IRawAttributes {
 	vit: number; // Vitality
 	dex: number; // Dexterity
 	int: number; // Intelligence
+	[key: string]: number; // Index signature for dynamic access
 }
 
 /**

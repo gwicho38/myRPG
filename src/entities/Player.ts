@@ -26,6 +26,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	public isSwimming: boolean = false;
 	public canSwim: boolean = true;
 	public isRunning: boolean = false;
+	public wasShiftDown: boolean = false;
 	public baseSpeed: number = 200;
 	public swimSpeed: number = 100;
 	public runSpeed: number = 300;
