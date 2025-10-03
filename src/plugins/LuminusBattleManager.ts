@@ -230,6 +230,8 @@ export class LuminusBattleManager extends AnimationNames {
 				target.attributes.health -= 1;
 				target.healthBar.decrease(1);
 			}
+			// Clamp health to minimum of 0
+			target.attributes.health = Math.max(0, target.attributes.health);
 
 			if (target.luminusHUDProgressBar) {
 				target.luminusHUDProgressBar.updateHealth();

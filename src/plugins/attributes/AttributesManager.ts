@@ -126,6 +126,8 @@ export class AttributesManager {
 			this.statsCopy.baseHealth +
 			this.entity.attributes.level * 10 +
 			this.entity.attributes.rawAttributes.vit * 3;
+		// Update maxHealth to match baseHealth (+ any bonuses from equipment)
+		this.entity.attributes.maxHealth = this.entity.attributes.baseHealth;
 		if (this.entity.healthBar) this.entity.healthBar.draw();
 		if (this.firstTime || this.leveledUp) {
 			if (this.entity.healthBar && this.leveledUp) {
