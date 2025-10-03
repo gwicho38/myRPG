@@ -9,7 +9,12 @@
 			"Bash(npm install:*)",
 			"Bash(npx playwright install:*)",
 			"Bash(npm run test:integration:*)",
-			"Bash(npm run test:e2e:*)"
+			"Bash(npm run test:e2e:*)",
+			"Bash(node:*)",
+			"Bash(pkill:*)",
+			"Bash(npm run start:*)",
+			"Bash(tee:*)",
+			"Bash(git add:*)"
 		],
 		"deny": [],
 		"ask": []
