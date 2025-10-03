@@ -48,27 +48,33 @@ export class MainMenuScene extends Phaser.Scene {
 	}
 
 	preload(): void {
-		this.load.video('intro_video', intro_video, 'loadeddata', false, true);
+		// Only load video if it exists (prevents E2E test failures)
+		if (intro_video) {
+			this.load.video('intro_video', intro_video, 'loadeddata', false, true);
+		}
 	}
 
 	create(): void {
-		this.video = this.add.video(this.cameras.main.x, this.cameras.main.y, 'intro_video');
+		// Only create video if it was loaded
+		if (intro_video && this.textures.exists('intro_video')) {
+			this.video = this.add.video(this.cameras.main.x, this.cameras.main.y, 'intro_video');
 
-		if (this.scale.orientation === 'portrait-primary') {
-			this.video.setScale(2);
-			this.video.setOrigin(0.4, 0);
-		} else {
-			// if Landscape, just fits the video on the canvas.
-			this.video.scaleX = this.cameras.main.width / this.video.width;
-			this.video.scaleY = this.cameras.main.height / this.video.height;
-			this.video.setOrigin(0, 0);
+			if (this.scale.orientation === 'portrait-primary') {
+				this.video.setScale(2);
+				this.video.setOrigin(0.4, 0);
+			} else {
+				// if Landscape, just fits the video on the canvas.
+				this.video.scaleX = this.cameras.main.width / this.video.width;
+				this.video.scaleY = this.cameras.main.height / this.video.height;
+				this.video.setOrigin(0, 0);
+			}
+
+			this.video.setLoop(true);
+			this.video.play();
+
+			// Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
+			this.video.setPaused(false);
 		}
-
-		this.video.setLoop(true);
-		this.video.play();
-
-		// Prevents video freeze when game is out of focus (i.e. user changes tab on the browser)
-		this.video.setPaused(false);
 
 		this.sound.volume = 0.35;
 		this.themeSound = this.sound.add('forest', {

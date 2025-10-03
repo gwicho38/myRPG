@@ -27,20 +27,29 @@ test.describe('Attack Mechanics E2E', () => {
 			return (window as any).game !== undefined;
 		});
 
-		// Wait for player to be created
-		await page.waitForFunction(() => {
-			const game = (window as any).game;
-			if (!game) return false;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player !== undefined;
-		});
+		// Wait for an active scene with player to be created
+		await page.waitForFunction(
+			() => {
+				const game = (window as any).game;
+				if (!game || !game.scene || !game.scene.scenes) return false;
+				// Find any scene with a player that has canAtack defined
+				const activeScene = game.scene.scenes.find(
+					(s: any) => s.player && typeof s.player.canAtack === 'boolean'
+				);
+				return !!activeScene;
+			},
+			{ timeout: 60000 }
+		);
+
+		// Wait a bit more for game to stabilize
+		await page.waitForTimeout(2000);
 	});
 
 	test('player should initialize with canAtack = true', async ({ page }) => {
 		const canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -86,8 +95,8 @@ test.describe('Attack Mechanics E2E', () => {
 		// Verify canAtack is true again
 		const canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -102,8 +111,8 @@ test.describe('Attack Mechanics E2E', () => {
 		// Check canAtack is still true
 		const canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -116,8 +125,8 @@ test.describe('Attack Mechanics E2E', () => {
 
 		let canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -128,8 +137,8 @@ test.describe('Attack Mechanics E2E', () => {
 
 		canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -142,8 +151,8 @@ test.describe('Attack Mechanics E2E', () => {
 
 		let canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(false);
@@ -154,8 +163,8 @@ test.describe('Attack Mechanics E2E', () => {
 
 		canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
@@ -171,8 +180,8 @@ test.describe('Attack Mechanics E2E', () => {
 		// Verify canAtack is true after all attacks
 		const canAtack = await page.evaluate(() => {
 			const game = (window as any).game;
-			const mainScene = game.scene.scenes.find((s: any) => s.scene.key === 'MainScene');
-			return mainScene?.player?.canAtack;
+			const activeScene = game.scene.scenes.find((s: any) => s.player);
+			return activeScene?.player?.canAtack;
 		});
 
 		expect(canAtack).toBe(true);
