@@ -395,7 +395,9 @@ export class LuminusBattleManager extends AnimationNames {
 			atacker.isAtacking = true;
 			atacker.canAtack = false;
 			if (atacker.walkDust) atacker.walkDust.on = false;
-			atacker.container.body.maxSpeed = 0;
+			if (atacker.container?.body) {
+				atacker.container.body.maxSpeed = 0;
+			}
 			const texture = atacker.texture.key;
 			const currrentAnimation = atacker.anims.currentAnim.key;
 			const atackAnimation = currrentAnimation.split('-');
@@ -496,7 +498,9 @@ export class LuminusBattleManager extends AnimationNames {
 					atacker.off(Phaser.Animations.Events.ANIMATION_COMPLETE, completeAttackHandler);
 
 					atacker.isAtacking = false;
-					atacker.container.body.maxSpeed = atacker.speed;
+					if (atacker.container?.body) {
+						atacker.container.body.maxSpeed = atacker.speed;
+					}
 					atacker.canAtack = true; // Enables the atack once the player finishes the animation
 					console.log('[BattleManager] Attack complete - canAtack restored to true');
 					if (atacker.entityName === this.enemyConstructorName) {
@@ -524,7 +528,9 @@ export class LuminusBattleManager extends AnimationNames {
 					attackCompleted = true;
 					atacker.off(Phaser.Animations.Events.ANIMATION_COMPLETE, completeAttackHandler);
 					atacker.isAtacking = false;
-					atacker.container.body.maxSpeed = atacker.speed;
+					if (atacker.container?.body) {
+						atacker.container.body.maxSpeed = atacker.speed;
+					}
 					atacker.canAtack = true;
 
 					if (hitBoxSprite && hitBoxSprite.active && atacker.entityName !== this.enemyConstructorName)
