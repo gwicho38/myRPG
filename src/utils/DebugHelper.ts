@@ -293,26 +293,27 @@ class DebugHelper {
 	private getSafeConfig(): any {
 		if (!this.game?.config) return {};
 
+		const config = this.game.config as any;
 		return {
-			width: this.game.config.width,
-			height: this.game.config.height,
-			type: this.game.config.type,
-			parent: typeof this.game.config.parent === 'string' ? this.game.config.parent : '[HTMLElement]',
-			physics: this.game.config.physics
+			width: config.width,
+			height: config.height,
+			type: config.type,
+			parent: typeof config.parent === 'string' ? config.parent : '[HTMLElement]',
+			physics: config.physics
 				? {
-						default: (this.game.config.physics as any).default,
-						arcade: (this.game.config.physics as any).arcade
+						default: config.physics.default,
+						arcade: config.physics.arcade
 							? {
-									gravity: (this.game.config.physics as any).arcade.gravity,
-									debug: (this.game.config.physics as any).arcade.debug,
+									gravity: config.physics.arcade.gravity,
+									debug: config.physics.arcade.debug,
 								}
 							: undefined,
 					}
 				: undefined,
-			scale: this.game.config.scale
+			scale: config.scale
 				? {
-						mode: (this.game.config.scale as any).mode,
-						autoCenter: (this.game.config.scale as any).autoCenter,
+						mode: config.scale.mode,
+						autoCenter: config.scale.autoCenter,
 					}
 				: undefined,
 		};
@@ -327,7 +328,7 @@ class DebugHelper {
 		const dump: GameStateDump = {
 			metadata: {
 				timestamp: new Date().toISOString(),
-				version: this.game?.config?.version || 'unknown',
+				version: (this.game?.config as any)?.version || 'unknown',
 				userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
 				viewport: {
 					width: typeof window !== 'undefined' ? window.innerWidth : 0,

@@ -10,6 +10,6 @@ export class IconDeviceChange {
 	 * @param { Phaser.GameObjects.Image } gameObject - The game object whose texture will be changed
 	 */
 	static changeTexture(gameObject: Phaser.GameObjects.Image): void {
-		gameObject.setTexture();
+		gameObject.setTexture(gameObject.texture.key);
 	}
 }

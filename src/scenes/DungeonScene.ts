@@ -63,19 +63,17 @@ export class DungeonScene extends Phaser.Scene {
 		this.enemies = [];
 		this.dungeon.dungeon.rooms.forEach((room) => {
 			const spriteBounds = Phaser.Geom.Rectangle.Inflate(
-				Phaser.Geom.Rectangle.Clone(
-					this.add.rectangle(
-						(room.x + 1) * this.dungeon.tileWidth,
-						(room.y + 1) * this.dungeon.tileWidth,
-						(room.width - 3) * this.dungeon.tileWidth,
-						(room.height - 3) * this.dungeon.tileWidth
-					)
+				new Phaser.Geom.Rectangle(
+					(room.x + 1) * this.dungeon.tileWidth,
+					(room.y + 1) * this.dungeon.tileWidth,
+					(room.width - 3) * this.dungeon.tileWidth,
+					(room.height - 3) * this.dungeon.tileWidth
 				),
 				0,
 				0
 			);
 			for (let i = 0; i < 5; i++) {
-				const pos = Phaser.Geom.Rectangle.Random(spriteBounds);
+				const pos = Phaser.Geom.Rectangle.Random(spriteBounds, new Phaser.Geom.Point());
 				const enemy = new Enemy(this, pos.x, pos.y, 'bat', 2);
 				this.enemies.push(enemy);
 			}
