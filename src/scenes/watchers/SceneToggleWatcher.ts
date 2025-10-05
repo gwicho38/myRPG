@@ -11,11 +11,15 @@ export class SceneToggleWatcher {
 			player.canMove = false;
 			console.log(`[SceneToggleWatcher] Scene opened - canMove: ${player.canMove}, canAtack: ${player.canAtack}`);
 		} else {
-			console.log(`[SceneToggleWatcher] Closing scene: ${name} - Before: canMove: ${player.canMove}, canAtack: ${player.canAtack}`);
+			console.log(
+				`[SceneToggleWatcher] Closing scene: ${name} - Before: canMove: ${player.canMove}, canAtack: ${player.canAtack}`
+			);
 			sceneContext.scene.get(name).scene.stop();
 			player.canMove = true;
 			player.canAtack = true;
-			console.log(`[SceneToggleWatcher] Scene closed - After: canMove: ${player.canMove}, canAtack: ${player.canAtack}`);
+			console.log(
+				`[SceneToggleWatcher] Scene closed - After: canMove: ${player.canMove}, canAtack: ${player.canAtack}`
+			);
 		}
 	}
 }

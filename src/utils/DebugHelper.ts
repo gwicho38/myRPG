@@ -305,15 +305,15 @@ class DebugHelper {
 							? {
 									gravity: (this.game.config.physics as any).arcade.gravity,
 									debug: (this.game.config.physics as any).arcade.debug,
-							  }
+								}
 							: undefined,
-				  }
+					}
 				: undefined,
 			scale: this.game.config.scale
 				? {
 						mode: (this.game.config.scale as any).mode,
 						autoCenter: (this.game.config.scale as any).autoCenter,
-				  }
+					}
 				: undefined,
 		};
 	}

@@ -138,5 +138,73 @@ describe('LuminusBattleManager', () => {
 			// Should apply reduced damage while blocking
 			expect(mockEntity.takeDamage).toHaveBeenCalled();
 		});
+
+		it('should clamp health to minimum of 0 and prevent negative health', () => {
+			// Create entities with full attribute structure for integration test
+			const attacker = {
+				attributes: {
+					atack: 100,
+					critical: 10,
+					hit: 100,
+				},
+				scene: {
+					sound: {
+						add: jest.fn().mockReturnValue({
+							play: jest.fn(),
+						}),
+					},
+					add: {
+						text: jest.fn().mockReturnValue({
+							setOrigin: jest.fn().mockReturnThis(),
+							setScrollFactor: jest.fn().mockReturnThis(),
+							setDepth: jest.fn().mockReturnThis(),
+							setScale: jest.fn().mockReturnThis(),
+							destroy: jest.fn(),
+						}),
+						tween: jest.fn(),
+					},
+					tweens: {
+						add: jest.fn(),
+					},
+				},
+				entityName: 'Player',
+			};
+
+			const target = {
+				attributes: {
+					health: 5, // Low health that will go negative without clamping
+					defense: 0,
+					flee: 0,
+				},
+				healthBar: {
+					decrease: jest.fn(),
+				},
+				luminusHUDProgressBar: null as any,
+				entityName: 'Enemy',
+				anims: {
+					stop: jest.fn(),
+				},
+				destroyAll: jest.fn(),
+				scene: attacker.scene,
+				container: {
+					x: 100,
+					y: 100,
+				},
+			};
+
+			// Mock PhaserJuice to prevent errors
+			(battleManager as any).phaserJuice = {
+				add: jest.fn().mockReturnValue({
+					flash: jest.fn(),
+				}),
+			};
+
+			// Call takeDamage with damage that would make health negative
+			battleManager.takeDamage(attacker, target);
+
+			// Verify health is clamped to 0, not negative
+			expect(target.attributes.health).toBeGreaterThanOrEqual(0);
+			expect(target.attributes.health).toBe(0);
+		});
 	});
 });

@@ -182,6 +182,18 @@ describe('AttributesManager', () => {
 			expect(mockEntity.attributes.baseHealth).toBe(100 + 5 * 10 + 20 * 3); // 100 + 50 + 60 = 210
 		});
 
+		it('should update maxHealth to match baseHealth', () => {
+			manager.statsCopy.baseHealth = 100;
+			mockEntity.attributes.level = 5;
+			mockEntity.attributes.rawAttributes.vit = 20;
+
+			manager.calculateHealth();
+
+			const expectedBaseHealth = 100 + 5 * 10 + 20 * 3; // 210
+			expect(mockEntity.attributes.baseHealth).toBe(expectedBaseHealth);
+			expect(mockEntity.attributes.maxHealth).toBe(expectedBaseHealth);
+		});
+
 		it('should call healthBar draw', () => {
 			manager.calculateHealth();
 			expect(mockHealthBar.draw).toHaveBeenCalled();
