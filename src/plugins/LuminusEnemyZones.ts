@@ -76,17 +76,23 @@ export class LuminusEnemyZones {
 		if (objectZones && objectZones.objects && objectZones.objects.length > 0) {
 			objectZones.objects.forEach((infoObj) => {
 				const zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
-				const spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(zone), 0, 0);
+				// Create a proper Rectangle from the zone dimensions
+				const spriteBounds = new Phaser.Geom.Rectangle(
+					infoObj.x || 0,
+					infoObj.y || 0,
+					infoObj.width || 0,
+					infoObj.height || 0
+				);
 				if (this.createFromProperties && infoObj.properties) {
-					let number = infoObj.properties.find((f) => f.name === this.numberPropertyName);
+					let number = infoObj.properties.find((f: any) => f.name === this.numberPropertyName);
 
 					if (number) {
 						number = number.value;
 					}
 
-					let texture = infoObj.properties.find((f) => f.name === this.texturePropertyName);
+					let texture = infoObj.properties.find((f: any) => f.name === this.texturePropertyName);
 
-					const id = infoObj.properties.find((f) => f.name === this.idPropertyName);
+					const id = infoObj.properties.find((f: any) => f.name === this.idPropertyName);
 
 					const enemyConfig = EnemiesSeedConfig.find((e) => e.id === parseInt(id.value));
 
@@ -94,7 +100,7 @@ export class LuminusEnemyZones {
 						texture = enemyConfig.texture;
 					}
 					for (let i = 0; i < number; i++) {
-						const pos = Phaser.Geom.Rectangle.Random(spriteBounds);
+						const pos = Phaser.Geom.Rectangle.Random(spriteBounds, new Phaser.Geom.Point());
 						const enemy = new Enemy(
 							this.scene,
 							pos.x,

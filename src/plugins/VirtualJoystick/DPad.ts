@@ -230,7 +230,7 @@ export default class DPad extends BaseStick {
 			//  Let it smoothly rotate around the base limit
 			const limitPoint = this.limitPoint;
 
-			Phaser.Geom.Circle.CircumferencePoint(this.baseHitArea, lineAngle, limitPoint);
+			Phaser.Geom.Circle.CircumferencePoint(this.baseHitArea, lineAngle, limitPoint as any);
 
 			if (motionLock === CONST.NONE) {
 				stickHitArea.setPosition(limitPoint.x, limitPoint.y);

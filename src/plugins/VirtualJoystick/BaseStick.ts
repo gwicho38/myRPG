@@ -212,7 +212,7 @@ export default class BaseStick extends EventEmitter {
 		 */
 		this._showOnTouch = false;
 
-		const input = this.scene.sys.input;
+		const input = (this.scene.sys as any).input;
 
 		input.on('pointerdown', this.checkDown, this);
 		input.on('pointerup', this.checkUp, this);
@@ -410,7 +410,7 @@ export default class BaseStick extends EventEmitter {
 			//  Let it smoothly rotate around the base limit
 			const limitPoint = this.limitPoint;
 
-			Phaser.Geom.Circle.CircumferencePoint(this.baseHitArea, lineAngle, limitPoint);
+			Phaser.Geom.Circle.CircumferencePoint(this.baseHitArea, lineAngle, limitPoint as any);
 
 			if (this.motionLock === CONST.NONE) {
 				this.stickHitArea.setPosition(limitPoint.x, limitPoint.y);
@@ -486,7 +486,7 @@ export default class BaseStick extends EventEmitter {
 	 * Removes all associated event listeners and signals and calls destroy on the stick sprites.
 	 */
 	destroy(): void {
-		const input = this.scene.sys.input;
+		const input = (this.scene.sys as any).input;
 
 		input.off('pointerdown', this.checkDown, this);
 		input.off('pointerup', this.checkUp, this);
