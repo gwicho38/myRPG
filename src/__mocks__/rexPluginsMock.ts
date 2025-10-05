@@ -2,4 +2,4 @@
 // Mock for phaser3-rex-plugins
 const OutlinePostFx = jest.fn();
 
-export = OutlinePostFx;
+export default OutlinePostFx;
