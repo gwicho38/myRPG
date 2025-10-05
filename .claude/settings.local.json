@@ -14,7 +14,8 @@
 			"Bash(pkill:*)",
 			"Bash(npm run start:*)",
 			"Bash(tee:*)",
-			"Bash(git add:*)"
+			"Bash(git add:*)",
+			"Bash(npm run test:coverage:*)"
 		],
 		"deny": [],
 		"ask": []
