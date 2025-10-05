@@ -770,4 +770,4 @@ const Phaser = {
 	},
 };
 
-export = Phaser;
+export default Phaser;

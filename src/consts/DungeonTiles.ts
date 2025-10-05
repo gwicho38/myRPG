@@ -29,6 +29,7 @@ interface TileMapping {
 	CHEST: number;
 	STAIRS: number;
 	TOWER: number[][];
+	BLANK: number;
 }
 
 // Mapping with:
@@ -77,6 +78,7 @@ const TILE_MAPPING: TileMapping = {
 	CHEST: 166,
 	STAIRS: 81,
 	TOWER: [[186], [205]],
+	BLANK: -1,
 };
 
 export default TILE_MAPPING;

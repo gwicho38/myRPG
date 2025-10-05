@@ -48,4 +48,5 @@ const NineSlicePlugin = class NineSlicePlugin {
 	}
 };
 
-export = { NineSlice, NineSlicePlugin, default: NineSlicePlugin };
+export { NineSlice, NineSlicePlugin };
+export default NineSlicePlugin;

@@ -19,4 +19,4 @@ class PhaserJuice {
 	}
 }
 
-export = PhaserJuice;
+export default PhaserJuice;
