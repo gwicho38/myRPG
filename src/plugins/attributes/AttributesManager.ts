@@ -6,6 +6,7 @@ interface EntityStats {
 	level: number;
 	baseHealth: number;
 	health: number;
+	maxHealth: number;
 	defense: number;
 	atack: number;
 	speed: number;
