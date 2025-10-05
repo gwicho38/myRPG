@@ -27,7 +27,21 @@ describe('LuminusBattleManager', () => {
 			anims: {
 				play: jest.fn(),
 				stop: jest.fn(),
-				currentAnim: null,
+				currentAnim: { key: 'player-walk_down' },
+				exists: jest.fn(() => true),
+			},
+			texture: { key: 'player' },
+			scene: {
+				plugins: {},
+				scene: { key: 'TestScene' },
+			},
+			attributes: {
+				atack: 10,
+				defense: 5,
+				critical: 10,
+				hit: 100,
+				flee: 0,
+				health: 100,
 			},
 			setTint: jest.fn(),
 			clearTint: jest.fn(),
@@ -127,16 +141,32 @@ describe('LuminusBattleManager', () => {
 	});
 
 	describe('takeDamage', () => {
+		let mockTarget: any;
+
+		beforeEach(() => {
+			mockTarget = {
+				attributes: {
+					defense: 3,
+					flee: 5,
+					health: 50,
+				},
+				healthBar: {
+					decrease: jest.fn(),
+				},
+			};
+		});
+
 		it('should apply damage to entity', () => {
-			battleManager.takeDamage(mockEntity, 10);
-			expect(mockEntity.takeDamage).toHaveBeenCalledWith(10);
+			battleManager.takeDamage(mockEntity, mockTarget);
+			// Should calculate and apply damage based on attack vs defense
+			expect(mockTarget.healthBar.decrease).toHaveBeenCalled();
 		});
 
 		it('should reduce damage while blocking', () => {
-			mockEntity.isBlocking = true;
-			battleManager.takeDamage(mockEntity, 10);
+			mockTarget.isBlocking = true;
+			battleManager.takeDamage(mockEntity, mockTarget);
 			// Should apply reduced damage while blocking
-			expect(mockEntity.takeDamage).toHaveBeenCalled();
+			expect(mockTarget.attributes.health).toBeLessThan(50);
 		});
 
 		it('should clamp health to minimum of 0 and prevent negative health', () => {
