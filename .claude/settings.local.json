@@ -22,7 +22,8 @@
 			"Bash(npm run typecheck:*)",
 			"Bash(npm run lint:*)",
 			"Bash(grep:*)",
-			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 < 70 && $3+0 > 0 {print}')"
+			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 < 70 && $3+0 > 0 {print}')",
+			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 >= 50 && $3+0 < 70 {print $0}')"
 		],
 		"deny": [],
 		"ask": []

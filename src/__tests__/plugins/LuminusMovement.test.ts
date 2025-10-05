@@ -6,6 +6,15 @@ describe('LuminusMovement', () => {
 	let mockPlayer: any;
 
 	beforeEach(() => {
+		const mockMap = {
+			worldToTileX: jest.fn((x: number): number => Math.floor(x / 16)),
+			worldToTileY: jest.fn((y: number): number => Math.floor(y / 16)),
+			getLayer: jest.fn((_name: string): any => null),
+			getTileAt: jest.fn(),
+			tileWidth: 16,
+			tileHeight: 16,
+		};
+
 		mockScene = {
 			input: {
 				keyboard: {
@@ -38,12 +47,10 @@ describe('LuminusMovement', () => {
 				isActive: true,
 				addPointer: jest.fn(),
 			},
-			map: {
-				worldToTileX: jest.fn((x: number) => Math.floor(x / 16)),
-				worldToTileY: jest.fn((y: number) => Math.floor(y / 16)),
-				getLayer: jest.fn((_index: number) => ({ name: 'Ground' })),
-				getTileAt: jest.fn(),
+			data: {
+				get: jest.fn((key: string): any => (key === 'map' ? mockMap : null)),
 			},
+			map: mockMap,
 		};
 
 		mockPlayer = {
@@ -111,34 +118,87 @@ describe('LuminusMovement', () => {
 	});
 
 	describe('isOnWater', () => {
-		it('should return false when not on water tile', () => {
-			mockScene.map.getTileAt.mockReturnValue({ index: 161 }); // Grass tile
+		it('should return false when scene.data does not exist', () => {
+			mockScene.data = null;
 			expect(movement.isOnWater()).toBe(false);
 		});
 
-		it('should return true when on shallow water tile', () => {
-			mockScene.map.getTileAt.mockReturnValue({ index: 482 });
+		it('should return false when player does not exist', () => {
+			movement.player = null;
+			expect(movement.isOnWater()).toBe(false);
+		});
+
+		it('should return false when player.container does not exist', () => {
+			movement.player.container = null;
+			expect(movement.isOnWater()).toBe(false);
+		});
+
+		it('should return false when map not found in scene data', () => {
+			mockScene.data.get.mockReturnValue(null);
+			expect(movement.isOnWater()).toBe(false);
+		});
+
+		it('should return false when no water layer exists', () => {
+			mockScene.map.getLayer.mockReturnValue(null);
+			expect(movement.isOnWater()).toBe(false);
+		});
+
+		it('should return true when on water tile (lowercase layer name)', () => {
+			const waterLayer = { name: 'water' };
+			mockScene.map.getLayer.mockImplementation((name: string): any => (name === 'water' ? waterLayer : null));
+			mockScene.map.getTileAt.mockReturnValue({ index: 653 }); // non-null tile
+
 			expect(movement.isOnWater()).toBe(true);
 		});
 
-		it('should return true when on regular water tile', () => {
+		it('should return true when on water tile (uppercase layer name)', () => {
+			const waterLayer = { name: 'Water' };
+			mockScene.map.getLayer.mockImplementation((name: string): any => (name === 'Water' ? waterLayer : null));
 			mockScene.map.getTileAt.mockReturnValue({ index: 653 });
+
 			expect(movement.isOnWater()).toBe(true);
 		});
 
-		it('should return true when on deep water tile', () => {
-			mockScene.map.getTileAt.mockReturnValue({ index: 734 });
-			expect(movement.isOnWater()).toBe(true);
-		});
+		it('should return false when water tile is null', () => {
+			const waterLayer = { name: 'water' };
+			mockScene.map.getLayer.mockImplementation((name: string): any => (name === 'water' ? waterLayer : null));
+			mockScene.map.getTileAt.mockReturnValue(null);
 
-		it('should return false when no map exists', () => {
-			mockScene.map = null;
 			expect(movement.isOnWater()).toBe(false);
+		});
+
+		it('should calculate correct tile coordinates', () => {
+			const waterLayer = { name: 'water' };
+			mockScene.map.getLayer.mockImplementation((name: string): any => (name === 'water' ? waterLayer : null));
+			mockScene.map.getTileAt.mockReturnValue({ index: 653 });
+
+			mockPlayer.container.x = 100;
+			mockPlayer.container.y = 100;
+
+			movement.isOnWater();
+
+			// tileX = Math.floor(100 / 16) = 6
+			// tileY = Math.floor(100 / 16) = 6
+			expect(mockScene.map.getTileAt).toHaveBeenCalledWith(6, 6, false, waterLayer);
 		});
 	});
 
 	describe('updateSwimmingState', () => {
+		it('should do nothing if player does not exist', () => {
+			movement.player = null;
+			expect(() => movement.updateSwimmingState()).not.toThrow();
+		});
+
+		it('should do nothing if player cannot swim', () => {
+			mockPlayer.canSwim = false;
+			const wasSwimming = mockPlayer.isSwimming;
+			movement.updateSwimmingState();
+			expect(mockPlayer.isSwimming).toBe(wasSwimming);
+		});
+
 		it('should enter swimming mode when moving onto water', () => {
+			const waterLayer = { name: 'water' };
+			mockScene.map.getLayer.mockImplementation((name: string): any => (name === 'water' ? waterLayer : null));
 			mockScene.map.getTileAt.mockReturnValue({ index: 653 });
 			movement.updateSwimmingState();
 
@@ -286,6 +346,60 @@ describe('LuminusMovement', () => {
 			// Need to call move again to trigger dust check
 			movement.move();
 			expect(mockPlayer.walkDust.on).toBe(true);
+		});
+
+		it('should handle virtual joystick movement (right)', () => {
+			movement.stick = {
+				isDown: true,
+				force: 0.8,
+				angle: 0, // right
+			};
+
+			movement.move();
+
+			// cos(0) * 200 * 0.8 = 160
+			expect(mockPlayer.container.body.setVelocity).toHaveBeenCalledWith(160, 0);
+		});
+
+		it('should handle virtual joystick movement (down)', () => {
+			movement.stick = {
+				isDown: true,
+				force: 0.7,
+				angle: Math.PI / 2, // down
+			};
+
+			movement.move();
+
+			// cos(PI/2) ≈ 0, sin(PI/2) = 1
+			// velocityY = sin(PI/2) * 200 * 0.7 = 140
+			const calls = mockPlayer.container.body.setVelocity.mock.calls;
+			const lastCall = calls[calls.length - 1];
+			expect(lastCall[1]).toBeCloseTo(140, 0);
+		});
+
+		it('should ignore virtual joystick when force is too low', () => {
+			movement.stick = {
+				isDown: true,
+				force: 0.05, // below 0.1 threshold
+				angle: 0,
+			};
+
+			const initialCalls = mockPlayer.container.body.setVelocity.mock.calls.length;
+			movement.move();
+
+			// Should not set velocity from joystick
+			const newCalls = mockPlayer.container.body.setVelocity.mock.calls.length;
+			expect(newCalls).toBe(initialCalls);
+		});
+
+		it('should disable walk dust when not moving', () => {
+			mockPlayer.walkDust.on = true;
+			mockPlayer.container.body.velocity.x = 0;
+			mockPlayer.container.body.velocity.y = 0;
+
+			movement.move();
+
+			expect(mockPlayer.walkDust.on).toBe(false);
 		});
 	});
 
