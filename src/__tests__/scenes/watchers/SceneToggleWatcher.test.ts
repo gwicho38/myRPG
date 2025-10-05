@@ -1,5 +1,4 @@
 import { SceneToggleWatcher } from '../../../scenes/watchers/SceneToggleWatcher';
-import Phaser from 'phaser';
 
 describe('SceneToggleWatcher', () => {
 	let mockSceneContext: any;
