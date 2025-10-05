@@ -193,7 +193,7 @@ export default class Button extends EventEmitter {
 		 */
 		this._scale = 1;
 
-		const input = this.scene.sys.input;
+		const input = (this.scene.sys as any).input;
 
 		input.on('pointerdown', this.checkDown, this);
 		input.on('pointerup', this.checkUp, this);
@@ -215,7 +215,7 @@ export default class Button extends EventEmitter {
 	 * @return {Phaser.Input.Keyboard.Key} The newly created Key object, or a reference to it if it already existed in the keys array.
 	 */
 	addKey(key: Phaser.Input.Keyboard.Key | string | number): Phaser.Input.Keyboard.Key | null {
-		const input = this.scene.sys.input;
+		const input = (this.scene.sys as any).input;
 
 		if (input.keyboard) {
 			if (this.key) {
@@ -418,7 +418,7 @@ export default class Button extends EventEmitter {
 	 * Removes all associated listeners and events and calls destroy on the button sprite.
 	 */
 	destroy(): void {
-		const input = this.scene.sys.input;
+		const input = (this.scene.sys as any).input;
 
 		input.off('pointerdown', this.checkDown, this);
 		input.off('pointerup', this.checkUp, this);

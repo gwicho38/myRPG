@@ -179,7 +179,7 @@ export default class VirtualJoystick {
 		this._pointerTotal++;
 
 		if (this._pointerTotal > 2) {
-			this.scene.sys.input.addPointer();
+			(this.scene.sys as any).input.addPointer();
 		}
 
 		return stick;
@@ -212,7 +212,7 @@ export default class VirtualJoystick {
 		this._pointerTotal++;
 
 		if (this._pointerTotal > 2) {
-			this.scene.sys.input.addPointer();
+			(this.scene.sys as any).input.addPointer();
 		}
 
 		return stick;
@@ -275,7 +275,7 @@ export default class VirtualJoystick {
 		this._pointerTotal++;
 
 		if (this._pointerTotal > 2) {
-			this.scene.sys.input.addPointer();
+			(this.scene.sys as any).input.addPointer();
 		}
 
 		return stick;
@@ -329,7 +329,7 @@ export default class VirtualJoystick {
 		this._pointerTotal++;
 
 		if (this._pointerTotal > 2) {
-			this.scene.sys.input.addPointer();
+			(this.scene.sys as any).input.addPointer();
 		}
 
 		return button;

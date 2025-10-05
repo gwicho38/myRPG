@@ -102,7 +102,7 @@ export class LuminusTiledInfoBox {
 					...zone,
 					chat: chat.chat,
 					properties: infoObj.properties,
-				});
+				} as any); // Extended zone with chat data
 			});
 		}
 
@@ -113,7 +113,7 @@ export class LuminusTiledInfoBox {
 			zones,
 			this.player.hitZone,
 			(zone: any) => {
-				this.luminusDialogBox.allProperties = zone.properties;
+				(this.luminusDialogBox as any).allProperties = zone.properties;
 				this.luminusDialogBox.isOverlapingChat = true;
 				this.luminusDialogBox.actionButton.visible = true;
 				this.luminusDialogBox.interactionIcon.visible = true;

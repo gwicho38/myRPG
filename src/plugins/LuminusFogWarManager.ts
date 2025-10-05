@@ -15,7 +15,7 @@ export class LuminusFogWarManager {
 	/**
 	 * The player that will reveal the fog of war of the map.
 	 */
-	private player: Phaser.Physics.Arcade.Sprite;
+	private player: any; // Player entity with container property
 
 	/**
 	 * This is the fog of war itself. This will be the texture to be used to make the cool
