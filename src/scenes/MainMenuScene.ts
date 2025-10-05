@@ -50,7 +50,7 @@ export class MainMenuScene extends Phaser.Scene {
 	preload(): void {
 		// Only load video if it exists (prevents E2E test failures)
 		if (intro_video) {
-			this.load.video('intro_video', intro_video, 'loadeddata', false, true);
+			(this.load as any).video('intro_video', intro_video, 'loadeddata', false, true);
 		}
 	}
 
@@ -59,7 +59,7 @@ export class MainMenuScene extends Phaser.Scene {
 		if (intro_video && this.textures.exists('intro_video')) {
 			this.video = this.add.video(this.cameras.main.x, this.cameras.main.y, 'intro_video');
 
-			if (this.scale.orientation === 'portrait-primary') {
+			if ((this.scale.orientation as any) === 'portrait-primary') {
 				this.video.setScale(2);
 				this.video.setOrigin(0.4, 0);
 			} else {
@@ -167,7 +167,7 @@ export class MainMenuScene extends Phaser.Scene {
 			element: this.loadGameText,
 			action: 'loadGame',
 			context: this,
-			args: null,
+			args: null as any,
 		};
 		this.luminusInterfaceControler!.interfaceElements[0][1] = [];
 		this.luminusInterfaceControler!.interfaceElements[0][1].push(loadGameAction);
@@ -267,7 +267,7 @@ Forest - Intro Scene Music by "syncopika"
 				this.scene.stop();
 
 				setTimeout(() => {
-					const targetScene = this.scene.get(saveData.scene);
+					const targetScene = this.scene.get(saveData.scene) as any;
 					if (targetScene && targetScene.saveManager) {
 						targetScene.saveManager.applySaveData(saveData);
 					}

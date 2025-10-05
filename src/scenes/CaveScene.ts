@@ -42,7 +42,7 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 		const camera = this.cameras.main;
 		camera.startFollow(this.player!.container);
 
-		const luminusWarp = new LuminusWarp(this, this.player!, this.mapCreator.map);
+		const luminusWarp = new LuminusWarp(this as any, this.player! as any, this.mapCreator.map);
 		luminusWarp.createWarps();
 		const interactiveMarkers = new LuminusObjectMarker(this, this.mapCreator.map);
 		interactiveMarkers.create();

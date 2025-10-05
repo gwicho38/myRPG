@@ -44,7 +44,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 		this.background = this.add.renderTexture(0, 0, this.cameras.main.width, this.cameras.main.height);
 		this.background.setScrollFactor(0, 0);
 		this.background.fill(this.backgroundColor, this.alpha);
-		this.video = this.add.rexYoutubePlayer(
+		this.video = (this.add as any).rexYoutubePlayer(
 			this.cameras.main.midPoint.x,
 			this.cameras.main.midPoint.y,
 			this.cameras.main.width - this.closeButtonMarginX * 4,

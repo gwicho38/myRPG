@@ -49,7 +49,7 @@ export class TutorialScene extends Phaser.Scene {
 		const interactiveMarkers = new LuminusObjectMarker(this, map.map);
 		interactiveMarkers.create();
 
-		const luminusWarp = new LuminusWarp(this, this.player, map.map);
+		const luminusWarp = new LuminusWarp(this as any, this.player as any, map.map);
 		luminusWarp.createWarps();
 	}
 

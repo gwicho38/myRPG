@@ -114,7 +114,7 @@ export class SettingScene extends Phaser.Scene {
 				thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
 
 				valuechangeCallback: (value: number) => {
-					this.textAudioSlider!.text = `Audio: ${value.toFixed(1) * 100}`;
+					this.textAudioSlider!.text = `Audio: ${parseFloat(value.toFixed(1)) * 100}`;
 					this.luminusSoundManager!.setVolume(value);
 				},
 				space: {

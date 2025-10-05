@@ -55,7 +55,7 @@ export class MobileCheckScene extends Phaser.Scene {
 				wordWrapUseAdvanced: false,
 				fontSize: this.fontSize,
 				fontFamily: this.fontFamily,
-			}
+			} as any
 		);
 
 		this.helpText.setOrigin(0.5, 0.5);

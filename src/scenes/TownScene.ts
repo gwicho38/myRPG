@@ -64,7 +64,7 @@ export class TownScene extends Phaser.Scene {
 
 		this.scene.launch('HUDScene', { player: this.player });
 
-		this.sys.animatedTiles.init(this.mapCreator.map);
+		(this.sys as any).animatedTiles.init(this.mapCreator.map);
 		this.particles = new LuminusEnvironmentParticles(this, this.mapCreator.map);
 		this.particles.create();
 
