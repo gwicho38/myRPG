@@ -464,6 +464,26 @@ const Phaser = {
 				this.x = x || 0;
 				this.y = y || 0;
 			}
+
+			setTo(x: number, y: number): any {
+				this.x = x;
+				this.y = y;
+				return this;
+			}
+		},
+		Between: jest.fn((min: number, max: number) => {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}),
+	},
+	Geom: {
+		Point: class Point {
+			x: number;
+			y: number;
+
+			constructor(x: number = 0, y: number = 0) {
+				this.x = x;
+				this.y = y;
+			}
 		},
 	},
 	Display: {

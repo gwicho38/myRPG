@@ -404,6 +404,39 @@ describe('ExpManager', () => {
 			const particleConfig = mockScene.add.particles.mock.calls[0][3];
 			expect(particleConfig.emitZone).toBeDefined();
 		});
+
+		it('should create logoSource with getRandomPoint function', () => {
+			ExpManager.levelUpEffects(mockEntity);
+
+			const particleConfig = mockScene.add.particles.mock.calls[0][3];
+			const logoSource = particleConfig.emitZone.source;
+
+			// Test getRandomPoint returns valid coordinates
+			const vec = new Phaser.Math.Vector2();
+			const result = logoSource.getRandomPoint(vec);
+
+			expect(result).toBe(vec);
+			expect(vec.x).toBeGreaterThanOrEqual(10); // origin.x
+			expect(vec.y).toBeGreaterThanOrEqual(10); // origin.y
+			expect(mockScene.textures.getPixel).toHaveBeenCalled();
+		});
+
+		it('should create logoSource with getPoints function', () => {
+			ExpManager.levelUpEffects(mockEntity);
+
+			const particleConfig = mockScene.add.particles.mock.calls[0][3];
+			const logoSource = particleConfig.emitZone.source;
+
+			// Test getPoints returns array of points
+			const points = logoSource.getPoints(5);
+
+			expect(points).toHaveLength(5);
+			points.forEach((point: Phaser.Geom.Point) => {
+				expect(point).toBeInstanceOf(Phaser.Geom.Point);
+				expect(point.x).toBeGreaterThanOrEqual(10);
+				expect(point.y).toBeGreaterThanOrEqual(10);
+			});
+		});
 	});
 
 	describe('Integration', () => {

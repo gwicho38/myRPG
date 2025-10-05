@@ -288,4 +288,59 @@ describe('LuminusMovement', () => {
 			expect(mockPlayer.walkDust.on).toBe(true);
 		});
 	});
+
+	describe('Constructor edge cases', () => {
+		it('should initialize isRunning to false when undefined', () => {
+			const playerWithoutRunning = {
+				...mockPlayer,
+				isRunning: undefined,
+			};
+
+			const newMovement = new LuminusMovement(mockScene, playerWithoutRunning);
+
+			expect(playerWithoutRunning.isRunning).toBe(false);
+			expect(playerWithoutRunning.wasShiftDown).toBe(false);
+		});
+
+		it('should set up joystick scene events when provided', () => {
+			const mockJoystickScene: any = {
+				events: {
+					on: jest.fn(),
+				},
+			};
+
+			const newMovement = new LuminusMovement(mockScene, mockPlayer, mockJoystickScene);
+
+			expect(mockJoystickScene.events.on).toHaveBeenCalledWith('setStick', expect.any(Function));
+
+			// Test the event handler
+			const setStickHandler = mockJoystickScene.events.on.mock.calls[0][1];
+			const mockStick = { force: 0.5, angle: 0 };
+			setStickHandler(mockStick);
+
+			expect(newMovement.stick).toBe(mockStick);
+		});
+
+		it('should log WASD key presses', () => {
+			const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+			// Get the keyboard event handler
+			const keydownHandler = mockScene.input.keyboard.on.mock.calls.find(
+				(call: any[]) => call[0] === 'keydown'
+			)[1];
+
+			// Simulate WASD key presses
+			keydownHandler({ code: 'KeyW' });
+			keydownHandler({ code: 'KeyA' });
+			keydownHandler({ code: 'KeyS' });
+			keydownHandler({ code: 'KeyD' });
+
+			expect(consoleSpy).toHaveBeenCalledWith('WASD Control: KeyW pressed');
+			expect(consoleSpy).toHaveBeenCalledWith('WASD Control: KeyA pressed');
+			expect(consoleSpy).toHaveBeenCalledWith('WASD Control: KeyS pressed');
+			expect(consoleSpy).toHaveBeenCalledWith('WASD Control: KeyD pressed');
+
+			consoleSpy.mockRestore();
+		});
+	});
 });
