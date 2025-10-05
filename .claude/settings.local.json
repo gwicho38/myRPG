@@ -20,7 +20,9 @@
 			"Bash(npm run build:*)",
 			"Bash(npm run lint)",
 			"Bash(npm run typecheck:*)",
-			"Bash(npm run lint:*)"
+			"Bash(npm run lint:*)",
+			"Bash(grep:*)",
+			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 < 70 && $3+0 > 0 {print}')"
 		],
 		"deny": [],
 		"ask": []
