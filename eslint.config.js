@@ -104,6 +104,32 @@ module.exports = [
 		},
 	},
 	{
+		files: ['scripts/**/*.js'],
+		languageOptions: {
+			ecmaVersion: 'latest',
+			sourceType: 'module',
+			globals: {
+				__dirname: 'readonly',
+				__filename: 'readonly',
+				console: 'readonly',
+				module: 'readonly',
+				require: 'readonly',
+				process: 'readonly',
+				Buffer: 'readonly',
+				global: 'readonly',
+				setImmediate: 'readonly',
+				clearImmediate: 'readonly',
+				setTimeout: 'readonly',
+				clearTimeout: 'readonly',
+				setInterval: 'readonly',
+				clearInterval: 'readonly',
+			},
+		},
+		rules: {
+			'no-console': 'off',
+		},
+	},
+	{
 		ignores: [
 			'node_modules/**',
 			'dist/**',
