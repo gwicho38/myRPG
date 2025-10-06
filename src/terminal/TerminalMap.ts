@@ -5,6 +5,9 @@ export enum TileType {
 	FLOOR = 1,
 	DOOR = 2,
 	WATER = 3,
+	TREASURE = 4,
+	TORCH = 5,
+	GRASS = 6,
 }
 
 /**
@@ -18,10 +21,13 @@ export class TerminalMap {
 
 	// Tile symbols
 	private readonly TILE_SYMBOLS: Record<TileType, string> = {
-		[TileType.WALL]: '█',
-		[TileType.FLOOR]: '·',
-		[TileType.DOOR]: '+',
-		[TileType.WATER]: '≈',
+		[TileType.WALL]: '🧱',
+		[TileType.FLOOR]: '⬜',
+		[TileType.DOOR]: '🚪',
+		[TileType.WATER]: '🌊',
+		[TileType.TREASURE]: '💎',
+		[TileType.TORCH]: '🔥',
+		[TileType.GRASS]: '🌿',
 	};
 
 	// Tile colors
@@ -30,6 +36,9 @@ export class TerminalMap {
 		[TileType.FLOOR]: 'white',
 		[TileType.DOOR]: 'yellow',
 		[TileType.WATER]: 'blue',
+		[TileType.TREASURE]: 'cyan',
+		[TileType.TORCH]: 'red',
+		[TileType.GRASS]: 'green',
 	};
 
 	constructor(width: number, height: number) {

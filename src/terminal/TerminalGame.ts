@@ -32,7 +32,7 @@ export class TerminalGame {
 		playerAttrs.atack = 10;
 		playerAttrs.defense = 5;
 
-		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '@', 'cyan', playerAttrs, 'Player');
+		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '🧙', 'cyan', playerAttrs, 'Player');
 		this.map.addEntity(this.player);
 
 		// Spawn some enemies
@@ -45,8 +45,9 @@ export class TerminalGame {
 		this.render();
 
 		// Log welcome message
-		this.renderer.log('{green-fg}Welcome to Luminus RPG - Terminal Edition!{/green-fg}');
-		this.renderer.log('Use arrow keys or WASD to move. Press Space to attack. Q or Escape to quit.');
+		this.renderer.log('{green-fg}✨ Welcome to Luminus RPG - Terminal Edition! ✨{/green-fg}');
+		this.renderer.log('{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space=Attack | H=Help | Q=Quit{/cyan-fg}');
+		this.renderer.log('{yellow-fg}🗡️  Your quest begins... Defeat all monsters and collect treasures!{/yellow-fg}');
 	}
 
 	/**
@@ -121,16 +122,21 @@ export class TerminalGame {
 			if (entity && entity !== this.player) {
 				const damage = this.player.attributes.atack;
 				entity.takeDamage(damage);
-				this.renderer.log(`{red-fg}You attack ${entity.entityName} for ${damage} damage!{/red-fg}`);
+				this.renderer.log(
+					`{red-fg}⚔️  You attack ${entity.symbol} ${entity.entityName} for ${damage} damage! 💥{/red-fg}`
+				);
 
 				if (!entity.isAlive()) {
-					this.renderer.log(`{green-fg}${entity.entityName} defeated!{/green-fg}`);
+					this.renderer.log(`{green-fg}✨ ${entity.entityName} defeated! +10 XP 🎯{/green-fg}`);
 					this.map.removeEntity(entity);
 					const index = this.enemies.indexOf(entity);
 					if (index > -1) {
 						this.enemies.splice(index, 1);
 					}
 					this.player.attributes.experience += 10;
+				} else {
+					const healthPercent = Math.floor((entity.attributes.health / entity.attributes.maxHealth) * 100);
+					this.renderer.log(`{yellow-fg}${entity.entityName} has ${healthPercent}% HP remaining{/yellow-fg}`);
 				}
 
 				this.render();
@@ -146,9 +152,12 @@ export class TerminalGame {
 	 */
 	private spawnEnemies(count: number): void {
 		const enemyTypes = [
-			{ name: 'Rat', symbol: 'r', color: 'yellow', health: 20, attack: 3 },
-			{ name: 'Bat', symbol: 'b', color: 'white', health: 15, attack: 5 },
-			{ name: 'Ogre', symbol: 'O', color: 'red', health: 50, attack: 8 },
+			{ name: 'Rat', symbol: '🐀', color: 'yellow', health: 20, attack: 3 },
+			{ name: 'Bat', symbol: '🦇', color: 'white', health: 15, attack: 5 },
+			{ name: 'Ogre', symbol: '👹', color: 'red', health: 50, attack: 8 },
+			{ name: 'Goblin', symbol: '👺', color: 'green', health: 25, attack: 6 },
+			{ name: 'Ghost', symbol: '👻', color: 'white', health: 30, attack: 7 },
+			{ name: 'Dragon', symbol: '🐉', color: 'red', health: 100, attack: 15 },
 		];
 
 		for (let i = 0; i < count; i++) {
@@ -180,40 +189,73 @@ export class TerminalGame {
 	 * Show help
 	 */
 	private showHelp(): void {
-		this.renderer.log('{cyan-fg}=== Help ==={/cyan-fg}');
-		this.renderer.log('Arrow Keys / WASD: Move');
-		this.renderer.log('Space: Attack adjacent enemy');
-		this.renderer.log('H: Show this help');
-		this.renderer.log('Q / Escape: Quit');
+		this.renderer.log('{cyan-fg}📖 === Help ==={/cyan-fg}');
+		this.renderer.log('🏃 Arrow Keys / WASD: Move');
+		this.renderer.log('⚔️  Space: Attack adjacent enemy');
+		this.renderer.log('📖 H: Show this help');
+		this.renderer.log('🚪 Q / Escape: Quit');
+		this.renderer.log('');
+		this.renderer.log('{yellow-fg}🎮 Game Elements:{/yellow-fg}');
+		this.renderer.log('🧙 You (Player)');
+		this.renderer.log('🐀🦇👹👺👻🐉 Monsters');
+		this.renderer.log('🧱 Walls  🚪 Doors  🌊 Water');
+		this.renderer.log('💎 Treasure  🔥 Torches');
 	}
 
 	/**
 	 * Update game status display
 	 */
 	private updateStatus(): void {
+		const healthBar = this.createHealthBar(this.player.attributes.health, this.player.attributes.maxHealth);
+		const xpBar = this.createXPBar(this.player.attributes.experience, this.player.attributes.nextLevelExperience);
+
 		const status = [
-			'{cyan-fg}Player Status{/cyan-fg}',
+			'{cyan-fg}🧙 Player Status{/cyan-fg}',
 			'',
-			`HP: {red-fg}${this.player.attributes.health}/${this.player.attributes.maxHealth}{/red-fg}`,
-			`Level: ${this.player.attributes.level}`,
-			`XP: ${this.player.attributes.experience}/${this.player.attributes.nextLevelExperience}`,
+			`❤️  HP: ${healthBar}`,
+			`{red-fg}${this.player.attributes.health}/${this.player.attributes.maxHealth}{/red-fg}`,
 			'',
-			`STR: ${this.player.attributes.rawAttributes.str}`,
-			`AGI: ${this.player.attributes.rawAttributes.agi}`,
-			`VIT: ${this.player.attributes.rawAttributes.vit}`,
-			`DEX: ${this.player.attributes.rawAttributes.dex}`,
-			`INT: ${this.player.attributes.rawAttributes.int}`,
+			`⭐ Level: {yellow-fg}${this.player.attributes.level}{/yellow-fg}`,
+			`✨ XP: ${xpBar}`,
+			`{green-fg}${this.player.attributes.experience}/${this.player.attributes.nextLevelExperience}{/green-fg}`,
 			'',
-			`ATK: ${this.player.attributes.atack}`,
-			`DEF: ${this.player.attributes.defense}`,
+			'{cyan-fg}📊 Stats:{/cyan-fg}',
+			`💪 STR: ${this.player.attributes.rawAttributes.str}`,
+			`🏃 AGI: ${this.player.attributes.rawAttributes.agi}`,
+			`❤️  VIT: ${this.player.attributes.rawAttributes.vit}`,
+			`🎯 DEX: ${this.player.attributes.rawAttributes.dex}`,
+			`🧠 INT: ${this.player.attributes.rawAttributes.int}`,
 			'',
-			'{yellow-fg}Enemies{/yellow-fg}',
-			`Remaining: ${this.enemies.length}`,
+			`⚔️  ATK: {red-fg}${this.player.attributes.atack}{/red-fg}`,
+			`🛡️  DEF: {blue-fg}${this.player.attributes.defense}{/blue-fg}`,
 			'',
-			`Position: (${this.player.x}, ${this.player.y})`,
+			'{yellow-fg}👾 Enemies{/yellow-fg}',
+			`Remaining: {red-fg}${this.enemies.length}{/red-fg}`,
+			'',
+			`📍 Position: (${this.player.x}, ${this.player.y})`,
 		].join('\n');
 
 		this.renderer.updateStatus(status);
+	}
+
+	/**
+	 * Create a health bar visualization
+	 */
+	private createHealthBar(current: number, max: number): string {
+		const barLength = 10;
+		const filled = Math.floor((current / max) * barLength);
+		const empty = barLength - filled;
+		return `{red-fg}${'█'.repeat(filled)}{/red-fg}{grey-fg}${'░'.repeat(empty)}{/grey-fg}`;
+	}
+
+	/**
+	 * Create an XP bar visualization
+	 */
+	private createXPBar(current: number, max: number): string {
+		const barLength = 10;
+		const filled = Math.floor((current / max) * barLength);
+		const empty = barLength - filled;
+		return `{green-fg}${'█'.repeat(filled)}{/green-fg}{grey-fg}${'░'.repeat(empty)}{/grey-fg}`;
 	}
 
 	/**
