@@ -47,7 +47,9 @@ export class TerminalGame {
 
 		// Log welcome message
 		this.renderer.log('{green-fg}✨ Welcome to Luminus RPG - Terminal Edition! ✨{/green-fg}');
-		this.renderer.log('{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space=Attack | B=Block | H=Help | Q=Quit{/cyan-fg}');
+		this.renderer.log(
+			'{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space/J=Attack | B/K=Block | H=Help | Q=Quit{/cyan-fg}'
+		);
 		this.renderer.log('{yellow-fg}🗡️  Your quest begins... Defeat all monsters and collect treasures!{/yellow-fg}');
 		this.renderer.log('');
 		this.renderer.log(
@@ -77,13 +79,13 @@ export class TerminalGame {
 			});
 		});
 
-		// Attack key
-		this.renderer.screen.key(['space'], () => {
+		// Attack keys (Space or J)
+		this.renderer.screen.key(['space', 'j'], () => {
 			this.attackNearby();
 		});
 
-		// Block/Defend key
-		this.renderer.screen.key(['b'], () => {
+		// Block/Defend keys (B or K)
+		this.renderer.screen.key(['b', 'k'], () => {
 			this.blockAction();
 		});
 
@@ -240,8 +242,8 @@ export class TerminalGame {
 	private showHelp(): void {
 		this.renderer.log('{cyan-fg}📖 === Help ==={/cyan-fg}');
 		this.renderer.log('🏃 Arrow Keys / WASD: Move');
-		this.renderer.log('⚔️  Space: Attack adjacent enemy (with animation!)');
-		this.renderer.log('🛡️  B: Block/Defend (+5 DEF for 2 seconds)');
+		this.renderer.log('⚔️  Space / J: Attack adjacent enemy (with animation!)');
+		this.renderer.log('🛡️  B / K: Block/Defend (+5 DEF for 2 seconds)');
 		this.renderer.log('📖 H: Show this help');
 		this.renderer.log('🚪 Q / Escape: Quit');
 		this.renderer.log('');
