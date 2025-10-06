@@ -49,19 +49,19 @@ export class TerminalMap {
 	// Tile colors
 	private readonly TILE_COLORS: Record<TileType, string> = {
 		[TileType.WALL]: 'white',
-		[TileType.FLOOR]: 'bright-yellow',
-		[TileType.DOOR]: 'bright-yellow',
-		[TileType.WATER]: 'bright-cyan',
-		[TileType.TREASURE]: 'bright-yellow',
-		[TileType.TORCH]: 'bright-red',
-		[TileType.GRASS]: 'bright-green',
-		[TileType.TREE]: 'bright-green',
-		[TileType.FLOWER]: 'bright-magenta',
-		[TileType.PATH]: 'bright-yellow',
-		[TileType.HOUSE_WALL]: 'bright-red',
-		[TileType.HOUSE_ROOF]: 'bright-red',
-		[TileType.FENCE]: 'bright-yellow',
-		[TileType.BUSH]: 'bright-green',
+		[TileType.FLOOR]: 'lightyellow',
+		[TileType.DOOR]: 'lightyellow',
+		[TileType.WATER]: 'lightcyan',
+		[TileType.TREASURE]: 'lightyellow',
+		[TileType.TORCH]: 'lightred',
+		[TileType.GRASS]: 'lightgreen',
+		[TileType.TREE]: 'lightgreen',
+		[TileType.FLOWER]: 'lightmagenta',
+		[TileType.PATH]: 'lightyellow',
+		[TileType.HOUSE_WALL]: 'lightred',
+		[TileType.HOUSE_ROOF]: 'lightred',
+		[TileType.FENCE]: 'lightyellow',
+		[TileType.BUSH]: 'lightgreen',
 	};
 
 	constructor(width: number, height: number) {
