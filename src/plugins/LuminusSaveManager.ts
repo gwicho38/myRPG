@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
+import { HUDScene } from '../scenes/HUDScene';
 
 // Interface for save data structure
 export interface ISaveData {
@@ -206,6 +207,9 @@ export class LuminusSaveManager {
 
 			if (!isCheckpoint) {
 				this.showSaveNotification('Game Saved');
+				HUDScene.log(this.scene, '💾 Game saved successfully!');
+			} else {
+				HUDScene.log(this.scene, '💾 Auto-saved');
 			}
 
 			return true;
@@ -303,6 +307,7 @@ export class LuminusSaveManager {
 
 			console.log('Save data applied successfully');
 			this.showSaveNotification('Game Loaded');
+			HUDScene.log(this.scene, '📂 Game loaded successfully!');
 
 			return true;
 		} catch (error) {
