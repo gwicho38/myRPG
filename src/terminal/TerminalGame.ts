@@ -33,6 +33,7 @@ export class TerminalGame {
 		playerAttrs.defense = 5;
 
 		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '🧙', 'cyan', playerAttrs, 'Player');
+		this.player.isPlayer = true;
 		this.map.addEntity(this.player);
 
 		// Spawn some enemies
