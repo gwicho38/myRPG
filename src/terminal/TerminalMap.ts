@@ -106,10 +106,6 @@ export class TerminalMap {
 		this.createWaterBody(60, 10, 15, 25);
 		this.createWaterBody(5, 25, 20, 10);
 
-		// Create a village path system
-		this.createPath(10, 15, 60, 15); // Main horizontal path
-		this.createPath(30, 5, 30, 30); // Vertical path through village
-
 		// Build houses
 		this.createHouse(15, 8, 8, 6); // House 1
 		this.createHouse(40, 8, 10, 7); // House 2
