@@ -47,7 +47,7 @@ export class TerminalGame {
 
 		// Log welcome message
 		this.renderer.log('{green-fg}✨ Welcome to Luminus RPG - Terminal Edition! ✨{/green-fg}');
-		this.renderer.log('{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space=Attack | H=Help | Q=Quit{/cyan-fg}');
+		this.renderer.log('{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space=Attack | B=Block | H=Help | Q=Quit{/cyan-fg}');
 		this.renderer.log('{yellow-fg}🗡️  Your quest begins... Defeat all monsters and collect treasures!{/yellow-fg}');
 		this.renderer.log('');
 		this.renderer.log(
@@ -82,6 +82,11 @@ export class TerminalGame {
 			this.attackNearby();
 		});
 
+		// Block/Defend key
+		this.renderer.screen.key(['b'], () => {
+			this.blockAction();
+		});
+
 		// Help key
 		this.renderer.screen.key(['h'], () => {
 			this.showHelp();
@@ -111,7 +116,7 @@ export class TerminalGame {
 	/**
 	 * Attack nearby enemies
 	 */
-	private attackNearby(): void {
+	private async attackNearby(): Promise<void> {
 		const adjacentPositions = [
 			{ dx: 0, dy: -1 },
 			{ dx: 0, dy: 1 },
@@ -126,12 +131,25 @@ export class TerminalGame {
 
 			if (entity && entity !== this.player) {
 				const damage = this.player.attributes.atack;
+
+				// Play attack animation
+				await this.map.animator.animateAttack(this.player.x, this.player.y, entity.x, entity.y, () =>
+					this.render()
+				);
+
 				entity.takeDamage(damage);
+
+				// Show damage number animation
+				await this.map.animator.animateDamage(entity.x, entity.y, damage, () => this.render());
+
 				this.renderer.log(
 					`{red-fg}⚔️  You attack ${entity.symbol} ${entity.entityName} for ${damage} damage! 💥{/red-fg}`
 				);
 
 				if (!entity.isAlive()) {
+					// Death animation
+					await this.map.animator.animateDeath(entity.x, entity.y, () => this.render());
+
 					this.renderer.log(`{green-fg}✨ ${entity.entityName} defeated! +10 XP 🎯{/green-fg}`);
 					this.map.removeEntity(entity);
 					const index = this.enemies.indexOf(entity);
@@ -139,6 +157,9 @@ export class TerminalGame {
 						this.enemies.splice(index, 1);
 					}
 					this.player.attributes.experience += 10;
+
+					// Victory particle burst
+					await this.map.animator.animateParticleBurst(entity.x, entity.y, () => this.render());
 				} else {
 					const healthPercent = Math.floor((entity.attributes.health / entity.attributes.maxHealth) * 100);
 					this.renderer.log(`{yellow-fg}${entity.entityName} has ${healthPercent}% HP remaining{/yellow-fg}`);
@@ -150,6 +171,29 @@ export class TerminalGame {
 		}
 
 		this.renderer.log('No enemies nearby!', 'yellow');
+	}
+
+	/**
+	 * Block/Defend action
+	 */
+	private async blockAction(): Promise<void> {
+		// Temporarily boost defense
+		const defenseBoost = 5;
+		this.player.attributes.defense += defenseBoost;
+
+		// Show block animation
+		await this.map.animator.animateBlock(this.player.x, this.player.y, () => this.render());
+
+		this.renderer.log(`{blue-fg}🛡️  You raise your shield! Defense +${defenseBoost} for this turn{/blue-fg}`);
+
+		// Reset defense after a short time (simulated turn)
+		setTimeout(() => {
+			this.player.attributes.defense -= defenseBoost;
+			this.renderer.log('{grey-fg}Your shield is lowered{/grey-fg}');
+			this.render();
+		}, 2000);
+
+		this.render();
 	}
 
 	/**
@@ -196,7 +240,8 @@ export class TerminalGame {
 	private showHelp(): void {
 		this.renderer.log('{cyan-fg}📖 === Help ==={/cyan-fg}');
 		this.renderer.log('🏃 Arrow Keys / WASD: Move');
-		this.renderer.log('⚔️  Space: Attack adjacent enemy');
+		this.renderer.log('⚔️  Space: Attack adjacent enemy (with animation!)');
+		this.renderer.log('🛡️  B: Block/Defend (+5 DEF for 2 seconds)');
 		this.renderer.log('📖 H: Show this help');
 		this.renderer.log('🚪 Q / Escape: Quit');
 		this.renderer.log('');
@@ -207,6 +252,8 @@ export class TerminalGame {
 		this.renderer.log('🐀🦇👹👺👻🐉 Monsters');
 		this.renderer.log('█ Walls  🚪 Doors  ≈ Water');
 		this.renderer.log('💎 Treasure  🔥 Torches');
+		this.renderer.log('');
+		this.renderer.log('{green-fg}✨ NEW: Animated attacks with particles and damage numbers!{/green-fg}');
 	}
 
 	/**

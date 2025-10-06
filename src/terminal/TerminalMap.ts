@@ -1,4 +1,5 @@
 import { TerminalEntity } from './entities/TerminalEntity';
+import { TerminalAnimator } from './TerminalAnimator';
 
 export enum TileType {
 	WALL = 0,
@@ -18,6 +19,7 @@ export class TerminalMap {
 	public height: number;
 	public tiles: TileType[][];
 	public entities: TerminalEntity[] = [];
+	public animator: TerminalAnimator;
 
 	// Tile symbols
 	private readonly TILE_SYMBOLS: Record<TileType, string> = {
@@ -45,6 +47,7 @@ export class TerminalMap {
 		this.width = width;
 		this.height = height;
 		this.tiles = this.generateEmptyMap();
+		this.animator = new TerminalAnimator();
 	}
 
 	/**
@@ -180,17 +183,23 @@ export class TerminalMap {
 				const x = centerX + dx;
 				const y = centerY + dy;
 
-				// Check for entity at this position
-				const entity = this.getEntityAt(x, y);
-				if (entity) {
-					line += entity.toString();
-				} else if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
-					const tile = this.tiles[y][x];
-					const symbol = this.TILE_SYMBOLS[tile];
-					const color = this.TILE_COLORS[tile];
-					line += `{${color}-fg}${symbol}{/${color}-fg}`;
+				// Check for animation effect first (highest priority)
+				const effect = this.animator.getEffectAt(x, y);
+				if (effect) {
+					line += `{${effect.color}-fg}${effect.symbol}{/${effect.color}-fg}`;
 				} else {
-					line += ' ';
+					// Check for entity at this position
+					const entity = this.getEntityAt(x, y);
+					if (entity) {
+						line += entity.toString();
+					} else if (x >= 0 && x < this.width && y >= 0 && y < this.height) {
+						const tile = this.tiles[y][x];
+						const symbol = this.TILE_SYMBOLS[tile];
+						const color = this.TILE_COLORS[tile];
+						line += `{${color}-fg}${symbol}{/${color}-fg}`;
+					} else {
+						line += ' ';
+					}
 				}
 			}
 			lines.push(line);

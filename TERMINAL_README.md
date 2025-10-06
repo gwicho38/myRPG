@@ -11,7 +11,13 @@ A text-based version of Luminus RPG that runs in modern terminal emulators like 
 - **Real-time HUD** displaying player stats, health bars, and experience bars
 - **Event log** showing combat results and game actions with emoji indicators
 - **Mouse support** for scrolling through logs
-- **Visual effects** including health bars, damage indicators, and victory notifications
+- **Animated combat system** with:
+    - Attack animations showing weapons flying toward enemies (⚔️ → 💥)
+    - Floating damage numbers showing HP lost
+    - Death animations with particle effects (💀 ☠️ ✨)
+    - Victory particle bursts when enemies are defeated
+    - Block/defend animations with shield effects (🛡️ ✨)
+- **Visual effects** including health bars, XP bars, and status indicators
 
 ## Requirements
 
@@ -53,12 +59,13 @@ npm run terminal:debug
 
 ## Controls
 
-| Key                        | Action                |
-| -------------------------- | --------------------- |
-| **Arrow Keys** or **WASD** | Move player           |
-| **Space**                  | Attack adjacent enemy |
-| **H**                      | Show help             |
-| **Q** or **Escape**        | Quit game             |
+| Key                        | Action                                         |
+| -------------------------- | ---------------------------------------------- |
+| **Arrow Keys** or **WASD** | Move player                                    |
+| **Space**                  | Attack adjacent enemy (with animated effects!) |
+| **B**                      | Block/Defend (+5 defense for 2 seconds)        |
+| **H**                      | Show help                                      |
+| **Q** or **Escape**        | Quit game                                      |
 
 ## Game Elements
 
