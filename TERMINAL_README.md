@@ -4,7 +4,8 @@ A text-based version of Luminus RPG that runs in modern terminal emulators like 
 
 ## Features
 
-- **Emoji-based graphics** 🎮 using modern Unicode emojis for enhanced visuals
+- **Highly visible player character** 🧙 with bright yellow highlight on black background - you'll never lose track of yourself!
+- **Optimized graphics** using simple ASCII for tiles (. for floors, █ for walls) and emoji for characters
 - **Full game mechanics** including movement, combat, and exploration
 - **Roguelike dungeon** generation with varied enemies and treasures
 - **Real-time HUD** displaying player stats, health bars, and experience bars
@@ -63,11 +64,11 @@ npm run terminal:debug
 
 ### Map Symbols
 
-- 🧙 - Your player (the wizard)
-- 🧱 - Walls
-- ⬜ - Floor/walkable area
+- 🧙 - **Your player** (the wizard - appears with **yellow highlight** on black background for easy spotting!)
+- █ - Walls (simple solid blocks)
+- . - Floor/walkable area (simple dots for minimal visual clutter)
 - 🚪 - Doors
-- 🌊 - Water
+- ≈ - Water
 - 💎 - Treasure
 - 🔥 - Torches
 - 🌿 - Grass

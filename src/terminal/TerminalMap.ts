@@ -21,10 +21,10 @@ export class TerminalMap {
 
 	// Tile symbols
 	private readonly TILE_SYMBOLS: Record<TileType, string> = {
-		[TileType.WALL]: '🧱',
-		[TileType.FLOOR]: '⬜',
+		[TileType.WALL]: '█',
+		[TileType.FLOOR]: '.',
 		[TileType.DOOR]: '🚪',
-		[TileType.WATER]: '🌊',
+		[TileType.WATER]: '≈',
 		[TileType.TREASURE]: '💎',
 		[TileType.TORCH]: '🔥',
 		[TileType.GRASS]: '🌿',
@@ -33,7 +33,7 @@ export class TerminalMap {
 	// Tile colors
 	private readonly TILE_COLORS: Record<TileType, string> = {
 		[TileType.WALL]: 'grey',
-		[TileType.FLOOR]: 'white',
+		[TileType.FLOOR]: 'black',
 		[TileType.DOOR]: 'yellow',
 		[TileType.WATER]: 'blue',
 		[TileType.TREASURE]: 'cyan',

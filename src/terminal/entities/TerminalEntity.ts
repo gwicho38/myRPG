@@ -29,6 +29,7 @@ export class TerminalEntity implements IBaseEntity {
 	public color: string;
 	public attributes: IEntityAttributes;
 	public entityName: string;
+	public isPlayer: boolean = false;
 
 	constructor(
 		x: number,
@@ -69,6 +70,10 @@ export class TerminalEntity implements IBaseEntity {
 	 * Get entity representation as colored string
 	 */
 	public toString(): string {
+		if (this.isPlayer) {
+			// Make player highly visible with bold, bright styling and background
+			return `{black-bg}{yellow-fg}{bold}${this.symbol}{/bold}{/yellow-fg}{/black-bg}`;
+		}
 		return `{${this.color}-fg}${this.symbol}{/${this.color}-fg}`;
 	}
 
