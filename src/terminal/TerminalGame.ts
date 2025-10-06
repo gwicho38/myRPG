@@ -108,6 +108,11 @@ export class TerminalGame {
 			if (!entityAt) {
 				this.player.move(dx, dy);
 				this.render();
+
+				// Additional renders to show walking animation
+				setTimeout(() => this.render(), 50);
+				setTimeout(() => this.render(), 100);
+				setTimeout(() => this.render(), 150);
 			} else {
 				this.renderer.log(`There's a ${entityAt.entityName} in the way!`, 'yellow');
 			}
