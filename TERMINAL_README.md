@@ -7,7 +7,7 @@ A text-based version of Luminus RPG that runs in modern terminal emulators like 
 - **ULTRA-VISIBLE player character** - **🧙‍♂️ Wizard emoji** in yellow **[brackets]** on bright RED background - impossible to miss!
 - **Optimized graphics** using simple ASCII for tiles (. for floors, █ for walls) and emoji for characters
 - **Full game mechanics** including movement, combat, and exploration
-- **Roguelike dungeon** generation with varied enemies and treasures
+- **Colorful overworld** with vibrant villages, houses, water bodies, trees, flowers, and paths
 - **Real-time HUD** displaying player stats, health bars, and experience bars
 - **Event log** showing combat results and game actions with emoji indicators
 - **Mouse support** for scrolling through logs
@@ -75,10 +75,17 @@ npm run terminal:debug
 - █ - Walls (simple grey blocks)
 - . - Floor/walkable area (simple dots for minimal visual clutter)
 - 🚪 - Doors
-- ≈ - Water
-- 💎 - Treasure
+- ~ - Water (blue)
+- 💎 - Treasure chests
 - 🔥 - Torches
-- 🌿 - Grass
+- ░ - Grass (green)
+- 🌳 - Trees (green)
+- 🌸 - Flowers (magenta)
+- · - Paths (yellow)
+- ▓ - House walls (red)
+- ▀ - House roofs (red)
+- ‖ - Fences (yellow)
+- ≈ - Bushes (green)
 
 ### Enemies
 
@@ -125,6 +132,22 @@ The terminal UI is divided into three main sections:
 - Scrollable history (up to 100 messages)
 - Color-coded messages for different event types
 
+## World Generation
+
+The overworld is procedurally generated with:
+
+- **Village Layout**: Four houses of varying sizes strategically placed
+- **Water Bodies**: Rivers and lakes with blue wave tiles
+- **Path System**: Yellow paths connecting houses and areas
+- **Natural Elements**:
+    - 30 randomly placed trees (🌳)
+    - 20 randomly placed flowers (🌸)
+    - 15 randomly placed bushes (≈)
+- **Treasure Chests**: Hidden throughout the world (💎)
+- **Grass Coverage**: Green grass fills the entire overworld
+
+The `generateOverworld()` method creates a living, breathing world instead of dark dungeons!
+
 ## Architecture
 
 The terminal version shares core game logic with the web version but uses a completely different rendering system:
@@ -141,9 +164,9 @@ The terminal version shares core game logic with the web version but uses a comp
     - Combat and movement system
 
 - **TerminalMap** (`src/terminal/TerminalMap.ts`)
-    - Dungeon generation and rendering
-    - Tile-based map system
-    - Entity positioning
+    - Colorful overworld generation with villages, houses, and nature
+    - Tile-based map system with 14 different tile types
+    - Entity positioning and collision detection
 
 - **TerminalEntity** (`src/terminal/entities/TerminalEntity.ts`)
     - Shared entity logic compatible with web version
@@ -154,8 +177,9 @@ The terminal version shares core game logic with the web version but uses a comp
 ### Adding New Features
 
 1. **New Enemy Types**: Add to `enemyTypes` array in `TerminalGame.ts`
-2. **New Tiles**: Update `TILE_SYMBOLS` and `TILE_COLORS` in `TerminalMap.ts`
-3. **Custom Dungeons**: Modify `generateDungeon()` method in `TerminalMap.ts`
+2. **New Tiles**: Update `TileType` enum, `TILE_SYMBOLS`, and `TILE_COLORS` in `TerminalMap.ts`
+3. **Custom Worlds**: Modify `generateOverworld()` or create new generation methods in `TerminalMap.ts`
+4. **New Structures**: Add methods like `createHouse()`, `createWaterBody()`, etc. in `TerminalMap.ts`
 
 ### Debug Mode
 
@@ -202,12 +226,16 @@ Compared to the web version:
 
 ## Future Enhancements
 
-- [ ] Color customization and themes
+- [x] ~~Colorful world with grass, trees, flowers~~ ✅ Completed!
+- [x] ~~Village with houses and structures~~ ✅ Completed!
+- [ ] Interior house exploration
+- [ ] NPCs and dialogue system
 - [ ] Save/Load game state
 - [ ] Multiplayer via terminal sharing
 - [ ] Integration with existing game saves from web version
-- [ ] More complex dungeon layouts
-- [ ] Quest and dialogue system
+- [ ] Day/night cycle with lighting effects
+- [ ] Weather system (rain, snow)
+- [ ] Quest and objective system
 
 ## License
 
