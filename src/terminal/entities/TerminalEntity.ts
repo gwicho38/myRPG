@@ -71,8 +71,8 @@ export class TerminalEntity implements IBaseEntity {
 	 */
 	public toString(): string {
 		if (this.isPlayer) {
-			// Make player highly visible with bright white on red background
-			return `{red-bg}{white-fg}{bold}${this.symbol}{/bold}{/white-fg}{/red-bg}`;
+			// Make player highly visible with bright yellow/white emoji on red background with brackets
+			return `{red-bg}{yellow-fg}{bold}[${this.symbol}]{/bold}{/yellow-fg}{/red-bg}`;
 		}
 		return `{${this.color}-fg}${this.symbol}{/${this.color}-fg}`;
 	}

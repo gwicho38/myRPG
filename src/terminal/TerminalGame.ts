@@ -32,7 +32,7 @@ export class TerminalGame {
 		playerAttrs.atack = 10;
 		playerAttrs.defense = 5;
 
-		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '@', 'white', playerAttrs, 'Player');
+		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '🧙‍♂️', 'white', playerAttrs, 'Player');
 		this.player.isPlayer = true;
 		this.map.addEntity(this.player);
 
@@ -51,7 +51,7 @@ export class TerminalGame {
 		this.renderer.log('{yellow-fg}🗡️  Your quest begins... Defeat all monsters and collect treasures!{/yellow-fg}');
 		this.renderer.log('');
 		this.renderer.log(
-			"{red-fg}👀 Look for the {/red-fg}{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg}{red-fg} (WHITE on RED) - that's YOU!{/red-fg}"
+			"{red-fg}👀 Look for {/red-fg}{red-bg}{yellow-fg}{bold}[🧙‍♂️]{/bold}{/yellow-fg}{/red-bg}{red-fg} (wizard in YELLOW BRACKETS on RED) - that's YOU!{/red-fg}"
 		);
 	}
 
@@ -202,7 +202,7 @@ export class TerminalGame {
 		this.renderer.log('');
 		this.renderer.log('{yellow-fg}🎮 Game Elements:{/yellow-fg}');
 		this.renderer.log(
-			'{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg} You (Player) - WHITE @ on RED background!'
+			'{red-bg}{yellow-fg}{bold}[🧙‍♂️]{/bold}{/yellow-fg}{/red-bg} You (Player) - Wizard in YELLOW BRACKETS on RED!'
 		);
 		this.renderer.log('🐀🦇👹👺👻🐉 Monsters');
 		this.renderer.log('█ Walls  🚪 Doors  ≈ Water');
@@ -217,7 +217,7 @@ export class TerminalGame {
 		const xpBar = this.createXPBar(this.player.attributes.experience, this.player.attributes.nextLevelExperience);
 
 		const status = [
-			'{cyan-fg}{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg} Player Status{/cyan-fg}',
+			'{cyan-fg}{red-bg}{yellow-fg}{bold}[🧙‍♂️]{/bold}{/yellow-fg}{/red-bg} Player Status{/cyan-fg}',
 			'',
 			`❤️  HP: ${healthBar}`,
 			`{red-fg}${this.player.attributes.health}/${this.player.attributes.maxHealth}{/red-fg}`,
