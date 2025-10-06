@@ -31,6 +31,11 @@ export class TerminalEntity implements IBaseEntity {
 	public entityName: string;
 	public isPlayer: boolean = false;
 
+	// Animation properties
+	private animationFrame: number = 0;
+	private walkingFrames: string[] = ['🧙‍♂️', '🧙', '🧙‍♂️', '🧙‍♀️'];
+	private lastMoveTime: number = 0;
+
 	constructor(
 		x: number,
 		y: number,
@@ -55,6 +60,12 @@ export class TerminalEntity implements IBaseEntity {
 		if (this.canMove) {
 			this.x += dx;
 			this.y += dy;
+
+			// Advance animation frame for player
+			if (this.isPlayer) {
+				this.animationFrame = (this.animationFrame + 1) % this.walkingFrames.length;
+				this.lastMoveTime = Date.now();
+			}
 		}
 	}
 
@@ -67,14 +78,32 @@ export class TerminalEntity implements IBaseEntity {
 	}
 
 	/**
+	 * Get the current symbol (with animation if applicable)
+	 */
+	private getCurrentSymbol(): string {
+		if (this.isPlayer) {
+			// Use animated frame if recently moved (within 200ms)
+			const timeSinceMove = Date.now() - this.lastMoveTime;
+			if (timeSinceMove < 200) {
+				return this.walkingFrames[this.animationFrame];
+			}
+			// Default to standing still
+			return this.walkingFrames[0];
+		}
+		return this.symbol;
+	}
+
+	/**
 	 * Get entity representation as colored string
 	 */
 	public toString(): string {
+		const currentSymbol = this.getCurrentSymbol();
+
 		if (this.isPlayer) {
 			// Make player highly visible with bright yellow/white emoji on red background with brackets
-			return `{red-bg}{yellow-fg}{bold}[${this.symbol}]{/bold}{/yellow-fg}{/red-bg}`;
+			return `{red-bg}{yellow-fg}{bold}[${currentSymbol}]{/bold}{/yellow-fg}{/red-bg}`;
 		}
-		return `{${this.color}-fg}${this.symbol}{/${this.color}-fg}`;
+		return `{${this.color}-fg}${currentSymbol}{/${this.color}-fg}`;
 	}
 
 	/**
