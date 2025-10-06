@@ -1,5 +1,6 @@
 import { ConsumableBonus } from '../models/ConsumableBonus';
 import { LuminusEntityTextDisplay } from './LuminusEntityTextDisplay';
+import { HUDScene } from '../scenes/HUDScene';
 
 /**
  * This class is responsible for Manage all the consumable actions.
@@ -53,16 +54,20 @@ export class LuminusConsumableManager {
 
 		// TODO - Create an animation to display the usage of a consumable.
 		switch (action[1]) {
-			case 'hp':
+			case 'hp': {
+				const healAmount = parseInt(action[2]);
 				player.attributes.health = Math.min(
 					player.attributes.baseHealth,
-					(player.attributes.health += parseInt(action[2]))
+					(player.attributes.health += healAmount)
 				);
 				player.healthBar.update(player.attributes.health);
 				if (player.luminusHUDProgressBar) player.luminusHUDProgressBar.updateHealth(player.attributes.health);
-				this.luminusEntityTextDisplay.displayDamage(parseInt(action[2], 10), player, false, true);
+				this.luminusEntityTextDisplay.displayDamage(healAmount, player, false, true);
 				player.scene.sound.play(item.useSfx);
+				// Log item usage
+				HUDScene.log(player.scene, `💚 Used ${item.name}! Restored ${healAmount} HP`);
 				break;
+			}
 			case 'sp':
 				// SP recovery not yet implemented
 				break;

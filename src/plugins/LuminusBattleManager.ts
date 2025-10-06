@@ -5,6 +5,7 @@ import { ENTITIES } from '../consts/Entities';
 import { LuminusEntityTextDisplay } from './LuminusEntityTextDisplay';
 import { CRITICAL_MULTIPLIER } from '../consts/Battle';
 import { ExpManager } from './attributes/ExpManager';
+import { HUDScene } from '../scenes/HUDScene';
 
 /**
  * @class
@@ -238,12 +239,27 @@ export class LuminusBattleManager extends AnimationNames {
 			}
 			this.phaserJuice!.add(target).flash();
 			atacker.scene.sound.add(damageName).play();
+
+			// Log combat message
+			const targetName = target.entityName || 'Enemy';
+			const attackerName = atacker.entityName === ENTITIES.Player ? 'You' : atacker.entityName;
+			if (isCritical) {
+				HUDScene.log(
+					atacker.scene,
+					`💥 ${attackerName} landed a CRITICAL hit on ${targetName} for ${damage} damage!`
+				);
+			} else {
+				HUDScene.log(atacker.scene, `⚔️ ${attackerName} hit ${targetName} for ${damage} damage`);
+			}
+
 			if (target.attributes.health <= 0) {
 				if (target.entityName === ENTITIES.Player) {
 					// Player died - trigger game over
+					HUDScene.log(atacker.scene, '💀 You have been defeated!');
 					this.handlePlayerDeath(target);
 				} else {
 					// Enemy died
+					HUDScene.log(atacker.scene, `✨ ${targetName} defeated! +${target.exp} XP`);
 					if (atacker.entityName === ENTITIES.Player) {
 						ExpManager.addExp(atacker, target.exp);
 					}
@@ -258,6 +274,11 @@ export class LuminusBattleManager extends AnimationNames {
 			this.luminusEntityTextDisplay = new LuminusEntityTextDisplay(target.scene);
 			this.luminusEntityTextDisplay.displayDamage(damage, target, isCritical);
 		} else {
+			// Log miss message
+			const targetName = target.entityName || 'Enemy';
+			const attackerName = atacker.entityName === ENTITIES.Player ? 'You' : atacker.entityName;
+			HUDScene.log(atacker.scene, `❌ ${attackerName} missed ${targetName}!`);
+
 			this.luminusEntityTextDisplay = new LuminusEntityTextDisplay(target.scene);
 			// Display 0 damage for a miss
 			this.luminusEntityTextDisplay.displayDamage(0, target);

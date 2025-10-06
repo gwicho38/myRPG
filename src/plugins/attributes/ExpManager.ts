@@ -1,4 +1,5 @@
 import { LuminusEntityTextDisplay } from '../LuminusEntityTextDisplay';
+import { HUDScene } from '../../scenes/HUDScene';
 
 interface Entity {
 	attributes: {
@@ -62,6 +63,9 @@ export class ExpManager {
 			entity.healthBar.full = entity.attributes.baseHealth;
 			entity.healthBar.update(entity.attributes.health);
 		}
+		// Log level up message
+		HUDScene.log(entity.scene, `🎉 LEVEL UP! You are now level ${entity.attributes.level}! (+1 stat point)`);
+
 		// Add next level experience.
 		this.levelUpEffects(entity);
 	}
