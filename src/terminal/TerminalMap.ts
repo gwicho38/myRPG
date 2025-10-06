@@ -9,6 +9,13 @@ export enum TileType {
 	TREASURE = 4,
 	TORCH = 5,
 	GRASS = 6,
+	TREE = 7,
+	FLOWER = 8,
+	PATH = 9,
+	HOUSE_WALL = 10,
+	HOUSE_ROOF = 11,
+	FENCE = 12,
+	BUSH = 13,
 }
 
 /**
@@ -26,10 +33,17 @@ export class TerminalMap {
 		[TileType.WALL]: '█',
 		[TileType.FLOOR]: '.',
 		[TileType.DOOR]: '🚪',
-		[TileType.WATER]: '≈',
+		[TileType.WATER]: '~',
 		[TileType.TREASURE]: '💎',
 		[TileType.TORCH]: '🔥',
-		[TileType.GRASS]: '🌿',
+		[TileType.GRASS]: '░',
+		[TileType.TREE]: '🌳',
+		[TileType.FLOWER]: '🌸',
+		[TileType.PATH]: '·',
+		[TileType.HOUSE_WALL]: '▓',
+		[TileType.HOUSE_ROOF]: '▀',
+		[TileType.FENCE]: '‖',
+		[TileType.BUSH]: '≈',
 	};
 
 	// Tile colors
@@ -41,6 +55,13 @@ export class TerminalMap {
 		[TileType.TREASURE]: 'cyan',
 		[TileType.TORCH]: 'red',
 		[TileType.GRASS]: 'green',
+		[TileType.TREE]: 'green',
+		[TileType.FLOWER]: 'magenta',
+		[TileType.PATH]: 'yellow',
+		[TileType.HOUSE_WALL]: 'red',
+		[TileType.HOUSE_ROOF]: 'red',
+		[TileType.FENCE]: 'yellow',
+		[TileType.BUSH]: 'green',
 	};
 
 	constructor(width: number, height: number) {
@@ -71,7 +92,42 @@ export class TerminalMap {
 	}
 
 	/**
-	 * Generate a simple dungeon
+	 * Generate a colorful overworld
+	 */
+	public generateOverworld(): void {
+		// Fill entire map with grass
+		for (let y = 0; y < this.height; y++) {
+			for (let x = 0; x < this.width; x++) {
+				this.tiles[y][x] = TileType.GRASS;
+			}
+		}
+
+		// Add water bodies (river/lake)
+		this.createWaterBody(60, 10, 15, 25);
+		this.createWaterBody(5, 25, 20, 10);
+
+		// Create a village path system
+		this.createPath(10, 15, 60, 15); // Main horizontal path
+		this.createPath(30, 5, 30, 30); // Vertical path through village
+
+		// Build houses
+		this.createHouse(15, 8, 8, 6); // House 1
+		this.createHouse(40, 8, 10, 7); // House 2
+		this.createHouse(15, 20, 7, 6); // House 3
+		this.createHouse(42, 22, 9, 6); // House 4
+
+		// Add decorative elements
+		this.addTrees();
+		this.addFlowers();
+		this.addBushes();
+
+		// Add some treasure chests
+		this.tiles[12][25] = TileType.TREASURE;
+		this.tiles[28][50] = TileType.TREASURE;
+	}
+
+	/**
+	 * Generate a simple dungeon (old method)
 	 */
 	public generateDungeon(): void {
 		// Fill with walls first
@@ -144,13 +200,129 @@ export class TerminalMap {
 	}
 
 	/**
+	 * Create a house structure
+	 */
+	private createHouse(x: number, y: number, width: number, height: number): void {
+		// Roof
+		for (let dx = 0; dx < width; dx++) {
+			if (x + dx < this.width && y >= 0) {
+				this.tiles[y][x + dx] = TileType.HOUSE_ROOF;
+			}
+		}
+
+		// Walls and interior
+		for (let dy = 1; dy < height; dy++) {
+			for (let dx = 0; dx < width; dx++) {
+				if (x + dx < this.width && y + dy < this.height) {
+					if (dx === 0 || dx === width - 1 || dy === height - 1) {
+						this.tiles[y + dy][x + dx] = TileType.HOUSE_WALL;
+					} else {
+						this.tiles[y + dy][x + dx] = TileType.FLOOR;
+					}
+				}
+			}
+		}
+
+		// Add door
+		if (x + Math.floor(width / 2) < this.width && y + height - 1 < this.height) {
+			this.tiles[y + height - 1][x + Math.floor(width / 2)] = TileType.DOOR;
+		}
+	}
+
+	/**
+	 * Create a water body
+	 */
+	private createWaterBody(x: number, y: number, width: number, height: number): void {
+		for (let dy = 0; dy < height; dy++) {
+			for (let dx = 0; dx < width; dx++) {
+				if (x + dx < this.width && y + dy < this.height && x + dx >= 0 && y + dy >= 0) {
+					this.tiles[y + dy][x + dx] = TileType.WATER;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Create a path
+	 */
+	private createPath(x1: number, y1: number, x2: number, y2: number): void {
+		// Horizontal path
+		if (y1 === y2) {
+			const minX = Math.min(x1, x2);
+			const maxX = Math.max(x1, x2);
+			for (let x = minX; x <= maxX; x++) {
+				if (x >= 0 && x < this.width && y1 >= 0 && y1 < this.height) {
+					this.tiles[y1][x] = TileType.PATH;
+				}
+			}
+		}
+		// Vertical path
+		else if (x1 === x2) {
+			const minY = Math.min(y1, y2);
+			const maxY = Math.max(y1, y2);
+			for (let y = minY; y <= maxY; y++) {
+				if (x1 >= 0 && x1 < this.width && y >= 0 && y < this.height) {
+					this.tiles[y][x1] = TileType.PATH;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add trees randomly
+	 */
+	private addTrees(): void {
+		for (let i = 0; i < 30; i++) {
+			const x = Math.floor(Math.random() * this.width);
+			const y = Math.floor(Math.random() * this.height);
+			if (this.tiles[y][x] === TileType.GRASS) {
+				this.tiles[y][x] = TileType.TREE;
+			}
+		}
+	}
+
+	/**
+	 * Add flowers randomly
+	 */
+	private addFlowers(): void {
+		for (let i = 0; i < 20; i++) {
+			const x = Math.floor(Math.random() * this.width);
+			const y = Math.floor(Math.random() * this.height);
+			if (this.tiles[y][x] === TileType.GRASS) {
+				this.tiles[y][x] = TileType.FLOWER;
+			}
+		}
+	}
+
+	/**
+	 * Add bushes randomly
+	 */
+	private addBushes(): void {
+		for (let i = 0; i < 15; i++) {
+			const x = Math.floor(Math.random() * this.width);
+			const y = Math.floor(Math.random() * this.height);
+			if (this.tiles[y][x] === TileType.GRASS) {
+				this.tiles[y][x] = TileType.BUSH;
+			}
+		}
+	}
+
+	/**
 	 * Check if a position is walkable
 	 */
 	public isWalkable(x: number, y: number): boolean {
 		if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
 			return false;
 		}
-		return this.tiles[y][x] !== TileType.WALL;
+		const tile = this.tiles[y][x];
+		return (
+			tile !== TileType.WALL &&
+			tile !== TileType.WATER &&
+			tile !== TileType.TREE &&
+			tile !== TileType.HOUSE_WALL &&
+			tile !== TileType.HOUSE_ROOF &&
+			tile !== TileType.FENCE
+		);
 	}
 
 	/**

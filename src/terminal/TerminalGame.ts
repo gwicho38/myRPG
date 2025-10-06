@@ -22,7 +22,7 @@ export class TerminalGame {
 	constructor(debug: boolean = false) {
 		this.renderer = new TerminalRenderer(debug);
 		this.map = new TerminalMap(80, 40);
-		this.map.generateDungeon();
+		this.map.generateOverworld();
 
 		// Create player
 		const spawnPos = this.map.findSpawnPosition();
