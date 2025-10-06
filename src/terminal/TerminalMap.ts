@@ -46,22 +46,22 @@ export class TerminalMap {
 		[TileType.BUSH]: '≈',
 	};
 
-	// Tile colors
+	// Tile colors (using valid blessed color names)
 	private readonly TILE_COLORS: Record<TileType, string> = {
 		[TileType.WALL]: 'white',
-		[TileType.FLOOR]: 'lightyellow',
-		[TileType.DOOR]: 'lightyellow',
-		[TileType.WATER]: 'lightcyan',
-		[TileType.TREASURE]: 'lightyellow',
-		[TileType.TORCH]: 'lightred',
-		[TileType.GRASS]: 'lightgreen',
-		[TileType.TREE]: 'lightgreen',
-		[TileType.FLOWER]: 'lightmagenta',
-		[TileType.PATH]: 'lightyellow',
-		[TileType.HOUSE_WALL]: 'lightred',
-		[TileType.HOUSE_ROOF]: 'lightred',
-		[TileType.FENCE]: 'lightyellow',
-		[TileType.BUSH]: 'lightgreen',
+		[TileType.FLOOR]: 'yellow',
+		[TileType.DOOR]: 'yellow',
+		[TileType.WATER]: 'cyan',
+		[TileType.TREASURE]: 'yellow',
+		[TileType.TORCH]: 'red',
+		[TileType.GRASS]: 'green',
+		[TileType.TREE]: 'green',
+		[TileType.FLOWER]: 'magenta',
+		[TileType.PATH]: 'yellow',
+		[TileType.HOUSE_WALL]: 'red',
+		[TileType.HOUSE_ROOF]: 'red',
+		[TileType.FENCE]: 'yellow',
+		[TileType.BUSH]: 'green',
 	};
 
 	constructor(width: number, height: number) {
@@ -372,7 +372,7 @@ export class TerminalMap {
 						const tile = this.tiles[y][x];
 						const symbol = this.TILE_SYMBOLS[tile];
 						const color = this.TILE_COLORS[tile];
-						line += `{${color}-fg}${symbol}{/${color}-fg}`;
+						line += `{${color}-bg}{black-fg}${symbol}{/black-fg}{/${color}-bg}`;
 					} else {
 						line += ' ';
 					}
