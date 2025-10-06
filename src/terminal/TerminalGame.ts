@@ -12,8 +12,9 @@ export class TerminalGame {
 	private player: TerminalEntity;
 	private enemies: TerminalEntity[] = [];
 	private running: boolean = false;
-	private tickRate: number = 100; // ms per game tick
+	private tickRate: number = 500; // ms per game tick (enemy movement)
 	private lastTick: number = Date.now();
+	private gameLoopInterval?: ReturnType<typeof setInterval>;
 
 	// View settings
 	private viewWidth: number = 60;
@@ -325,11 +326,88 @@ export class TerminalGame {
 	}
 
 	/**
+	 * Update game state (enemy AI)
+	 */
+	private update(): void {
+		if (!this.running) return;
+
+		// Move each enemy
+		for (const enemy of this.enemies) {
+			this.moveEnemy(enemy);
+		}
+
+		this.render();
+	}
+
+	/**
+	 * Move an enemy using simple AI
+	 */
+	private moveEnemy(enemy: TerminalEntity): void {
+		// Calculate distance to player
+		const dx = this.player.x - enemy.x;
+		const dy = this.player.y - enemy.y;
+		const distance = Math.sqrt(dx * dx + dy * dy);
+
+		// If player is within perception range, move towards player
+		if (distance < 10) {
+			// Move towards player
+			const moveX = dx !== 0 ? Math.sign(dx) : 0;
+			const moveY = dy !== 0 ? Math.sign(dy) : 0;
+
+			// Try to move in the direction of the player
+			const newX = enemy.x + moveX;
+			const newY = enemy.y + moveY;
+
+			if (this.map.isWalkable(newX, newY) && !this.map.getEntityAt(newX, newY)) {
+				enemy.move(moveX, moveY);
+			}
+			// If can't move diagonally, try horizontal or vertical
+			else if (
+				moveX !== 0 &&
+				this.map.isWalkable(enemy.x + moveX, enemy.y) &&
+				!this.map.getEntityAt(enemy.x + moveX, enemy.y)
+			) {
+				enemy.move(moveX, 0);
+			} else if (
+				moveY !== 0 &&
+				this.map.isWalkable(enemy.x, enemy.y + moveY) &&
+				!this.map.getEntityAt(enemy.x, enemy.y + moveY)
+			) {
+				enemy.move(0, moveY);
+			}
+		} else {
+			// Random movement when player is far away
+			const directions = [
+				{ dx: 0, dy: -1 },
+				{ dx: 0, dy: 1 },
+				{ dx: -1, dy: 0 },
+				{ dx: 1, dy: 0 },
+			];
+
+			// 30% chance to move
+			if (Math.random() < 0.3) {
+				const dir = directions[Math.floor(Math.random() * directions.length)];
+				const newX = enemy.x + dir.dx;
+				const newY = enemy.y + dir.dy;
+
+				if (this.map.isWalkable(newX, newY) && !this.map.getEntityAt(newX, newY)) {
+					enemy.move(dir.dx, dir.dy);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Start the game loop
 	 */
 	public start(): void {
 		this.running = true;
 		this.renderer.log('{green-fg}Game started!{/green-fg}');
+
+		// Start the game loop for enemy movement
+		this.gameLoopInterval = setInterval(() => {
+			this.update();
+		}, this.tickRate);
 	}
 
 	/**
@@ -337,6 +415,9 @@ export class TerminalGame {
 	 */
 	public stop(): void {
 		this.running = false;
+		if (this.gameLoopInterval) {
+			clearInterval(this.gameLoopInterval);
+		}
 		this.renderer.cleanup();
 	}
 }
