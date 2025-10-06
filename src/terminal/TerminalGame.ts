@@ -32,7 +32,7 @@ export class TerminalGame {
 		playerAttrs.atack = 10;
 		playerAttrs.defense = 5;
 
-		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '🧙', 'cyan', playerAttrs, 'Player');
+		this.player = new TerminalEntity(spawnPos.x, spawnPos.y, '@', 'white', playerAttrs, 'Player');
 		this.player.isPlayer = true;
 		this.map.addEntity(this.player);
 
@@ -49,6 +49,10 @@ export class TerminalGame {
 		this.renderer.log('{green-fg}✨ Welcome to Luminus RPG - Terminal Edition! ✨{/green-fg}');
 		this.renderer.log('{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space=Attack | H=Help | Q=Quit{/cyan-fg}');
 		this.renderer.log('{yellow-fg}🗡️  Your quest begins... Defeat all monsters and collect treasures!{/yellow-fg}');
+		this.renderer.log('');
+		this.renderer.log(
+			"{red-fg}👀 Look for the {/red-fg}{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg}{red-fg} (WHITE on RED) - that's YOU!{/red-fg}"
+		);
 	}
 
 	/**
@@ -197,9 +201,11 @@ export class TerminalGame {
 		this.renderer.log('🚪 Q / Escape: Quit');
 		this.renderer.log('');
 		this.renderer.log('{yellow-fg}🎮 Game Elements:{/yellow-fg}');
-		this.renderer.log('🧙 You (Player)');
+		this.renderer.log(
+			'{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg} You (Player) - WHITE @ on RED background!'
+		);
 		this.renderer.log('🐀🦇👹👺👻🐉 Monsters');
-		this.renderer.log('🧱 Walls  🚪 Doors  🌊 Water');
+		this.renderer.log('█ Walls  🚪 Doors  ≈ Water');
 		this.renderer.log('💎 Treasure  🔥 Torches');
 	}
 
@@ -211,7 +217,7 @@ export class TerminalGame {
 		const xpBar = this.createXPBar(this.player.attributes.experience, this.player.attributes.nextLevelExperience);
 
 		const status = [
-			'{cyan-fg}🧙 Player Status{/cyan-fg}',
+			'{cyan-fg}{red-bg}{white-fg}{bold}@{/bold}{/white-fg}{/red-bg} Player Status{/cyan-fg}',
 			'',
 			`❤️  HP: ${healthBar}`,
 			`{red-fg}${this.player.attributes.health}/${this.player.attributes.maxHealth}{/red-fg}`,
