@@ -12,6 +12,12 @@ describe('LuminusSaveManager', () => {
 		mockScene = {
 			scene: {
 				key: 'TestScene',
+				get: jest.fn().mockReturnValue({
+					messageLog: {
+						log: jest.fn(),
+					},
+				}),
+				start: jest.fn(),
 			},
 			time: {
 				addEvent: jest.fn().mockReturnValue({
@@ -65,7 +71,7 @@ describe('LuminusSaveManager', () => {
 			expect(saveManager.scene).toBe(mockScene);
 			expect(saveManager.saveKey).toBe('luminus_rpg_save');
 			expect(saveManager.checkpointKey).toBe('luminus_rpg_checkpoint');
-			expect(saveManager.checkpointInterval).toBe(9000); // 30 * 300
+			expect(saveManager.checkpointInterval).toBe(30000); // 30 * 1000
 			expect(saveManager.autoSaveEnabled).toBe(true);
 		});
 	});
@@ -425,7 +431,6 @@ describe('LuminusSaveManager', () => {
 			saveData!.scene = 'DifferentScene';
 
 			mockScene.player.container.setPosition = jest.fn();
-			mockScene.scene.start = jest.fn();
 
 			saveManager.applySaveData(saveData!);
 

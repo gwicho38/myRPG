@@ -26,7 +26,17 @@
 			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 >= 50 && $3+0 < 70 {print $0}')",
 			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 == 0 {print}')",
 			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 >= 50 && $3+0 < 70 {print}')",
-			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 < 70 && $3+0 > 0')"
+			"Bash(awk '$2 == \"\"\"\"|\"\"\"\" && $3+0 < 70 && $3+0 > 0')",
+			"Bash(npm run terminal:*)",
+			"Bash(timeout 3 npm run:*)",
+			"Bash(timeout 2 npm run terminal)",
+			"Bash(tsx:*)",
+			"Bash(npm run terminal:test:*)",
+			"Bash(git restore:*)",
+			"Bash(git push:*)",
+			"Bash(git tag:*)",
+			"Bash(git log:*)",
+			"Bash(npm run dev:*)"
 		],
 		"deny": [],
 		"ask": []
