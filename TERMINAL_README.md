@@ -62,8 +62,8 @@ npm run terminal:debug
 | Key                        | Action                                         |
 | -------------------------- | ---------------------------------------------- |
 | **Arrow Keys** or **WASD** | Move player                                    |
-| **Space**                  | Attack adjacent enemy (with animated effects!) |
-| **B**                      | Block/Defend (+5 defense for 2 seconds)        |
+| **Space** or **J**         | Attack adjacent enemy (with animated effects!) |
+| **B** or **K**             | Block/Defend (+5 defense for 2 seconds)        |
 | **H**                      | Show help                                      |
 | **Q** or **Escape**        | Quit game                                      |
 
