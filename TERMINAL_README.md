@@ -81,7 +81,6 @@ npm run terminal:debug
 - ░ - Grass (green)
 - 🌳 - Trees (green)
 - 🌸 - Flowers (magenta)
-- · - Paths (yellow)
 - ▓ - House walls (red)
 - ▀ - House roofs (red)
 - ‖ - Fences (yellow)
@@ -138,7 +137,6 @@ The overworld is procedurally generated with:
 
 - **Village Layout**: Four houses of varying sizes strategically placed
 - **Water Bodies**: Rivers and lakes with blue wave tiles
-- **Path System**: Yellow paths connecting houses and areas
 - **Natural Elements**:
     - 30 randomly placed trees (🌳)
     - 20 randomly placed flowers (🌸)
