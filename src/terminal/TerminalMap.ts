@@ -49,7 +49,7 @@ export class TerminalMap {
 	// Tile colors
 	private readonly TILE_COLORS: Record<TileType, string> = {
 		[TileType.WALL]: 'grey',
-		[TileType.FLOOR]: 'black',
+		[TileType.FLOOR]: 'yellow',
 		[TileType.DOOR]: 'yellow',
 		[TileType.WATER]: 'blue',
 		[TileType.TREASURE]: 'cyan',
