@@ -4,12 +4,13 @@ A text-based version of Luminus RPG that runs in modern terminal emulators like 
 
 ## Features
 
-- **ASCII-based graphics** using Unicode box-drawing characters and symbols
+- **Emoji-based graphics** 🎮 using modern Unicode emojis for enhanced visuals
 - **Full game mechanics** including movement, combat, and exploration
-- **Roguelike dungeon** generation
-- **Real-time HUD** displaying player stats, health, and experience
-- **Event log** showing game actions and messages
+- **Roguelike dungeon** generation with varied enemies and treasures
+- **Real-time HUD** displaying player stats, health bars, and experience bars
+- **Event log** showing combat results and game actions with emoji indicators
 - **Mouse support** for scrolling through logs
+- **Visual effects** including health bars, damage indicators, and victory notifications
 
 ## Requirements
 
@@ -62,17 +63,23 @@ npm run terminal:debug
 
 ### Map Symbols
 
-- `@` - Your player (cyan)
-- `█` - Walls (grey)
-- `·` - Floor/walkable area (white)
-- `+` - Doors (yellow)
-- `≈` - Water (blue)
+- 🧙 - Your player (the wizard)
+- 🧱 - Walls
+- ⬜ - Floor/walkable area
+- 🚪 - Doors
+- 🌊 - Water
+- 💎 - Treasure
+- 🔥 - Torches
+- 🌿 - Grass
 
 ### Enemies
 
-- `r` - Rat (yellow) - 20 HP, 3 ATK
-- `b` - Bat (white) - 15 HP, 5 ATK
-- `O` - Ogre (red) - 50 HP, 8 ATK
+- 🐀 - Rat - 20 HP, 3 ATK
+- 🦇 - Bat - 15 HP, 5 ATK
+- 👹 - Ogre - 50 HP, 8 ATK
+- 👺 - Goblin - 25 HP, 6 ATK
+- 👻 - Ghost - 30 HP, 7 ATK
+- 🐉 - Dragon - 100 HP, 15 ATK
 
 ## HUD Layout
 
