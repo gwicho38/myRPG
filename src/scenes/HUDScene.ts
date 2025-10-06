@@ -446,6 +446,16 @@ export class HUDScene extends Phaser.Scene {
 		}
 	}
 
+	/**
+	 * Static helper to log messages from anywhere in the game
+	 */
+	public static log(scene: Phaser.Scene, message: string): void {
+		const hudScene = scene.scene.get('HUDScene') as HUDScene;
+		if (hudScene && hudScene.messageLog) {
+			hudScene.messageLog.log(message);
+		}
+	}
+
 	update(): void {
 		if (this.level_text) this.level_text.setText('LvL ' + this.player.attributes.level);
 	}
