@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { IconNamesConst } from '../consts/UI/IconNames';
 import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
+import { LuminusMessageLog } from '../plugins/HUD/LuminusMessageLog';
 import { LuminusUtils } from '../utils/LuminusUtils';
 import { AttributeSceneName } from './AttributeScene';
 import { InventorySceneName } from './InventoryScene';
@@ -124,6 +125,11 @@ export class HUDScene extends Phaser.Scene {
 	 * The Health bar that will display the player's current HP
 	 */
 	health_bar!: LuminusHUDProgressBar;
+
+	/**
+	 * The message log that displays game events
+	 */
+	messageLog!: LuminusMessageLog;
 
 	/**
 	 * The inventory sprite shortcut name.
@@ -318,6 +324,21 @@ export class HUDScene extends Phaser.Scene {
 		});
 
 		this.createSaveButton();
+		this.createMessageLog();
+	}
+
+	createMessageLog(): void {
+		const logWidth = 600;
+		const logHeight = 140;
+		const logX = this.cameras.main.width / 2 - logWidth / 2;
+		const logY = this.cameras.main.height - logHeight - 10;
+
+		this.messageLog = new LuminusMessageLog(this, logX, logY, logWidth, logHeight);
+
+		// Welcome message
+		this.messageLog.log('✨ Welcome to Luminus RPG!');
+		this.messageLog.log('🎮 Use arrow keys or WASD to move');
+		this.messageLog.log('⚔️ Press Space to attack nearby enemies');
 	}
 
 	createSaveButton(): void {
@@ -409,6 +430,20 @@ export class HUDScene extends Phaser.Scene {
 				this.attributesBook.x - this.attributesBook.width / 2,
 				this.attributesBook.y + 15
 			);
+
+		// Reposition message log
+		if (this.messageLog) {
+			const logWidth = 600;
+			const logHeight = 140;
+			const logX = size.width / 2 - logWidth / 2;
+			const logY = size.height - logHeight - 10;
+			this.messageLog.setPosition(logX, logY);
+		}
+
+		// Reposition save button
+		if (this.saveButton) {
+			this.saveButton.setPosition(size.width - 80, 20);
+		}
 	}
 
 	update(): void {

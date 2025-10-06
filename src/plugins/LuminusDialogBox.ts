@@ -212,8 +212,9 @@ export class LuminusDialogBox {
 
 		/**
 		 * Delay between each character in the typewriter effect (in milliseconds)
+		 * Reduced from 50ms to 10ms for faster dialog (80% faster)
 		 */
-		this.typewriterDelay = 50;
+		this.typewriterDelay = 10;
 
 		/**
 		 * Flag to track if we just fast-forwarded text
