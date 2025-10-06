@@ -110,27 +110,35 @@ export class TerminalMap {
 	}
 
 	/**
-	 * Create a horizontal corridor
+	 * Create a horizontal corridor (3 tiles wide)
 	 */
 	private createHorizontalCorridor(x1: number, x2: number, y: number): void {
 		const minX = Math.min(x1, x2);
 		const maxX = Math.max(x1, x2);
 		for (let x = minX; x <= maxX; x++) {
-			if (x > 0 && x < this.width - 1 && y > 0 && y < this.height - 1) {
-				this.tiles[y][x] = TileType.FLOOR;
+			// Create 3-tile wide corridor
+			for (let dy = -1; dy <= 1; dy++) {
+				const corridorY = y + dy;
+				if (x > 0 && x < this.width - 1 && corridorY > 0 && corridorY < this.height - 1) {
+					this.tiles[corridorY][x] = TileType.FLOOR;
+				}
 			}
 		}
 	}
 
 	/**
-	 * Create a vertical corridor
+	 * Create a vertical corridor (3 tiles wide)
 	 */
 	private createVerticalCorridor(x: number, y1: number, y2: number): void {
 		const minY = Math.min(y1, y2);
 		const maxY = Math.max(y1, y2);
 		for (let y = minY; y <= maxY; y++) {
-			if (x > 0 && x < this.width - 1 && y > 0 && y < this.height - 1) {
-				this.tiles[y][x] = TileType.FLOOR;
+			// Create 3-tile wide corridor
+			for (let dx = -1; dx <= 1; dx++) {
+				const corridorX = x + dx;
+				if (corridorX > 0 && corridorX < this.width - 1 && y > 0 && y < this.height - 1) {
+					this.tiles[y][corridorX] = TileType.FLOOR;
+				}
 			}
 		}
 	}
