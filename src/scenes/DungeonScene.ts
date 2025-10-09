@@ -70,7 +70,7 @@ export class DungeonScene extends Phaser.Scene {
 			scene: this,
 		});
 
-		this.scene.launch('HUDScene', { player: this.player });
+		this.scene.launch('HUDScene', { player: this.player, map: this.dungeon.map });
 		this.enemies = [];
 		this.dungeon.dungeon.rooms.forEach((room) => {
 			const spriteBounds = Phaser.Geom.Rectangle.Inflate(

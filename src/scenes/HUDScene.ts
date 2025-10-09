@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { IconNamesConst } from '../consts/UI/IconNames';
 import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
 import { LuminusMessageLog } from '../plugins/HUD/LuminusMessageLog';
+import { LuminusMinimap } from '../plugins/HUD/LuminusMinimap';
 import { LuminusUtils } from '../utils/LuminusUtils';
 import { AttributeSceneName } from './AttributeScene';
 import { InventorySceneName } from './InventoryScene';
@@ -17,6 +18,16 @@ export class HUDScene extends Phaser.Scene {
 	 * The Player game Object.
 	 */
 	player!: Player;
+
+	/**
+	 * The tilemap for minimap rendering
+	 */
+	map?: Phaser.Tilemaps.Tilemap;
+
+	/**
+	 * The minimap component
+	 */
+	minimap?: LuminusMinimap;
 
 	/**
 	 * Maximize image/sprite name.
@@ -215,6 +226,7 @@ export class HUDScene extends Phaser.Scene {
 
 	init(args: any): void {
 		this.player = args.player;
+		this.map = args.map;
 	}
 
 	/**
@@ -325,6 +337,14 @@ export class HUDScene extends Phaser.Scene {
 
 		this.createSaveButton();
 		this.createMessageLog();
+		this.createMinimap();
+	}
+
+	createMinimap(): void {
+		// Only create minimap if we have a map reference
+		if (this.map) {
+			this.minimap = new LuminusMinimap(this, this.player, this.map);
+		}
 	}
 
 	createMessageLog(): void {
@@ -444,6 +464,11 @@ export class HUDScene extends Phaser.Scene {
 		if (this.saveButton) {
 			this.saveButton.setPosition(size.width - 80, 20);
 		}
+
+		// Resize and reposition minimap
+		if (this.minimap) {
+			this.minimap.resize();
+		}
 	}
 
 	/**
@@ -458,5 +483,10 @@ export class HUDScene extends Phaser.Scene {
 
 	update(): void {
 		if (this.level_text) this.level_text.setText('LvL ' + this.player.attributes.level);
+
+		// Update minimap
+		if (this.minimap) {
+			this.minimap.update();
+		}
 	}
 }

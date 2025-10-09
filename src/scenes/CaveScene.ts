@@ -55,7 +55,7 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 
 		this.joystickScene = this.scene.get('JoystickScene');
 
-		this.scene.launch('HUDScene', { player: this.player });
+		this.scene.launch('HUDScene', { player: this.player, map: this.mapCreator!.map });
 
 		(this.sys as any).animatedTiles.init(this.mapCreator.map);
 		this.particles = new LuminusEnvironmentParticles(this, this.mapCreator.map);
