@@ -4,6 +4,7 @@ import { LuminusDungeonGenerator } from '../plugins/LuminusDungeonGenerator';
 import { LuminusFogWarManager } from '../plugins/LuminusFogWarManager';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 import { LuminusPathfinding } from '../plugins/LuminusPathfinding';
+import { LuminusLineOfSight } from '../plugins/LuminusLineOfSight';
 import { Enemy } from '../entities/Enemy';
 import { PlayerConfig } from '../consts/player/Player';
 
@@ -16,6 +17,7 @@ export class DungeonScene extends Phaser.Scene {
 	fog!: LuminusFogWarManager;
 	saveManager!: LuminusSaveManager;
 	pathfinding!: LuminusPathfinding;
+	lineOfSight!: LuminusLineOfSight;
 	exitPortal!: Phaser.GameObjects.Zone;
 	previousScene: string = 'MainScene'; // Track which scene to return to
 
@@ -48,6 +50,9 @@ export class DungeonScene extends Phaser.Scene {
 			allowDiagonal: true,
 			dontCrossCorners: true,
 		});
+
+		// Initialize line-of-sight system
+		this.lineOfSight = new LuminusLineOfSight(this, this.dungeon.map, this.dungeon.groundLayer);
 
 		this.player = new Player(
 			this,
