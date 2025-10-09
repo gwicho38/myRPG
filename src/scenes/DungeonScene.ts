@@ -5,6 +5,7 @@ import { LuminusFogWarManager } from '../plugins/LuminusFogWarManager';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
 import { LuminusPathfinding } from '../plugins/LuminusPathfinding';
 import { LuminusLineOfSight } from '../plugins/LuminusLineOfSight';
+import { LuminusLightingManager } from '../plugins/LuminusLightingManager';
 import { Enemy } from '../entities/Enemy';
 import { PlayerConfig } from '../consts/player/Player';
 
@@ -15,6 +16,7 @@ export class DungeonScene extends Phaser.Scene {
 	themeSong!: Phaser.Sound.BaseSound;
 	ambientSound!: Phaser.Sound.BaseSound;
 	fog!: LuminusFogWarManager;
+	lighting!: LuminusLightingManager;
 	saveManager!: LuminusSaveManager;
 	pathfinding!: LuminusPathfinding;
 	lineOfSight!: LuminusLineOfSight;
@@ -121,6 +123,18 @@ export class DungeonScene extends Phaser.Scene {
 
 		this.fog = new LuminusFogWarManager(this, this.dungeon.map, this.player);
 		this.fog.createFog();
+
+		// Initialize dynamic lighting system for atmospheric dungeons
+		this.lighting = new LuminusLightingManager(this, {
+			ambientDarkness: 0.9, // Very dark dungeons
+			defaultLightRadius: 120, // Player torch radius
+			enableFlicker: true,
+			lightColor: 0xffaa66, // Warm orange torch light
+		});
+		this.lighting.create();
+
+		// Add some static lights to the dungeon (torches on walls)
+		this.addDungeonTorches();
 
 		this.saveManager = new LuminusSaveManager(this);
 		this.saveManager.create();
@@ -311,7 +325,68 @@ export class DungeonScene extends Phaser.Scene {
 		});
 	}
 
+	/**
+	 * Add static torch lights throughout the dungeon
+	 */
+	addDungeonTorches(): void {
+		// Add torches to random rooms
+		const rooms = this.dungeon.dungeon.rooms;
+
+		// Add 1-2 torches to each room
+		rooms.forEach((room) => {
+			const numTorches = Math.random() > 0.5 ? 2 : 1;
+
+			for (let i = 0; i < numTorches; i++) {
+				// Place torch on a wall (not in center)
+				const side = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
+				let tileX, tileY;
+
+				switch (side) {
+					case 0: // Top wall
+						tileX = room.left + 2 + Math.floor(Math.random() * (room.width - 4));
+						tileY = room.top + 1;
+						break;
+					case 1: // Right wall
+						tileX = room.right - 1;
+						tileY = room.top + 2 + Math.floor(Math.random() * (room.height - 4));
+						break;
+					case 2: // Bottom wall
+						tileX = room.left + 2 + Math.floor(Math.random() * (room.width - 4));
+						tileY = room.bottom - 1;
+						break;
+					default: // Left wall
+						tileX = room.left + 1;
+						tileY = room.top + 2 + Math.floor(Math.random() * (room.height - 4));
+						break;
+				}
+
+				const worldX = tileX * this.dungeon.tileWidth + this.dungeon.tileWidth / 2;
+				const worldY = tileY * this.dungeon.tileHeight + this.dungeon.tileHeight / 2;
+
+				// Add a wall torch light
+				this.lighting.addStaticLight(worldX, worldY, 80, {
+					color: 0xff8844, // Warm orange
+					intensity: 0.7,
+					flicker: true,
+					flickerAmount: 4,
+				});
+			}
+		});
+
+		console.log('[DungeonScene] Added torches to dungeon rooms');
+	}
+
 	update(): void {
 		this.fog.updateFog();
+
+		// Update player light to follow player
+		if (this.player && this.lighting) {
+			this.lighting.setPlayerLight(this.player.container.x, this.player.container.y);
+		}
+
+		// Update lighting system
+		if (this.lighting) {
+			this.lighting.update();
+		}
 	}
 }
