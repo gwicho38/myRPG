@@ -24,6 +24,7 @@ import { OverworldScene } from './scenes/OverworldScene';
 import { GameOverScene } from './scenes/GameOverScene';
 import { logger } from './utils/Logger';
 import { debugHelper } from './utils/DebugHelper';
+import { crashReporter } from './utils/CrashReporter';
 
 // Create canvas with willReadFrequently attribute
 const canvas = document.getElementById('luminus-rpg') as HTMLCanvasElement;
@@ -151,6 +152,7 @@ try {
 	// Handle uncaught game errors
 	game.events.on('error', (error: Error) => {
 		console.error('Game error:', error);
+		crashReporter.reportCrash('gameError', error, game.scene.getScenes());
 	});
 } catch (error) {
 	console.error('Failed to initialize game:', error);

@@ -108,6 +108,12 @@ export class LuminusWarp {
 			// );
 			const zone = this.scene.add.zone(warp.x, warp.y, warp.width, warp.height);
 
+			const centerX = warp.x! + warp.width! / 2;
+			const centerY = warp.y! + warp.height! / 2;
+
+			// Check if this is a scene change warp (dungeon entrance)
+			const isSceneWarp = warp.properties?.find((p: any) => p.name === this.propertyChangeScene);
+
 			this.particlesConfig = {
 				angle: -90,
 				frequency: 300,
@@ -121,12 +127,13 @@ export class LuminusWarp {
 				// radial: true,
 				// rotation: 180, // Not a valid ParticleEmitterConfig property
 			};
-			this.scene.add.particles(
-				warp.x! + warp.width! / 2,
-				warp.y! + warp.height! / 2,
-				'particle_warp',
-				this.particlesConfig
-			);
+			this.scene.add.particles(centerX, centerY, 'particle_warp', this.particlesConfig);
+
+			// Add arrow indicators for dungeon entrances
+			if (isSceneWarp) {
+				this.createEntranceArrows(centerX, centerY);
+			}
+
 			this.scene.physics.add.existing(zone);
 			(zone.body as Phaser.Physics.Arcade.Body).immovable = true; // Prevents it from moving on collision.
 			zone.setOrigin(0, 0);
@@ -156,7 +163,10 @@ export class LuminusWarp {
 				this.scene.cameras.main.fadeIn(this.fadeInTime);
 			} else if (isScene) {
 				const scene = warpPointTyped.warp.properties.find((f: any) => f.name === this.propertyWarpName).value;
-				this.scene.scene.switch(scene);
+
+				// Pass the current scene key to the target scene for return navigation
+				this.scene.scene.start(scene, { previousScene: this.scene.scene.key });
+
 				if (this.scene.player) {
 					this.scene.player.luminusMovement = null;
 					this.scene.player.destroy();
@@ -164,8 +174,50 @@ export class LuminusWarp {
 				if (this.scene.stopSceneMusic) {
 					this.scene.stopSceneMusic();
 				}
-				// this.scene.scene.launch(scene);
 			}
+		});
+	}
+
+	/**
+	 * Create arrow indicators around entrance portals (pointing down for entry)
+	 */
+	createEntranceArrows(x: number, y: number): void {
+		const arrowPositions = [
+			{ x: x - 16, y: y - 16 },
+			{ x: x + 16, y: y - 16 },
+			{ x: x - 16, y: y + 16 },
+			{ x: x + 16, y: y + 16 },
+		];
+
+		arrowPositions.forEach((pos) => {
+			const arrow = this.scene.add
+				.text(pos.x, pos.y, '↓', {
+					fontSize: '20px',
+					color: '#ffaa00',
+					fontStyle: 'bold',
+				})
+				.setOrigin(0.5)
+				.setDepth(100);
+
+			// Animate arrows bobbing down
+			this.scene.tweens.add({
+				targets: arrow,
+				y: pos.y + 6,
+				duration: 800,
+				yoyo: true,
+				repeat: -1,
+				ease: 'Sine.easeInOut',
+			});
+
+			// Pulse alpha
+			this.scene.tweens.add({
+				targets: arrow,
+				alpha: 0.5,
+				duration: 1000,
+				yoyo: true,
+				repeat: -1,
+				ease: 'Sine.easeInOut',
+			});
 		});
 	}
 }

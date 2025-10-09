@@ -372,7 +372,7 @@ export class TerminalMap {
 						const tile = this.tiles[y][x];
 						const symbol = this.TILE_SYMBOLS[tile];
 						const color = this.TILE_COLORS[tile];
-						line += `{${color}-bg}{black-fg}${symbol}{/black-fg}{/${color}-bg}`;
+						line += `{${color}-bg}{white-fg}${symbol}{/white-fg}{/${color}-bg}`;
 					} else {
 						line += ' ';
 					}

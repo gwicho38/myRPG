@@ -1,68 +1,63 @@
-const webpack = require('webpack');
+const { merge } = require('webpack-merge');
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const base = require('./base');
 
-module.exports = {
-    mode: 'development',
-    devtool: 'eval-source-map',
-    entry: './src/index.ts',
-    output: {
-        path: path.resolve(__dirname, '../dist'),
-        filename: 'bundle.js',
-        clean: true,
-    },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-    },
-    module: {
-        rules: [
-            {
-                test: /\.[jt]sx?$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                    },
-                    {
-                        loader: 'ts-loader',
-                        options: {
-                            transpileOnly: true,
-                        },
-                    },
-                ],
-            },
-            {
-                test: /\.css$/i,
-                use: ['css-loader'],
-            },
-            {
-                test: [/\.vert$/, /\.frag$/],
-                use: 'raw-loader',
-            },
-            {
-                test: /\.(gif|png|jpe?g|svg|xml|mp3|mp4|ogg)$/i,
-                use: 'file-loader',
-            },
-        ],
-    },
-    devServer: {
-        port: 8080,
-        open: true,
-        hot: true,
-        static: {
-            directory: path.join(__dirname, '../public'),
-        },
-        historyApiFallback: true,
-        compress: true,
-    },
-    plugins: [
-        new webpack.DefinePlugin({
-            CANVAS_RENDERER: JSON.stringify(true),
-            WEBGL_RENDERER: JSON.stringify(true),
-        }),
-        new HtmlWebpackPlugin({
-            template: './index.html',
-            favicon: './favicon.png',
-        }),
-    ],
-};
+module.exports = merge(base, {
+	mode: 'development',
+	devtool: 'eval-source-map',
+	output: {
+		filename: '[name].js',
+		chunkFilename: '[name].chunk.js',
+		clean: false, // Don't clean in development
+	},
+	performance: {
+		hints: false, // Disable performance hints in development
+	},
+	optimization: {
+		minimize: false,
+		splitChunks: {
+			chunks: 'all',
+			cacheGroups: {
+				// Phaser core
+				phaser: {
+					test: /[\\/]node_modules[\\/]phaser[\\/]/,
+					name: 'phaser',
+					priority: 30,
+					chunks: 'all',
+					enforce: true,
+				},
+				// Rex plugins
+				rexPlugins: {
+					test: /[\\/]node_modules[\\/]phaser3-rex-plugins[\\/]/,
+					name: 'rex-plugins',
+					priority: 25,
+					chunks: 'all',
+				},
+				// Other vendor libraries
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					priority: 20,
+					chunks: 'all',
+				},
+			},
+		},
+		runtimeChunk: 'single',
+	},
+	devServer: {
+		static: {
+			directory: path.join(__dirname, '../dist'),
+		},
+		compress: true,
+		port: 8080,
+		hot: true,
+		open: false,
+		historyApiFallback: true,
+		client: {
+			overlay: {
+				errors: true,
+				warnings: false,
+			},
+		},
+	},
+});

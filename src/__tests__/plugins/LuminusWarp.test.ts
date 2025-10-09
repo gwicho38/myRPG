@@ -46,7 +46,9 @@ describe('LuminusWarp', () => {
 				main: mockCamera,
 			},
 			scene: {
+				key: 'TestScene',
 				switch: jest.fn(),
+				start: jest.fn(),
 			},
 		};
 
@@ -320,7 +322,7 @@ describe('LuminusWarp', () => {
 	});
 
 	describe('Warp Collision - Scene Change', () => {
-		it('should switch scene when scene property exists', () => {
+		it('should start scene when scene property exists with previousScene data', () => {
 			warp.createWarps();
 
 			const mockWarpPoint = {
@@ -334,7 +336,7 @@ describe('LuminusWarp', () => {
 
 			mockScene._colliderCallback(mockWarpPoint, mockPlayer);
 
-			expect(mockScene.scene.switch).toHaveBeenCalledWith('DungeonScene');
+			expect(mockScene.scene.start).toHaveBeenCalledWith('DungeonScene', { previousScene: 'TestScene' });
 		});
 
 		it('should destroy player on scene change', () => {

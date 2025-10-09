@@ -69,6 +69,9 @@ module.exports = [
 				process: 'readonly',
 				navigator: 'readonly',
 				performance: 'readonly',
+				fetch: 'readonly',
+				URL: 'readonly',
+				NodeJS: 'readonly',
 			},
 		},
 		plugins: {
