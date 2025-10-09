@@ -145,22 +145,39 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 
 		for (let target of enemiesInRange) {
 			if (target && target.gameObject && (target.gameObject as any).entityName === ENTITIES.Player) {
-				let overlaps = false;
-				this.scene.physics.overlap((target.gameObject as any).hitZone, this, (_t: any, _enemy: any) => {
-					overlaps = true;
-					this.stopMovement();
-					if (this.canAtack) this.luminusBattleManager.atack(this);
-				});
+				// Check line-of-sight if available
+				const sceneWithLOS = this.scene as any;
+				let hasLineOfSight = true; // Default to true for backward compatibility
 
-				inRange = true;
-				if (!overlaps && !this.isAtacking) {
-					// Try to use pathfinding if available
-					const sceneWithPathfinding = this.scene as any;
-					if (sceneWithPathfinding.pathfinding) {
-						this.followPathToTarget((target.gameObject as any).container);
-					} else {
-						// Fallback to direct movement (old behavior)
-						this.moveDirectlyToTarget((target.gameObject as any).container);
+				if (sceneWithLOS.lineOfSight) {
+					// Check if player is visible (not behind walls)
+					hasLineOfSight = sceneWithLOS.lineOfSight.isVisible(
+						this.container.x,
+						this.container.y,
+						(target.gameObject as any).container.x,
+						(target.gameObject as any).container.y
+					);
+				}
+
+				// Only pursue if we can see the player
+				if (hasLineOfSight) {
+					let overlaps = false;
+					this.scene.physics.overlap((target.gameObject as any).hitZone, this, (_t: any, _enemy: any) => {
+						overlaps = true;
+						this.stopMovement();
+						if (this.canAtack) this.luminusBattleManager.atack(this);
+					});
+
+					inRange = true;
+					if (!overlaps && !this.isAtacking) {
+						// Try to use pathfinding if available
+						const sceneWithPathfinding = this.scene as any;
+						if (sceneWithPathfinding.pathfinding) {
+							this.followPathToTarget((target.gameObject as any).container);
+						} else {
+							// Fallback to direct movement (old behavior)
+							this.moveDirectlyToTarget((target.gameObject as any).container);
+						}
 					}
 				}
 			}
