@@ -1,5 +1,6 @@
 import { LuminusEntityTextDisplay } from '../LuminusEntityTextDisplay';
 import { HUDScene } from '../../scenes/HUDScene';
+import { ParticlePool } from '../effects/ParticlePool';
 
 interface Entity {
 	attributes: {
@@ -31,7 +32,17 @@ interface Entity {
 
 export class ExpManager {
 	static displayText: LuminusEntityTextDisplay;
-	static particles_logo: Phaser.GameObjects.Particles.ParticleEmitter;
+	private static particlePool: Map<Phaser.Scene, ParticlePool> = new Map();
+
+	/**
+	 * Get or create particle pool for a scene
+	 */
+	private static getParticlePool(scene: Phaser.Scene): ParticlePool {
+		if (!this.particlePool.has(scene)) {
+			this.particlePool.set(scene, new ParticlePool(scene));
+		}
+		return this.particlePool.get(scene)!;
+	}
 
 	/**
 	 * Adds exp to the player entity
@@ -103,43 +114,20 @@ export class ExpManager {
 			},
 		};
 
-		this.particles_logo = entity.scene.add.particles(entity.container.x, entity.container.y, 'flares', {
+		// Use particle pool for better performance
+		const pool = this.getParticlePool(entity.scene);
+
+		const particleConfig: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig = {
 			lifespan: 300,
 			gravityY: 10,
 			speed: 20,
-			quantity: 1,
 			scale: { start: 0, end: 0.15, ease: 'Quad.easeOut' },
 			alpha: { start: 1, end: 0, ease: 'Quad.easeIn' },
 			blendMode: 'ADD',
 			emitZone: { type: 'edge', source: logoSource, quantity: 1 } as any,
-		});
+		};
 
-		// let particles = entity.scene.add.particles('flares');
-
-		// particles.createEmitter({
-		//     frame: ['white', 'blue'],
-		//     follow: entity.container,
-		//     followOffset: {
-		//         y: -entity.hitZone.body.height / 1.3,
-		//     },
-		//     lifespan: 3000,
-		//     speed: 20,
-		//     angle: { min: 0, max: 360 },
-		//     gravityY: 10,
-		//     alpha: { start: 1, end: 0 },
-		//     bounds: {
-		//         x: entity.container.x - 50,
-		//         y: entity.container.y - entity.hitZone.body.height - 50,
-		//         w: 100,
-		//         h: 100,
-		//     },
-		//     scale: { start: 0.01, end: 0 },
-		//     quantity: 2,
-		//     blendMode: 'ADD',
-		// });
-
-		setTimeout((_t) => {
-			this.particles_logo.destroy();
-		}, 400);
+		// Burst 50 particles at once for level-up effect
+		pool.burst('flares', entity.container.x, entity.container.y, 50, particleConfig);
 	}
 }
