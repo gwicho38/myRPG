@@ -3,6 +3,7 @@ import { Player } from '../entities/Player';
 import { LuminusDungeonGenerator } from '../plugins/LuminusDungeonGenerator';
 import { LuminusFogWarManager } from '../plugins/LuminusFogWarManager';
 import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
+import { LuminusPathfinding } from '../plugins/LuminusPathfinding';
 import { Enemy } from '../entities/Enemy';
 import { PlayerConfig } from '../consts/player/Player';
 
@@ -14,6 +15,7 @@ export class DungeonScene extends Phaser.Scene {
 	ambientSound!: Phaser.Sound.BaseSound;
 	fog!: LuminusFogWarManager;
 	saveManager!: LuminusSaveManager;
+	pathfinding!: LuminusPathfinding;
 	exitPortal!: Phaser.GameObjects.Zone;
 	previousScene: string = 'MainScene'; // Track which scene to return to
 
@@ -39,6 +41,13 @@ export class DungeonScene extends Phaser.Scene {
 	create(): void {
 		this.dungeon = new LuminusDungeonGenerator(this);
 		this.dungeon.create();
+
+		// Initialize pathfinding system
+		this.pathfinding = new LuminusPathfinding(this, this.dungeon.map, this.dungeon.groundLayer, {
+			walkableTiles: [0], // Tile index 0 is walkable (floor)
+			allowDiagonal: true,
+			dontCrossCorners: true,
+		});
 
 		this.player = new Player(
 			this,
