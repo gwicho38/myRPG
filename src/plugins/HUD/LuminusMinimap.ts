@@ -30,6 +30,9 @@ export class LuminusMinimap {
 	// Scale factor for minimap (how much of the map to show)
 	mapScale: number = 0.1; // 10% of full map size
 
+	// Debug logging (only log once initially)
+	private hasLoggedOnce: boolean = false;
+
 	/**
 	 * Creates a new Minimap
 	 * @param scene The parent scene
@@ -40,6 +43,15 @@ export class LuminusMinimap {
 		this.scene = scene;
 		this.player = player;
 		this.map = map;
+
+		console.log('[Minimap] Constructor called with:', {
+			hasScene: !!scene,
+			hasPlayer: !!player,
+			hasMap: !!map,
+			mapWidth: map?.width,
+			mapHeight: map?.height,
+			layerCount: map?.layers?.length,
+		});
 
 		// Position in bottom-left corner
 		this.x = this.padding;
@@ -86,7 +98,13 @@ export class LuminusMinimap {
 	 * Renders the map onto the minimap texture
 	 */
 	renderMap(): void {
-		if (!this.mapTexture || !this.map) return;
+		if (!this.mapTexture || !this.map) {
+			console.log('[Minimap] Missing mapTexture or map:', {
+				hasTexture: !!this.mapTexture,
+				hasMap: !!this.map,
+			});
+			return;
+		}
 
 		this.mapTexture.clear();
 
@@ -102,18 +120,44 @@ export class LuminusMinimap {
 		const endX = Math.min(this.map.width, Math.ceil((playerX + viewRadius) / this.map.tileWidth));
 		const endY = Math.min(this.map.height, Math.ceil((playerY + viewRadius) / this.map.tileHeight));
 
+		// Only log once for debugging
+		if (!this.hasLoggedOnce) {
+			console.log('[Minimap] Render bounds:', {
+				playerPos: { x: playerX, y: playerY },
+				bounds: { startX, startY, endX, endY },
+				mapSize: { width: this.map.width, height: this.map.height },
+				tileSize: { width: this.map.tileWidth, height: this.map.tileHeight },
+				layerCount: this.map.layers.length,
+			});
+		}
+
 		// Draw tiles as colored pixels
 		const tileScale = (this.width / (endX - startX)) * 0.9; // Slight margin
+		let tilesRendered = 0;
+
+		// Create a temporary graphics object for drawing
+		const tempGraphics = this.scene.add.graphics();
 
 		// Iterate through all layers to render tiles
-		this.map.layers.forEach((layerData) => {
+		this.map.layers.forEach((layerData, layerIndex) => {
 			const layer = layerData.tilemapLayer;
+
+			if (!this.hasLoggedOnce) {
+				console.log(`[Minimap] Layer ${layerIndex}:`, {
+					name: layerData.name,
+					hasLayer: !!layer,
+					visible: layer?.visible,
+				});
+			}
+
 			if (!layer) return;
 
 			for (let y = startY; y < endY; y++) {
 				for (let x = startX; x < endX; x++) {
 					const tile = layer.getTileAt(x, y);
 					if (tile && tile.index !== -1) {
+						tilesRendered++;
+
 						// Determine tile color based on collision or layer properties
 						let color = 0x228b22; // Floor color (green)
 
@@ -142,12 +186,24 @@ export class LuminusMinimap {
 						const pixelX = (x - startX) * tileScale;
 						const pixelY = (y - startY) * tileScale;
 
-						// Draw small rectangle for tile
-						this.mapTexture.fill(color, 1, pixelX, pixelY, tileScale, tileScale);
+						// Draw rectangle on temp graphics
+						tempGraphics.fillStyle(color, 1);
+						tempGraphics.fillRect(pixelX, pixelY, Math.max(1, tileScale), Math.max(1, tileScale));
 					}
 				}
 			}
 		});
+
+		if (!this.hasLoggedOnce) {
+			console.log(`[Minimap] Rendered ${tilesRendered} tiles with tileScale ${tileScale}`);
+			this.hasLoggedOnce = true;
+		}
+
+		// Draw the graphics to the render texture
+		this.mapTexture.draw(tempGraphics);
+
+		// Clean up temporary graphics
+		tempGraphics.destroy();
 
 		// Update player marker position (center of minimap)
 		this.playerMarker.setPosition(this.width / 2, this.height / 2);
