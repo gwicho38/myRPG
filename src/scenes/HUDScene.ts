@@ -330,7 +330,7 @@ export class HUDScene extends Phaser.Scene {
 	createMessageLog(): void {
 		const logWidth = 600;
 		const logHeight = 140;
-		const logX = this.cameras.main.width / 2 - logWidth / 2;
+		const logX = this.cameras.main.width - logWidth - 10;
 		const logY = this.cameras.main.height - logHeight - 10;
 
 		this.messageLog = new LuminusMessageLog(this, logX, logY, logWidth, logHeight);
@@ -435,7 +435,7 @@ export class HUDScene extends Phaser.Scene {
 		if (this.messageLog) {
 			const logWidth = 600;
 			const logHeight = 140;
-			const logX = size.width / 2 - logWidth / 2;
+			const logX = size.width - logWidth - 10;
 			const logY = size.height - logHeight - 10;
 			this.messageLog.setPosition(logX, logY);
 		}

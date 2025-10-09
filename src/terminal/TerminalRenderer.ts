@@ -10,6 +10,7 @@ export class TerminalRenderer {
 	public statusBox: blessed.Widgets.BoxElement;
 	public logBox: blessed.Widgets.Log;
 	public debugBox?: blessed.Widgets.BoxElement;
+	private backgroundBox: blessed.Widgets.BoxElement;
 
 	constructor(debug: boolean = false) {
 		// Create the main screen
@@ -18,6 +19,18 @@ export class TerminalRenderer {
 			title: 'Luminus RPG - Terminal Edition',
 			fullUnicode: true,
 			dockBorders: true,
+		});
+
+		// Create full-screen background
+		this.backgroundBox = blessed.box({
+			parent: this.screen,
+			top: 0,
+			left: 0,
+			width: '100%',
+			height: '100%',
+			style: {
+				bg: 'green',
+			},
 		});
 
 		// Main game viewport
@@ -31,6 +44,7 @@ export class TerminalRenderer {
 				type: 'line',
 			},
 			style: {
+				bg: 'black',
 				border: {
 					fg: 'cyan',
 				},
@@ -50,6 +64,7 @@ export class TerminalRenderer {
 				type: 'line',
 			},
 			style: {
+				bg: 'black',
 				border: {
 					fg: 'green',
 				},
@@ -70,6 +85,7 @@ export class TerminalRenderer {
 				type: 'line',
 			},
 			style: {
+				bg: 'black',
 				border: {
 					fg: 'yellow',
 				},
@@ -93,6 +109,7 @@ export class TerminalRenderer {
 					type: 'line',
 				},
 				style: {
+					bg: 'black',
 					border: {
 						fg: 'red',
 					},

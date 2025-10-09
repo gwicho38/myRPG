@@ -165,7 +165,7 @@ export class LuminusDialogBox {
 		/**
 		 * Color of the font.
 		 */
-		this.fontColor = new Phaser.Display.Color(0, 0, 0, 255);
+		this.fontColor = new Phaser.Display.Color(255, 255, 255, 255);
 
 		/**
 		 * Letter spacing.
@@ -212,9 +212,9 @@ export class LuminusDialogBox {
 
 		/**
 		 * Delay between each character in the typewriter effect (in milliseconds)
-		 * Reduced from 50ms to 10ms for faster dialog (80% faster)
+		 * Set to 50ms for comfortable reading speed
 		 */
-		this.typewriterDelay = 10;
+		this.typewriterDelay = 50;
 
 		/**
 		 * Flag to track if we just fast-forwarded text
@@ -556,15 +556,24 @@ export class LuminusDialogBox {
 			}
 		}
 
-		// Use JustPressed for dialog advancement, OR allow held button if we just fast-forwarded
-		const shouldAdvance = this.checkButtonsJustPressed() || (this.justFastForwarded && this.checkButtonsPressed());
+		// Clear fast-forward flag if button is released
+		if (this.justFastForwarded && !this.checkButtonsPressed()) {
+			this.justFastForwarded = false;
+			console.log('[LuminusDialogBox] Button released after fast-forward');
+			return; // Don't advance yet, wait for next press
+		}
+
+		// If we just fast-forwarded and button is still held, don't advance
+		if (this.justFastForwarded) {
+			return;
+		}
+
+		// Only advance on new button press (JustPressed)
+		const shouldAdvance = this.checkButtonsJustPressed();
 
 		if (!shouldAdvance) {
 			return; // No new button press, exit early
 		}
-
-		// Clear the fast-forward flag since we're now advancing
-		this.justFastForwarded = false;
 
 		if ((this.isOverlapingChat || this.showRandomChat) && !this.dialog.visible) {
 			// First time, show the Dialog.
