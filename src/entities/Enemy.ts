@@ -45,6 +45,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 	public healthBar: LuminusHealthBar;
 	public container: Phaser.GameObjects.Container;
 
+	// Pathfinding properties
+	public currentPath: Phaser.Math.Vector2[] | null = null;
+	public currentWaypointIndex: number = 0;
+	public pathUpdateInterval: number = 1000; // Update path every 1 second
+	public lastPathUpdate: number = 0;
+	public waypointReachedDistance: number = 10; // Distance to consider waypoint reached
+
 	// Animation properties from AnimationNames
 	public idlePrefixAnimation: string = 'idle-';
 	public walkPrefixAnimation: string = 'walk-';
@@ -147,23 +154,89 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 
 				inRange = true;
 				if (!overlaps && !this.isAtacking) {
-					this.scene.physics.moveToObject(this.container, (target.gameObject as any).container, this.speed);
-
-					const body = this.container.body as Phaser.Physics.Arcade.Body;
-					const angle = Math.atan2(body.velocity.y, body.velocity.x);
-
-					this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
-					(this.luminusAnimationManager as any).animateWithAngle(
-						`${this.texture.key}-${this.walkPrefixAnimation}`,
-						angle
-					);
-					this.changeBodySize(this.width, this.height);
+					// Try to use pathfinding if available
+					const sceneWithPathfinding = this.scene as any;
+					if (sceneWithPathfinding.pathfinding) {
+						this.followPathToTarget((target.gameObject as any).container);
+					} else {
+						// Fallback to direct movement (old behavior)
+						this.moveDirectlyToTarget((target.gameObject as any).container);
+					}
 				}
 			}
 		}
 
 		if (!inRange) {
 			this.stopMovement();
+			this.currentPath = null;
+		}
+	}
+
+	/**
+	 * Move directly to target (original behavior, fallback)
+	 */
+	private moveDirectlyToTarget(target: Phaser.GameObjects.Container): void {
+		this.scene.physics.moveToObject(this.container, target, this.speed);
+
+		const body = this.container.body as Phaser.Physics.Arcade.Body;
+		const angle = Math.atan2(body.velocity.y, body.velocity.x);
+
+		this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
+		(this.luminusAnimationManager as any).animateWithAngle(
+			`${this.texture.key}-${this.walkPrefixAnimation}`,
+			angle
+		);
+		this.changeBodySize(this.width, this.height);
+	}
+
+	/**
+	 * Follow a path to the target using pathfinding
+	 */
+	private followPathToTarget(target: Phaser.GameObjects.Container): void {
+		const now = this.scene.time.now;
+		const sceneWithPathfinding = this.scene as any;
+
+		// Update path periodically or if we don't have one
+		if (!this.currentPath || now - this.lastPathUpdate > this.pathUpdateInterval) {
+			this.lastPathUpdate = now;
+
+			sceneWithPathfinding.pathfinding.findPath(
+				this.container.x,
+				this.container.y,
+				target.x,
+				target.y,
+				(path: Phaser.Math.Vector2[] | null) => {
+					if (path && path.length > 1) {
+						this.currentPath = path;
+						this.currentWaypointIndex = 1; // Start at 1 (0 is current position)
+					} else {
+						// No path found, try direct movement
+						this.moveDirectlyToTarget(target);
+					}
+				}
+			);
+		}
+
+		// Follow the current path
+		if (this.currentPath && this.currentWaypointIndex < this.currentPath.length) {
+			const waypoint = this.currentPath[this.currentWaypointIndex];
+			const distance = Phaser.Math.Distance.Between(this.container.x, this.container.y, waypoint.x, waypoint.y);
+
+			if (distance < this.waypointReachedDistance) {
+				// Reached waypoint, move to next one
+				this.currentWaypointIndex++;
+			} else {
+				// Move towards current waypoint
+				const angle = Phaser.Math.Angle.Between(this.container.x, this.container.y, waypoint.x, waypoint.y);
+
+				this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
+
+				(this.luminusAnimationManager as any).animateWithAngle(
+					`${this.texture.key}-${this.walkPrefixAnimation}`,
+					angle
+				);
+				this.changeBodySize(this.width, this.height);
+			}
 		}
 	}
 
