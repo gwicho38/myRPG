@@ -105,25 +105,49 @@ export class LuminusMinimap {
 		// Draw tiles as colored pixels
 		const tileScale = (this.width / (endX - startX)) * 0.9; // Slight margin
 
-		for (let y = startY; y < endY; y++) {
-			for (let x = startX; x < endX; x++) {
-				const tile = this.map.getTileAt(x, y);
-				if (tile && tile.index !== -1) {
-					// Determine tile color based on collision
-					let color = 0x228b22; // Floor color (green)
-					if (tile.collides) {
-						color = 0x8b4513; // Wall color (brown)
+		// Iterate through all layers to render tiles
+		this.map.layers.forEach((layerData) => {
+			const layer = layerData.tilemapLayer;
+			if (!layer) return;
+
+			for (let y = startY; y < endY; y++) {
+				for (let x = startX; x < endX; x++) {
+					const tile = layer.getTileAt(x, y);
+					if (tile && tile.index !== -1) {
+						// Determine tile color based on collision or layer properties
+						let color = 0x228b22; // Floor color (green)
+
+						// Check if tile has collision
+						if (
+							tile.collides ||
+							tile.collideUp ||
+							tile.collideDown ||
+							tile.collideLeft ||
+							tile.collideRight
+						) {
+							color = 0x8b4513; // Wall color (brown)
+						}
+
+						// Check layer name for additional context
+						if (layerData.name && layerData.name.toLowerCase().includes('collision')) {
+							color = 0x8b4513; // Wall/collision layer (brown)
+						} else if (layerData.name && layerData.name.toLowerCase().includes('ground')) {
+							// Keep floor color for ground layer if not colliding
+							if (!tile.collides) {
+								color = 0x228b22;
+							}
+						}
+
+						// Calculate position on minimap
+						const pixelX = (x - startX) * tileScale;
+						const pixelY = (y - startY) * tileScale;
+
+						// Draw small rectangle for tile
+						this.mapTexture.fill(color, 1, pixelX, pixelY, tileScale, tileScale);
 					}
-
-					// Calculate position on minimap
-					const pixelX = (x - startX) * tileScale;
-					const pixelY = (y - startY) * tileScale;
-
-					// Draw small rectangle for tile
-					this.mapTexture.fill(color, 1, pixelX, pixelY, tileScale, tileScale);
 				}
 			}
-		}
+		});
 
 		// Update player marker position (center of minimap)
 		this.playerMarker.setPosition(this.width / 2, this.height / 2);
