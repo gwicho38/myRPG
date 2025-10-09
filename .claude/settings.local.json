@@ -11,7 +11,8 @@
 			"Bash(npm run build:*)",
 			"Bash(git add:*)",
 			"Bash(git commit -m \"$(cat <<''EOF''\nAdd enhanced particle effects for spells and combat\n\n- Created comprehensive ParticleConfigs library with 30+ effect presets\n- Implemented SpellEffects plugin with fire, ice, lightning, holy, and dark magic\n- Implemented CombatEffects plugin with hit impacts, damage numbers, and death effects\n- Support for all damage types with color-coded visual feedback\n- Spell effects include: fireball, frost nova, lightning bolt, heal, and more\n- Combat effects include: critical hits, blocks, dodges, and death explosions\n- Configurable particle emitters with custom colors, lifespans, and behaviors\n- Auto-cleanup timers for all particle emitters\n- Blend modes for realistic additive lighting effects\n\nSpell Types:\n- Fire: Fireball, flame wave, fire trail\n- Ice: Ice shard, frost nova, frozen ground\n- Lightning: Lightning bolt, chain lightning, static field\n- Holy: Heal, divine shield, resurrection\n- Poison/Dark: Poison cloud, shadow bolt, curse\n\nCombat Effects:\n- Damage-type-specific hit impacts (physical, fire, ice, lightning)\n- Critical hit effects with screen shake\n- Block/parry deflection sparks\n- Floating damage numbers color-coded by type\n- Death explosions and blood splatters (optional)\n- Miss and dodge text feedback\n\nEnvironmental Effects:\n- Rain, snow, lava bubbles, water splashes\n- Torch flames, dust clouds, fog/mist\n- Weather system integration ready\n\nCloses #42\nEOF\n)\")",
-			"Bash(git commit:*)"
+			"Bash(git commit:*)",
+			"Bash(npm test:*)"
 		],
 		"deny": [],
 		"ask": []

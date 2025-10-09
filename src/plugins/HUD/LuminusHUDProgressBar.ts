@@ -102,7 +102,8 @@ export class LuminusHUDProgressBar {
 		// Sets the progressbar to the player, on creation.
 		this.player.luminusHUDProgressBar = this;
 
-		this.player.scene.events.on('update', this.updateHud, this);
+		// Use the scene passed to constructor, not player.scene
+		this.scene.events.on('update', this.updateHud, this);
 	}
 
 	/**
