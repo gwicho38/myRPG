@@ -472,6 +472,129 @@ describe('LuminusWarp', () => {
 		});
 	});
 
+	describe('createEntranceArrows', () => {
+		beforeEach(() => {
+			mockScene.add.text = jest.fn().mockReturnValue({
+				setOrigin: jest.fn().mockReturnThis(),
+				setDepth: jest.fn().mockReturnThis(),
+			});
+			mockScene.tweens = {
+				add: jest.fn(),
+			};
+		});
+
+		it('should create 4 arrows at specified positions', () => {
+			warp.createEntranceArrows(100, 100);
+
+			expect(mockScene.add.text).toHaveBeenCalledTimes(4);
+			expect(mockScene.add.text).toHaveBeenCalledWith(84, 84, '↓', expect.any(Object));
+			expect(mockScene.add.text).toHaveBeenCalledWith(116, 84, '↓', expect.any(Object));
+			expect(mockScene.add.text).toHaveBeenCalledWith(84, 116, '↓', expect.any(Object));
+			expect(mockScene.add.text).toHaveBeenCalledWith(116, 116, '↓', expect.any(Object));
+		});
+
+		it('should style arrows correctly', () => {
+			warp.createEntranceArrows(100, 100);
+
+			const textStyle = (mockScene.add.text as jest.Mock).mock.calls[0][3];
+			expect(textStyle).toMatchObject({
+				fontSize: '20px',
+				color: '#ffaa00',
+				fontStyle: 'bold',
+			});
+		});
+
+		it('should set arrow depth to 100', () => {
+			const mockArrow = {
+				setOrigin: jest.fn().mockReturnThis(),
+				setDepth: jest.fn().mockReturnThis(),
+			};
+			mockScene.add.text.mockReturnValue(mockArrow);
+
+			warp.createEntranceArrows(100, 100);
+
+			expect(mockArrow.setDepth).toHaveBeenCalledWith(100);
+		});
+
+		it('should create bobbing animation for each arrow', () => {
+			warp.createEntranceArrows(100, 100);
+
+			// Should create 2 tweens per arrow (4 arrows * 2 tweens = 8)
+			expect(mockScene.tweens.add).toHaveBeenCalledTimes(8);
+
+			// Check first bobbing tween
+			const bobbingTween = (mockScene.tweens.add as jest.Mock).mock.calls[0][0];
+			expect(bobbingTween).toMatchObject({
+				y: 90, // 84 + 6
+				duration: 800,
+				yoyo: true,
+				repeat: -1,
+				ease: 'Sine.easeInOut',
+			});
+		});
+
+		it('should create alpha pulse animation for each arrow', () => {
+			warp.createEntranceArrows(100, 100);
+
+			// Check alpha tween (every second tween)
+			const alphaTween = (mockScene.tweens.add as jest.Mock).mock.calls[1][0];
+			expect(alphaTween).toMatchObject({
+				alpha: 0.5,
+				duration: 1000,
+				yoyo: true,
+				repeat: -1,
+				ease: 'Sine.easeInOut',
+			});
+		});
+
+		it('should create entrance arrows for scene warps', () => {
+			mockMap.getObjectLayer.mockReturnValue({
+				objects: [
+					{
+						id: 1,
+						x: 100,
+						y: 200,
+						width: 32,
+						height: 32,
+						properties: [
+							{ name: 'goto', value: 'DungeonScene' },
+							{ name: 'scene', value: true },
+						],
+					},
+				],
+			});
+
+			warp.createWarps();
+
+			// Should create 4 arrows around the center point (116, 216)
+			expect(mockScene.add.text).toHaveBeenCalledTimes(4);
+		});
+
+		it('should not create arrows for regular warps', () => {
+			mockMap.getObjectLayer.mockReturnValue({
+				objects: [
+					{
+						id: 1,
+						x: 100,
+						y: 200,
+						width: 32,
+						height: 32,
+						properties: [{ name: 'goto', value: 2 }],
+					},
+					{
+						id: 2,
+						x: 300,
+						y: 400,
+					},
+				],
+			});
+
+			warp.createWarps();
+
+			expect(mockScene.add.text).not.toHaveBeenCalled();
+		});
+	});
+
 	describe('Edge Cases', () => {
 		it('should handle empty warp object layer', () => {
 			mockMap.getObjectLayer.mockReturnValue({ objects: [] });
