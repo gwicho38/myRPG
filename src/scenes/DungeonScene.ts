@@ -153,16 +153,33 @@ export class DungeonScene extends Phaser.Scene {
 		// Place stairs tile (tile index 81 from DungeonTiles STAIRS)
 		this.dungeon.stuffLayer!.putTileAt(81, exitTileX, exitTileY);
 
+		// Add glowing circle background for better visibility
+		const exitGlow = this.add.graphics();
+		exitGlow.fillStyle(0x00ff88, 0.2);
+		exitGlow.fillCircle(exitX, exitY, 40);
+		exitGlow.setDepth(5);
+
+		// Pulse the glow
+		this.tweens.add({
+			targets: exitGlow,
+			alpha: 0.1,
+			scale: 1.1,
+			duration: 1200,
+			yoyo: true,
+			repeat: -1,
+			ease: 'Sine.easeInOut',
+		});
+
 		// Add animated particles around the stairs (green upward particles)
 		const particlesConfig: Phaser.Types.GameObjects.Particles.ParticleEmitterConfig = {
 			angle: { min: -100, max: -80 }, // Upward angle
-			frequency: 200,
+			frequency: 150, // More frequent particles
 			speed: { min: 30, max: 60 },
 			x: { min: -12, max: 12 },
 			y: { min: -12, max: 12 },
 			lifespan: { min: 1000, max: 2000 },
-			scale: { start: 1.2, end: 0.3 },
-			alpha: { start: 0.9, end: 0 },
+			scale: { start: 1.5, end: 0.3 }, // Larger starting scale
+			alpha: { start: 1.0, end: 0 },
 			tint: 0x00ff88, // Bright green-cyan for exit
 		};
 
@@ -171,8 +188,15 @@ export class DungeonScene extends Phaser.Scene {
 		// Add arrow indicators pointing up around the stairs
 		this.createExitArrows(exitX, exitY);
 
+		// Add audio cue for portal (humming sound)
+		const portalSound = this.sound.add('dungeon_ambient', {
+			volume: 0.3,
+			loop: true,
+		});
+		portalSound.play();
+
 		// Create a larger interactive zone for easier access
-		this.exitPortal = this.add.zone(exitX, exitY, 64, 64);
+		this.exitPortal = this.add.zone(exitX, exitY, 80, 80); // Increased from 64 to 80
 		this.physics.add.existing(this.exitPortal);
 		(this.exitPortal.body as Phaser.Physics.Arcade.Body).immovable = true;
 
@@ -183,24 +207,24 @@ export class DungeonScene extends Phaser.Scene {
 	}
 
 	createExitArrows(x: number, y: number): void {
-		// Add "EXIT" text label above the stairs
+		// Add "EXIT" text label above the stairs (larger and brighter)
 		const exitLabel = this.add
-			.text(x, y - 35, 'EXIT', {
-				fontSize: '16px',
-				color: '#00ff88',
+			.text(x, y - 45, 'EXIT', {
+				fontSize: '24px', // Increased from 16px
+				color: '#00ffaa', // Brighter green
 				fontStyle: 'bold',
 				stroke: '#000000',
-				strokeThickness: 3,
+				strokeThickness: 4,
 			})
 			.setOrigin(0.5)
 			.setDepth(100);
 
-		// Pulse the label
+		// Pulse the label more dramatically
 		this.tweens.add({
 			targets: exitLabel,
-			alpha: 0.5,
-			scale: 1.1,
-			duration: 800,
+			alpha: 0.6,
+			scale: 1.2,
+			duration: 700,
 			yoyo: true,
 			repeat: -1,
 			ease: 'Sine.easeInOut',
@@ -208,42 +232,44 @@ export class DungeonScene extends Phaser.Scene {
 
 		// Create large arrow indicators using text (↑) positioned around the exit
 		const arrowPositions = [
-			{ x: x - 30, y: y - 30 },
-			{ x: x + 30, y: y - 30 },
-			{ x: x - 30, y: y + 30 },
-			{ x: x + 30, y: y + 30 },
+			{ x: x - 40, y: y - 40 }, // Increased spacing
+			{ x: x + 40, y: y - 40 },
+			{ x: x - 40, y: y + 40 },
+			{ x: x + 40, y: y + 40 },
 		];
 
-		arrowPositions.forEach((pos) => {
+		arrowPositions.forEach((pos, index) => {
 			const arrow = this.add
 				.text(pos.x, pos.y, '↑', {
-					fontSize: '32px',
-					color: '#00ff88',
+					fontSize: '40px', // Increased from 32px
+					color: '#00ffaa', // Brighter green
 					fontStyle: 'bold',
 					stroke: '#000000',
-					strokeThickness: 2,
+					strokeThickness: 3,
 				})
 				.setOrigin(0.5)
 				.setDepth(100);
 
-			// Animate arrows bobbing up and down
+			// Animate arrows bobbing up and down with staggered timing
 			this.tweens.add({
 				targets: arrow,
-				y: pos.y - 10,
+				y: pos.y - 15,
 				duration: 800,
 				yoyo: true,
 				repeat: -1,
 				ease: 'Sine.easeInOut',
+				delay: index * 200, // Stagger animations
 			});
 
-			// Pulse alpha
+			// Pulse alpha with staggered timing
 			this.tweens.add({
 				targets: arrow,
-				alpha: 0.4,
+				alpha: 0.3,
 				duration: 1000,
 				yoyo: true,
 				repeat: -1,
 				ease: 'Sine.easeInOut',
+				delay: index * 200,
 			});
 		});
 	}
