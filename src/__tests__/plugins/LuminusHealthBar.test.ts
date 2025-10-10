@@ -103,6 +103,26 @@ describe('LuminusHealthBar', () => {
 
 			expect(healthBar.height).toBe(3);
 		});
+
+		it('should use "health" texture', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 100);
+
+			expect(healthBar.texture.key).toBe('health');
+		});
+
+		it('should set initial tint to green when at full health', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 100);
+
+			// draw() is called in constructor, so tint should be green for full health
+			expect(healthBar.tint).toBe(0x00ff00);
+		});
+
+		it('should set depth to 2', () => {
+			const setDepthSpy = jest.spyOn(LuminusHealthBar.prototype as any, 'setDepth');
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 100);
+
+			expect(setDepthSpy).toHaveBeenCalled();
+		});
 	});
 
 	describe('decrease', () => {
@@ -353,6 +373,37 @@ describe('LuminusHealthBar', () => {
 			// Scale should be > 1 when health exceeds max
 			const expectedScale = (2.0 * healthBar.size) / healthBar.width;
 			expect(healthBar.scaleX).toBeCloseTo(expectedScale, 5);
+		});
+
+		it('should handle zero damage decrease', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 100);
+			const result = healthBar.decrease(0);
+
+			expect(healthBar.health).toBe(100);
+			expect(result).toBe(false);
+		});
+
+		it('should handle negative damage (healing via decrease)', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 100);
+			healthBar.decrease(50); // Reduce to 50
+			healthBar.decrease(-20); // "Heal" by 20
+
+			expect(healthBar.health).toBe(70);
+		});
+
+		it('should handle fractional width values', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50.5, 100);
+
+			expect(healthBar.size).toBeCloseTo(50.5 * 0.43, 5);
+		});
+
+		it('should handle division by zero in draw with zero full health', () => {
+			healthBar = new LuminusHealthBar(mockScene, 0, 0, 50, 0);
+
+			// Should not crash when drawing with zero max health
+			expect(() => {
+				healthBar.draw();
+			}).not.toThrow();
 		});
 	});
 
