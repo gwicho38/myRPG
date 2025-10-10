@@ -34,8 +34,8 @@ export class TutorialScene extends Phaser.Scene {
 		this.cameras.main.startFollow(this.player.container);
 		this.cameras.main.setZoom(2.5);
 
-		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
-		this.cameras.main.setBounds(0, 0, map.map!.widthInPixels, map.map!.heightInPixels);
+		// Note: Do not set camera bounds for infinite maps (tutorial uses infinite: true)
+		// Infinite maps have negative coordinate chunks and setting bounds would break movement
 
 		// Created Particles
 		this.particles = new LuminusEnvironmentParticles(this, map.map);
