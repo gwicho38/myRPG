@@ -10,7 +10,7 @@ module.exports = {
 	transformIgnorePatterns: ['node_modules/(?!(phaser3-juice-plugin|phaser3-nineslice|phaser3-rex-plugins)/)'],
 	moduleNameMapper: {
 		'\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/styleMock.ts',
-		'\\.(gif|ttf|eot|svg|png|jpg|jpeg|mp4)$': '<rootDir>/src/__mocks__/fileMock.ts',
+		'\\.(gif|ttf|eot|svg|png|jpg|jpeg|mp4|mp3|wav|ogg)$': '<rootDir>/src/__mocks__/fileMock.ts',
 		'^phaser$': '<rootDir>/src/__mocks__/phaserMock.ts',
 		'^phaser3-juice-plugin$': '<rootDir>/src/__mocks__/phaserJuiceMock.ts',
 		'^phaser3-nineslice$': '<rootDir>/src/__mocks__/ninesliceMock.ts',
