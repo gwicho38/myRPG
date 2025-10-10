@@ -66,12 +66,9 @@ export class DungeonScene extends Phaser.Scene {
 
 		this.cameras.main.startFollow(this.player.container);
 		this.cameras.main.setZoom(2.5);
-		// camera.setBounds(
-		//     0,
-		//     0,
-		//     this.dungeon.map.widthInPixels,
-		//     this.dungeon.map.heightInPixels
-		// );
+
+		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
+		this.cameras.main.setBounds(0, 0, this.dungeon.map.widthInPixels, this.dungeon.map.heightInPixels);
 
 		this.physics.add.collider(this.player.container, this.dungeon.groundLayer);
 		// if (!this.scene.isActive('JoystickScene')) {

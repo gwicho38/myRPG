@@ -42,6 +42,9 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 		const camera = this.cameras.main;
 		camera.startFollow(this.player!.container);
 
+		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
+		camera.setBounds(0, 0, this.map!.widthInPixels, this.map!.heightInPixels);
+
 		const luminusWarp = new LuminusWarp(this as any, this.player! as any, this.mapCreator.map);
 		luminusWarp.createWarps();
 		const interactiveMarkers = new LuminusObjectMarker(this, this.mapCreator.map);
