@@ -19,6 +19,7 @@ interface GameStateDump {
 		userAgent: string;
 		viewport: { width: number; height: number };
 		performance: PerformanceMetrics;
+		activeScene: string | null;
 	};
 	phaser: {
 		version: string;
@@ -34,6 +35,7 @@ interface GameStateDump {
 	inventory: InventoryInfo;
 	activeDialogs: any[];
 	environment: EnvironmentInfo;
+	map: MapInfo | null;
 	errors: ErrorInfo[];
 	logs: any[];
 }
@@ -90,6 +92,39 @@ interface EnvironmentInfo {
 	currentMap: string | null;
 	weather: any;
 	timeOfDay: any;
+}
+
+interface MapInfo {
+	name: string | null;
+	dimensions: {
+		width: number;
+		height: number;
+		widthInPixels: number;
+		heightInPixels: number;
+		tileWidth: number;
+		tileHeight: number;
+	};
+	isInfinite: boolean;
+	layerCount: number;
+	layers: string[];
+	camera: {
+		x: number;
+		y: number;
+		zoom: number;
+		bounds: {
+			x: number;
+			y: number;
+			width: number;
+			height: number;
+		} | null;
+		followingPlayer: boolean;
+	};
+	playerPosition: {
+		x: number;
+		y: number;
+		tileX: number;
+		tileY: number;
+	} | null;
 }
 
 interface ErrorInfo {
@@ -214,17 +249,81 @@ class DebugHelper {
 			if ((scene as any).player) {
 				const player = (scene as any).player;
 				return {
-					position: { x: player.x, y: player.y },
-					attributes: player.attributes,
+					position: { x: player.container?.x ?? player.x ?? 0, y: player.container?.y ?? player.y ?? 0 },
+					attributes: player.attributes || {},
 					inventory: player.items?.length || 0,
-					speed: player.speed,
-					isSwimming: player.isSwimming,
-					isRunning: player.isRunning,
-					canMove: player.canMove,
-					canAtack: player.canAtack,
+					speed: player.speed || 0,
+					isSwimming: player.isSwimming || false,
+					isRunning: player.isRunning || false,
+					canMove: player.canMove ?? true,
+					canAtack: player.canAtack ?? true,
 					health: player.attributes?.health || 0,
 					maxHealth: player.attributes?.maxHealth || 0,
 					level: player.attributes?.level || 1,
+				};
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get map information from active gameplay scenes
+	 */
+	private getMapInfo(): MapInfo | null {
+		if (!this.game) return null;
+
+		const activeScenes = this.game.scene.scenes.filter((s: any) => this.game!.scene.isActive(s.scene.key));
+
+		for (const scene of activeScenes) {
+			const map = (scene as any).map || (scene as any).mapCreator?.map;
+			if (map) {
+				const camera = scene.cameras?.main;
+				const player = (scene as any).player;
+
+				return {
+					name: scene.scene.key || null,
+					dimensions: {
+						width: map.width || 0,
+						height: map.height || 0,
+						widthInPixels: map.widthInPixels || 0,
+						heightInPixels: map.heightInPixels || 0,
+						tileWidth: map.tileWidth || 0,
+						tileHeight: map.tileHeight || 0,
+					},
+					isInfinite: map.infinite || false,
+					layerCount: map.layers?.length || 0,
+					layers: map.layers?.map((layer: any) => layer.name) || [],
+					camera: camera
+						? {
+								x: camera.scrollX || 0,
+								y: camera.scrollY || 0,
+								zoom: camera.zoom || 1,
+								bounds: camera._bounds?.width
+									? {
+											x: camera._bounds.x || 0,
+											y: camera._bounds.y || 0,
+											width: camera._bounds.width || 0,
+											height: camera._bounds.height || 0,
+										}
+									: null,
+								followingPlayer: !!camera._follow,
+							}
+						: {
+								x: 0,
+								y: 0,
+								zoom: 1,
+								bounds: null,
+								followingPlayer: false,
+							},
+					playerPosition: player
+						? {
+								x: player.container?.x ?? player.x ?? 0,
+								y: player.container?.y ?? player.y ?? 0,
+								tileX: Math.floor((player.container?.x ?? player.x ?? 0) / (map.tileWidth || 16)),
+								tileY: Math.floor((player.container?.y ?? player.y ?? 0) / (map.tileHeight || 16)),
+							}
+						: null,
 				};
 			}
 		}
@@ -325,6 +424,9 @@ class DebugHelper {
 	dump(): GameStateDump {
 		logger.info(GameLogCategory.SYSTEM, 'Creating debug dump...');
 
+		const mapInfo = this.getMapInfo();
+		const activeScenes = this.getActiveScenes();
+
 		const dump: GameStateDump = {
 			metadata: {
 				timestamp: new Date().toISOString(),
@@ -335,6 +437,7 @@ class DebugHelper {
 					height: typeof window !== 'undefined' ? window.innerHeight : 0,
 				},
 				performance: this.getPerformanceMetrics(),
+				activeScene: activeScenes.length > 0 ? activeScenes.join(', ') : null,
 			},
 			phaser: {
 				version: Phaser.VERSION,
@@ -353,10 +456,11 @@ class DebugHelper {
 			},
 			activeDialogs: [],
 			environment: {
-				currentMap: null,
+				currentMap: mapInfo?.name || null,
 				weather: null,
 				timeOfDay: null,
 			},
+			map: mapInfo,
 			errors: this.errorLog.slice(-50), // Last 50 errors
 			logs: logger.getBuffer().slice(-100), // Last 100 log entries
 		};
@@ -372,11 +476,13 @@ class DebugHelper {
 
 		console.group('🎮 Luminus RPG Debug Dump');
 		console.log('⏰ Timestamp:', dump.metadata.timestamp);
+		console.log('🎬 Active Scene:', dump.metadata.activeScene);
 		console.log('📊 Performance:', dump.metadata.performance);
 		console.log(
-			'🎬 Active Scenes:',
+			'🎬 All Scenes:',
 			dump.scenes.filter((s) => s.isActive).map((s) => s.key)
 		);
+		console.log('🗺️  Map:', dump.map);
 		console.log('👤 Player:', dump.player);
 		console.log('👾 Enemies:', dump.enemies.length);
 		console.log('❌ Recent Errors:', dump.errors.length);
