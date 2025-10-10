@@ -14,7 +14,10 @@
 			"Bash(git commit:*)",
 			"Bash(npm test:*)",
 			"Bash(npm run dev:*)",
-			"Bash(gh issue comment:*)"
+			"Bash(gh issue comment:*)",
+			"Bash(bash:*)",
+			"Bash(awk:*)",
+			"Bash(perl:*)"
 		],
 		"deny": [],
 		"ask": []
