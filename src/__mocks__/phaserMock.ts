@@ -191,9 +191,13 @@ const Phaser = {
 					this.body = {
 						velocity: { x: 0, y: 0 },
 						maxSpeed: 100,
+						width: 32,
+						height: 32,
+						immovable: false,
 						setVelocity: jest.fn(),
 						setSize: jest.fn(),
 						setOffset: jest.fn(),
+						setAcceleration: jest.fn(),
 						enable: true,
 					};
 					this.flipX = false;
@@ -248,6 +252,10 @@ const Phaser = {
 						return true;
 					}
 					return false;
+				}
+				destroy(): void {
+					this._events.clear();
+					this.active = false;
 				}
 			},
 		},
@@ -690,9 +698,13 @@ const Phaser = {
 									obj.body = {
 										velocity: { x: 0, y: 0 },
 										maxSpeed: 100,
+										width: 32,
+										height: 32,
+										immovable: false,
 										setVelocity: jest.fn(),
 										setSize: jest.fn(),
 										setOffset: jest.fn(),
+										setAcceleration: jest.fn(),
 										enable: true,
 									};
 								}
