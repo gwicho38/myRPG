@@ -344,6 +344,65 @@ describe('LuminusHUDProgressBar', () => {
 				expect(mockHealthBarSprite.setTexture).toHaveBeenCalledWith('yellow_bar'); // 25%
 				expect(mockHealthBarSprite.scaleX).toBe(0.25);
 			});
+
+			it('should handle NaN health percentage gracefully', () => {
+				mockPlayer.attributes.health = NaN;
+				mockPlayer.attributes.baseHealth = 100;
+
+				progressBar.updateHealth();
+
+				// NaN percentage should fall through to else branch
+				expect(mockHealthBarSprite.visible).toBe(false);
+				expect(mockHealthBarSprite.active).toBe(false);
+			});
+
+			it('should handle zero baseHealth without crashing', () => {
+				mockPlayer.attributes.health = 50;
+				mockPlayer.attributes.baseHealth = 0;
+
+				expect(() => {
+					progressBar.updateHealth();
+				}).not.toThrow();
+			});
+
+			it('should handle negative health values', () => {
+				mockPlayer.attributes.health = -10;
+				mockPlayer.attributes.baseHealth = 100;
+
+				progressBar.updateHealth();
+
+				// Negative percentage (-10%) is < 20, so it should use red bar
+				expect(mockHealthBarSprite.setTexture).toHaveBeenCalledWith('red_bar');
+				expect(mockHealthBarSprite.scaleX).toBe(-0.1);
+			});
+		});
+	});
+
+	describe('SP Bar', () => {
+		it('should create SP bar background with correct texture', () => {
+			expect(mockScene.add.image).toHaveBeenCalledWith(
+				expect.any(Number),
+				expect.any(Number),
+				'progressbar_background'
+			);
+		});
+
+		it('should create SP bar sprite with blue bar texture', () => {
+			expect(mockScene.add.image).toHaveBeenCalledWith(expect.any(Number), expect.any(Number), 'blue_bar');
+		});
+
+		it('should position SP bar below health bar', () => {
+			const spBarCalls = (mockScene.add.image as jest.Mock).mock.calls;
+			// SP bar background is call index 2, health bar background is call index 0
+			const healthBarY = spBarCalls[0][1];
+			const spBarY = spBarCalls[2][1];
+
+			expect(spBarY).toBe(healthBarY + 20);
+		});
+
+		it('should set SP bar origin correctly', () => {
+			expect(mockSpBarBackground.setOrigin).toHaveBeenCalledWith(0, 0.5);
+			expect(mockSpBarSprite.setOrigin).toHaveBeenCalledWith(0, 0.5);
 		});
 	});
 
@@ -430,6 +489,37 @@ describe('LuminusHUDProgressBar', () => {
 				mockExpBarSprite.widthExtended! * 1.5, // 150%
 				mockExpBarSprite.height
 			);
+		});
+
+		it('should handle zero nextLevelExperience without crashing', () => {
+			mockPlayer.attributes.experience = 50;
+			mockPlayer.attributes.nextLevelExperience = 0;
+
+			expect(() => {
+				progressBar.updateExp();
+			}).not.toThrow();
+		});
+
+		it('should handle negative experience values', () => {
+			mockPlayer.attributes.experience = -10;
+			mockPlayer.attributes.nextLevelExperience = 100;
+
+			progressBar.updateExp();
+
+			// Should handle negative gracefully
+			expect(mockExpBarSprite.setDisplaySize).toHaveBeenCalledWith(
+				mockExpBarSprite.widthExtended! * -0.1,
+				mockExpBarSprite.height
+			);
+		});
+
+		it('should handle NaN experience values', () => {
+			mockPlayer.attributes.experience = NaN;
+			mockPlayer.attributes.nextLevelExperience = 100;
+
+			expect(() => {
+				progressBar.updateExp();
+			}).not.toThrow();
 		});
 	});
 
