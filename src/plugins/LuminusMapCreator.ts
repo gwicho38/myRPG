@@ -99,6 +99,12 @@ export class LuminusMapCreator {
 
 		this.map.layers.forEach((layer) => {
 			const currentLayer = this.map!.createLayer(layer.name, this.map!.tilesets);
+
+			// For infinite maps with negative coordinates, increase cull padding to ensure tiles render properly
+			if (this.map!.infinite) {
+				currentLayer!.setCullPadding(4, 4); // Render 4 extra tiles in each direction
+			}
+
 			const depth = (layer.properties as TiledProperty[]).find((f) => f.name === this.depthProperty);
 			if (depth) {
 				currentLayer!.depth = depth.value as number;
