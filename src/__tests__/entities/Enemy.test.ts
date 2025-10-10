@@ -1,77 +1,8 @@
 import { Enemy } from '../../entities/Enemy';
 import { ENTITIES } from '../../consts/Entities';
 
-// Mock Phaser module
-jest.mock('phaser', () => {
-	const mockBody = {
-		setSize: jest.fn(),
-		setOffset: jest.fn(),
-		setAcceleration: jest.fn(),
-		setVelocity: jest.fn(),
-		width: 32,
-		height: 32,
-		immovable: false,
-	};
-
-	class MockSprite {
-		scene: any;
-		x: number;
-		y: number;
-		texture: any;
-		body: any;
-		anims: any;
-
-		constructor(scene: any, x: number, y: number, texture: string) {
-			this.scene = scene;
-			this.x = x;
-			this.y = y;
-			this.texture = { key: texture };
-			this.body = { ...mockBody };
-			this.anims = {
-				play: jest.fn(),
-				currentAnim: null,
-			};
-		}
-
-		setOrigin() {
-			return this;
-		}
-		setDepth() {
-			return this;
-		}
-		destroy() {}
-	}
-
-	return {
-		__esModule: true,
-		default: {
-			GameObjects: {
-				Sprite: MockSprite,
-				Container: jest.fn(function (scene: any, x: number, y: number, children: any[]) {
-					return {
-						scene,
-						x,
-						y,
-						body: { ...mockBody },
-						destroy: jest.fn(),
-					};
-				}),
-				Zone: jest.fn(() => ({
-					body: { ...mockBody },
-				})),
-			},
-			Physics: {
-				Arcade: {
-					Sprite: MockSprite,
-					Body: class {},
-				},
-			},
-			Math: {
-				RadToDeg: (rad: number) => rad * (180 / Math.PI),
-			},
-		},
-	};
-});
+// Use centralized Phaser mock
+jest.mock('phaser');
 
 // Mock other dependencies
 jest.mock('../../plugins/LuminusAnimationManager');

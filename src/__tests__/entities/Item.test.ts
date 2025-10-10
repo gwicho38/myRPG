@@ -1,40 +1,7 @@
 import { Item } from '../../entities/Item';
 
-// Mock Phaser module
-jest.mock('phaser', () => {
-	class MockSprite {
-		scene: any;
-		x: number;
-		y: number;
-		texture: any;
-
-		constructor(scene: any, x: number, y: number, texture: string) {
-			this.scene = scene;
-			this.x = x;
-			this.y = y;
-			this.texture = { key: texture };
-		}
-
-		setOrigin() {
-			return this;
-		}
-		destroy() {}
-	}
-
-	return {
-		__esModule: true,
-		default: {
-			Physics: {
-				Arcade: {
-					Sprite: MockSprite,
-				},
-			},
-			Tweens: {
-				Tween: class {},
-			},
-		},
-	};
-});
+// Use centralized Phaser mock
+jest.mock('phaser');
 
 // Mock other dependencies
 jest.mock('../../plugins/LuminusConsumableManager');

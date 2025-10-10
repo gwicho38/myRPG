@@ -17,7 +17,8 @@
 			"Bash(gh issue comment:*)",
 			"Bash(bash:*)",
 			"Bash(awk:*)",
-			"Bash(perl:*)"
+			"Bash(perl:*)",
+			"Bash(npx eslint:*)"
 		],
 		"deny": [],
 		"ask": []
