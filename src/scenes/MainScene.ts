@@ -57,8 +57,8 @@ export class MainScene extends Phaser.Scene {
 		const camera = this.cameras.main;
 		camera.startFollow(this.player.container);
 
-		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
-		camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+		// Note: Do not set camera bounds for infinite maps (larus uses infinite: true)
+		// Infinite maps have negative coordinate chunks and setting bounds would break movement
 
 		const luminusWarp = new LuminusWarp(this, this.player, this.mapCreator.map);
 		luminusWarp.createWarps();

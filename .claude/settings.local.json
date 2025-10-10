@@ -18,7 +18,11 @@
 			"Bash(bash:*)",
 			"Bash(awk:*)",
 			"Bash(perl:*)",
-			"Bash(npx eslint:*)"
+			"Bash(npx eslint:*)",
+			"Bash(cat:*)",
+			"Bash(for map in src/assets/maps/*/)",
+			"Bash(done)",
+			"Bash(find:*)"
 		],
 		"deny": [],
 		"ask": []
