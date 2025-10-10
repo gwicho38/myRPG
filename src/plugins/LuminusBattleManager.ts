@@ -609,7 +609,9 @@ export class LuminusBattleManager extends AnimationNames {
 		if (!this.phaserJuice) {
 			this.phaserJuice = new PhaserJuice(scene, scene.plugins);
 		}
-		this.phaserJuice.add(player).flash({ repeat: 3, duration: 200 });
+		// Use the player sprite, and call flash without options to avoid setTintFill errors
+		// The flash effect will use default settings which work with all sprite types
+		this.phaserJuice.add(player).flash();
 
 		// Delay before showing game over screen
 		setTimeout(() => {
