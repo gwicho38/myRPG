@@ -227,6 +227,13 @@ export class HUDScene extends Phaser.Scene {
 	init(args: any): void {
 		this.player = args.player;
 		this.map = args.map;
+
+		// Update minimap with new map if it already exists
+		if (this.minimap && this.map) {
+			this.minimap.map = this.map;
+			// Reset the logging flag so we can see debug info for new map
+			(this.minimap as any).hasLoggedOnce = false;
+		}
 	}
 
 	/**
@@ -484,9 +491,45 @@ export class HUDScene extends Phaser.Scene {
 	update(): void {
 		if (this.level_text) this.level_text.setText('LvL ' + this.player.attributes.level);
 
+		// Dynamically get the currently active game scene's map
+		this.updateActiveSceneMap();
+
 		// Update minimap
 		if (this.minimap) {
 			this.minimap.update();
+		}
+	}
+
+	/**
+	 * Updates the map reference to match the currently active game scene
+	 */
+	private updateActiveSceneMap(): void {
+		// Safety check: ensure scene manager methods exist
+		if (!this.scene || typeof this.scene.isActive !== 'function') {
+			return;
+		}
+
+		const gameScenes = ['MainScene', 'DungeonScene', 'TownScene', 'CaveScene', 'OverworldScene', 'TutorialScene'];
+
+		for (const sceneKey of gameScenes) {
+			const scene = this.scene.get(sceneKey);
+			if (scene && this.scene.isActive(sceneKey)) {
+				// Get map from the scene
+				const sceneMap = (scene as any).mapCreator?.map || (scene as any).dungeon?.map;
+
+				// Update map reference if it changed
+				if (sceneMap && this.map !== sceneMap) {
+					this.map = sceneMap;
+
+					// Update minimap's map reference
+					if (this.minimap) {
+						this.minimap.map = sceneMap;
+						// Reset logging flag to see debug info for new map
+						(this.minimap as any).hasLoggedOnce = false;
+					}
+				}
+				break; // Only use the first active game scene
+			}
 		}
 	}
 }
