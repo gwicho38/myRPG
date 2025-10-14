@@ -606,6 +606,189 @@ class DebugHelper {
 	}
 
 	/**
+	 * Get minimap debug information
+	 */
+	getMinimapInfo(): any {
+		if (!this.game) {
+			console.error('Game not initialized');
+			return null;
+		}
+
+		const hudScene = this.game.scene.getScene('HUDScene') as any;
+		if (!hudScene || !hudScene.minimap) {
+			console.error('HUDScene or minimap not found');
+			return null;
+		}
+
+		const minimap = hudScene.minimap;
+		const player = hudScene.player;
+		const map = hudScene.map;
+
+		if (!player || !map) {
+			console.error('Player or map not found');
+			return null;
+		}
+
+		// Get the first available layer to convert world coordinates
+		const firstLayer = map.layers.find((l: any) => l.tilemapLayer)?.tilemapLayer;
+
+		// Calculate the same values as renderMap does
+		const playerX = player.container.x;
+		const playerY = player.container.y;
+
+		// Get Phaser.Display.Bounds for player
+		let playerBounds = null;
+		try {
+			if (player.container && player.container.getBounds) {
+				const bounds = player.container.getBounds();
+				playerBounds = {
+					x: bounds.x,
+					y: bounds.y,
+					width: bounds.width,
+					height: bounds.height,
+					centerX: bounds.centerX,
+					centerY: bounds.centerY,
+					top: bounds.top,
+					bottom: bounds.bottom,
+					left: bounds.left,
+					right: bounds.right,
+				};
+			}
+		} catch (e) {
+			playerBounds = 'Error getting bounds';
+		}
+
+		let playerTileX: number;
+		let playerTileY: number;
+		let playerTileXManual: number;
+		let playerTileYManual: number;
+
+		// Manual calculation
+		playerTileXManual = Math.floor(playerX / map.tileWidth);
+		playerTileYManual = Math.floor(playerY / map.tileHeight);
+
+		if (firstLayer && typeof firstLayer.worldToTileX === 'function') {
+			playerTileX = firstLayer.worldToTileX(playerX);
+			playerTileY = firstLayer.worldToTileY(playerY);
+		} else {
+			playerTileX = playerTileXManual;
+			playerTileY = playerTileYManual;
+		}
+
+		// Get layer origin/offset info
+		let layerInfo = null;
+		if (firstLayer) {
+			layerInfo = {
+				x: firstLayer.x,
+				y: firstLayer.y,
+				scrollFactorX: firstLayer.scrollFactorX,
+				scrollFactorY: firstLayer.scrollFactorY,
+				originX: firstLayer.originX,
+				originY: firstLayer.originY,
+				scaleX: firstLayer.scaleX,
+				scaleY: firstLayer.scaleY,
+			};
+		}
+
+		const viewRadiusInTiles =
+			Math.max(minimap.width, minimap.height) / (2 * minimap.mapScale * Math.max(map.tileWidth, map.tileHeight));
+
+		const desiredStartX = Math.floor(playerTileX - viewRadiusInTiles);
+		const desiredStartY = Math.floor(playerTileY - viewRadiusInTiles);
+		const desiredEndX = Math.ceil(playerTileX + viewRadiusInTiles);
+		const desiredEndY = Math.ceil(playerTileY + viewRadiusInTiles);
+
+		const startX = Math.max(0, desiredStartX);
+		const startY = Math.max(0, desiredStartY);
+		const endX = Math.min(map.width, desiredEndX);
+		const endY = Math.min(map.height, desiredEndY);
+
+		// Use CLAMPED range for both tile and marker positioning (matching LuminusMinimap)
+		// This fills the minimap with only the visible tiles
+		const actualTileRangeX = endX - startX;
+		const actualTileRangeY = endY - startY;
+
+		const relativePlayerX = playerTileX - startX;
+		const relativePlayerY = playerTileY - startY;
+
+		let markerX = (relativePlayerX / actualTileRangeX) * minimap.width;
+		let markerY = (relativePlayerY / actualTileRangeY) * minimap.height;
+
+		const clampedMarkerX = Math.max(5, Math.min(minimap.width - 5, markerX));
+		const clampedMarkerY = Math.max(5, Math.min(minimap.height - 5, markerY));
+
+		const info = {
+			minimapDimensions: {
+				width: minimap.width,
+				height: minimap.height,
+				mapScale: minimap.mapScale,
+			},
+			player: {
+				worldPosition: { x: playerX, y: playerY },
+				bounds: playerBounds,
+				tilePosition: {
+					fromPhaser: { x: playerTileX, y: playerTileY },
+					manual: { x: playerTileXManual, y: playerTileYManual },
+					match: playerTileX === playerTileXManual && playerTileY === playerTileYManual,
+				},
+			},
+			map: {
+				dimensions: { width: map.width, height: map.height },
+				tileSize: { width: map.tileWidth, height: map.tileHeight },
+				worldSize: {
+					width: map.width * map.tileWidth,
+					height: map.height * map.tileHeight,
+				},
+			},
+			layer: layerInfo,
+			calculations: {
+				viewRadiusInTiles,
+				desiredTileRange: {
+					startX: desiredStartX,
+					startY: desiredStartY,
+					endX: desiredEndX,
+					endY: desiredEndY,
+				},
+				clampedTileRange: {
+					startX,
+					startY,
+					endX,
+					endY,
+				},
+				relativePlayer: {
+					x: relativePlayerX,
+					y: relativePlayerY,
+					note: 'Relative to CLAMPED range (actual rendered tiles)',
+				},
+				actualTileRangeSize: {
+					x: actualTileRangeX,
+					y: actualTileRangeY,
+					note: 'Size of CLAMPED range (fills the minimap)',
+				},
+				markerPosition: {
+					raw: { x: markerX, y: markerY },
+					clamped: { x: clampedMarkerX, y: clampedMarkerY },
+					note: 'Calculated from CLAMPED range (aligned with tiles)',
+				},
+			},
+		};
+
+		console.group('🗺️  Minimap Debug Info');
+		console.log('📏 Minimap Dimensions:', info.minimapDimensions);
+		console.log('👤 Player Position:', info.player);
+		console.log('🗺️  Map Info:', info.map);
+		console.log('🎨 Layer Info:', info.layer);
+		console.log('🧮 Calculations:', info.calculations);
+		console.log('\n📊 Coordinate System Check:');
+		console.log('   - Phaser uses: Y increases DOWNWARD (0 at top)');
+		console.log('   - Moving DOWN: Y increases (negative → positive)');
+		console.log('   - Moving RIGHT: X increases (negative → positive)');
+		console.groupEnd();
+
+		return info;
+	}
+
+	/**
 	 * Setup global console commands
 	 */
 	setupConsoleCommands(): void {
@@ -619,6 +802,7 @@ class DebugHelper {
 			scenes: () => this.getActiveScenes(),
 			player: () => this.getPlayerInfo(),
 			enemies: () => this.getEnemyInfo(),
+			minimap: () => this.getMinimapInfo(),
 			teleport: (x: number, y: number) => this.teleportPlayer(x, y),
 			setHealth: (health: number) => this.setPlayerHealth(health),
 			giveItem: (itemId: string, quantity?: number) => this.giveItem(itemId, quantity),
@@ -640,6 +824,7 @@ Console Commands:
   luminusDebug.scenes()         - List active scenes
   luminusDebug.player()         - Get player info
   luminusDebug.enemies()        - Get enemy info
+  luminusDebug.minimap()        - Get minimap debug info
   luminusDebug.teleport(x, y)   - Teleport player
   luminusDebug.setHealth(hp)    - Set player health
   luminusDebug.giveItem(id, qty) - Give item to player
