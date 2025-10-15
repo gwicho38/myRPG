@@ -110,7 +110,7 @@ export class LuminusDialogBox {
 		/**
 		 * Name of the Sprite of the button action.
 		 */
-		this.actionButtonSpriteName = 'space';
+		this.actionButtonSpriteName = 'enter_keyboard_key';
 
 		/**
 		 * Interaction sprite name.
@@ -130,7 +130,7 @@ export class LuminusDialogBox {
 		/**
 		 * Current action button key code.
 		 */
-		this.actionButtonKeyCode = Phaser.Input.Keyboard.KeyCodes.SPACE;
+		this.actionButtonKeyCode = Phaser.Input.Keyboard.KeyCodes.E;
 
 		/**
 		 * Dialog height.
