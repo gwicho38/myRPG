@@ -54,8 +54,8 @@ export class LuminusMinimap {
 			layerCount: map?.layers?.length,
 		});
 
-		// Position in bottom-right corner
-		this.x = this.scene.cameras.main.width - this.width - this.padding;
+		// Position in bottom-left corner
+		this.x = this.padding;
 		this.y = this.scene.cameras.main.height - this.height - this.padding;
 
 		this.create();
@@ -364,8 +364,8 @@ export class LuminusMinimap {
 		if (width) this.width = width;
 		if (height) this.height = height;
 
-		// Reposition to bottom-right
-		this.x = this.scene.cameras.main.width - this.width - this.padding;
+		// Reposition to bottom-left
+		this.x = this.padding;
 		this.y = this.scene.cameras.main.height - this.height - this.padding;
 		this.setPosition(this.x, this.y);
 
