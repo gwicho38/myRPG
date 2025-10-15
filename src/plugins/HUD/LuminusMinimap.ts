@@ -29,6 +29,7 @@ export class LuminusMinimap {
 
 	// Scale factor for minimap (how much of the map to show)
 	mapScale: number = 0.1; // 10% of full map size
+	showFullMap: boolean = true; // If true, show entire map; if false, show area around player
 
 	// Debug logging (only log once initially)
 	private hasLoggedOnce: boolean = false;
@@ -53,8 +54,8 @@ export class LuminusMinimap {
 			layerCount: map?.layers?.length,
 		});
 
-		// Position in bottom-left corner
-		this.x = this.padding;
+		// Position in bottom-right corner
+		this.x = this.scene.cameras.main.width - this.width - this.padding;
 		this.y = this.scene.cameras.main.height - this.height - this.padding;
 
 		this.create();
@@ -81,6 +82,7 @@ export class LuminusMinimap {
 
 		// Create render texture for the map
 		this.mapTexture = this.scene.add.renderTexture(0, 0, this.width, this.height);
+		this.mapTexture.setOrigin(0, 0); // Set origin to top-left
 
 		// Create player marker (red dot)
 		this.playerMarker = this.scene.add.graphics();
@@ -129,34 +131,52 @@ export class LuminusMinimap {
 			playerTileY = Math.floor(playerY / this.map.tileHeight);
 		}
 
-		// Calculate how many tiles to show around the player (based on minimap size and scale)
-		const viewRadiusInTiles =
-			Math.max(this.width, this.height) / (2 * this.mapScale * Math.max(this.map.tileWidth, this.map.tileHeight));
+		let startX: number, startY: number, endX: number, endY: number;
+		let desiredStartX: number, desiredStartY: number, desiredEndX: number, desiredEndY: number;
+		let viewRadiusInTiles: number;
 
-		// Calculate desired tile range centered on player
-		const desiredStartX = Math.floor(playerTileX - viewRadiusInTiles);
-		const desiredStartY = Math.floor(playerTileY - viewRadiusInTiles);
-		const desiredEndX = Math.ceil(playerTileX + viewRadiusInTiles);
-		const desiredEndY = Math.ceil(playerTileY + viewRadiusInTiles);
+		if (this.showFullMap) {
+			// Show the entire map
+			startX = 0;
+			startY = 0;
+			endX = this.map.width;
+			endY = this.map.height;
+			desiredStartX = 0;
+			desiredStartY = 0;
+			desiredEndX = this.map.width;
+			desiredEndY = this.map.height;
+			viewRadiusInTiles = Math.max(this.map.width, this.map.height) / 2;
+		} else {
+			// Show area around player
+			const adjustedMapScale = this.mapScale * 1.2;
+			viewRadiusInTiles =
+				Math.max(this.width, this.height) /
+				(2 * adjustedMapScale * Math.max(this.map.tileWidth, this.map.tileHeight));
 
-		// Clamp to valid map tile indices (0 to map.width-1)
-		const startX = Math.max(0, desiredStartX);
-		const startY = Math.max(0, desiredStartY);
-		const endX = Math.min(this.map.width, desiredEndX);
-		const endY = Math.min(this.map.height, desiredEndY);
+			desiredStartX = Math.floor(playerTileX - viewRadiusInTiles);
+			desiredStartY = Math.floor(playerTileY - viewRadiusInTiles);
+			desiredEndX = Math.ceil(playerTileX + viewRadiusInTiles);
+			desiredEndY = Math.ceil(playerTileY + viewRadiusInTiles);
+
+			startX = Math.max(0, desiredStartX);
+			startY = Math.max(0, desiredStartY);
+			endX = Math.min(this.map.width, desiredEndX);
+			endY = Math.min(this.map.height, desiredEndY);
+		}
 
 		// Only log once for debugging
 		if (!this.hasLoggedOnce) {
-			console.log('[Minimap] Render bounds:', {
-				playerPos: { x: playerX, y: playerY },
-				playerTile: { x: playerTileX, y: playerTileY },
-				viewRadiusInTiles,
-				desired: { startX: desiredStartX, startY: desiredStartY, endX: desiredEndX, endY: desiredEndY },
-				clamped: { startX, startY, endX, endY },
-				mapSize: { width: this.map.width, height: this.map.height },
-				tileSize: { width: this.map.tileWidth, height: this.map.tileHeight },
-				layerCount: this.map.layers.length,
-			});
+			console.log('[Minimap] Render bounds:');
+			console.log(`  Player world position: (${playerX}, ${playerY})`);
+			console.log(`  Player tile position: (${playerTileX}, ${playerTileY})`);
+			console.log(`  View radius in tiles: ${viewRadiusInTiles}`);
+			console.log(
+				`  Desired bounds: start(${desiredStartX}, ${desiredStartY}) end(${desiredEndX}, ${desiredEndY})`
+			);
+			console.log(`  Clamped bounds: start(${startX}, ${startY}) end(${endX}, ${endY})`);
+			console.log(`  Map size: ${this.map.width} x ${this.map.height} tiles`);
+			console.log(`  Tile size: ${this.map.tileWidth} x ${this.map.tileHeight} pixels`);
+			console.log(`  Layer count: ${this.map.layers.length}`);
 		}
 
 		// Calculate how many tiles we're actually showing
@@ -169,27 +189,47 @@ export class LuminusMinimap {
 			return;
 		}
 
-		// Calculate tile scale based on the CLAMPED range (what's actually rendered)
-		// This makes the visible tiles fill the entire minimap
-		const tileScaleX = (this.width / tileRangeX) * 0.9; // Slight margin
-		const tileScaleY = (this.height / tileRangeY) * 0.9;
+		// Calculate tile scale based on actual visible tile range
+		const tileScaleX = this.width / tileRangeX;
+		const tileScaleY = this.height / tileRangeY;
 		const tileScale = Math.min(tileScaleX, tileScaleY); // Use uniform scale
-		let tilesRendered = 0;
+
+		// Calculate actual rendered size
+		const renderedWidth = tileRangeX * tileScale;
+		const renderedHeight = tileRangeY * tileScale;
+
+		// Center the rendered content within the minimap frame
+		const centerOffsetX = (this.width - renderedWidth) / 2;
+		const centerOffsetY = (this.height - renderedHeight) / 2;
+
+		if (!this.hasLoggedOnce) {
+			console.log('[Minimap] Scale calculation:');
+			console.log(`  Tile range: ${tileRangeX} x ${tileRangeY}`);
+			console.log(`  Minimap size: ${this.width} x ${this.height}`);
+			console.log(`  Scale X: ${this.width} / ${tileRangeX} = ${tileScaleX}`);
+			console.log(`  Scale Y: ${this.height} / ${tileRangeY} = ${tileScaleY}`);
+			console.log(`  Final scale: ${tileScale}`);
+			console.log(`  Rendered size: ${renderedWidth} x ${renderedHeight}`);
+			console.log(`  Center offsets: (${centerOffsetX}, ${centerOffsetY})`);
+		}
 
 		// Create a temporary graphics object for drawing
 		const tempGraphics = this.scene.add.graphics();
 
+		// Draw a test rectangle in top-left corner to verify coordinate system
+		tempGraphics.fillStyle(0xff0000, 1);
+		tempGraphics.fillRect(0, 0, 10, 10);
+
+		let minX = Infinity,
+			maxX = -Infinity,
+			minY = Infinity,
+			maxY = -Infinity;
+
 		// Iterate through all layers to render tiles
-		this.map.layers.forEach((layerData, layerIndex) => {
+		this.map.layers.forEach((layerData, _layerIndex) => {
 			const layer = layerData.tilemapLayer;
 
-			if (!this.hasLoggedOnce) {
-				console.log(`[Minimap] Layer ${layerIndex}:`, {
-					name: layerData.name,
-					hasLayer: !!layer,
-					visible: layer?.visible,
-				});
-			}
+			// Layer logging disabled to reduce console spam
 
 			if (!layer) return;
 
@@ -197,8 +237,6 @@ export class LuminusMinimap {
 				for (let x = startX; x < endX; x++) {
 					const tile = layer.getTileAt(x, y);
 					if (tile && tile.index !== -1) {
-						tilesRendered++;
-
 						// Determine tile color based on collision or layer properties
 						let color = 0x228b22; // Floor color (green)
 
@@ -223,22 +261,44 @@ export class LuminusMinimap {
 							}
 						}
 
-						// Calculate position on minimap relative to CLAMPED range
-						// This makes the rendered tiles fill the entire minimap box
-						const pixelX = (x - startX) * tileScale;
-						const pixelY = (y - startY) * tileScale;
+						// Calculate position on minimap
+						// Start from current tile position relative to start, then add center offset
+						const relativeX = x - startX;
+						const relativeY = y - startY;
+						const pixelX = relativeX * tileScale + centerOffsetX;
+						const pixelY = relativeY * tileScale + centerOffsetY;
 
-						// Draw rectangle on temp graphics
-						tempGraphics.fillStyle(color, 1);
-						tempGraphics.fillRect(pixelX, pixelY, Math.max(1, tileScale), Math.max(1, tileScale));
+						// Tile calculation (logging disabled to reduce console spam)
+
+						// Only draw if tile is COMPLETELY within minimap bounds
+						const tileSize = Math.max(1, tileScale);
+						if (
+							pixelX >= 0 &&
+							pixelX + tileSize <= this.width &&
+							pixelY >= 0 &&
+							pixelY + tileSize <= this.height
+						) {
+							// Track actual draw bounds
+							minX = Math.min(minX, pixelX);
+							maxX = Math.max(maxX, pixelX + tileSize);
+							minY = Math.min(minY, pixelY);
+							maxY = Math.max(maxY, pixelY + tileSize);
+
+							// Draw rectangle on temp graphics
+							tempGraphics.fillStyle(color, 1);
+							tempGraphics.fillRect(pixelX, pixelY, tileSize, tileSize);
+						}
 					}
 				}
 			}
 		});
 
+		// Log actual draw bounds
 		if (!this.hasLoggedOnce) {
-			console.log(`[Minimap] Rendered ${tilesRendered} tiles with tileScale ${tileScale}`);
-			this.hasLoggedOnce = true;
+			console.log('[Minimap] Actual draw bounds:');
+			console.log(`  Min: (${minX}, ${minY})`);
+			console.log(`  Max: (${maxX}, ${maxY})`);
+			console.log(`  Size: ${maxX - minX} x ${maxY - minY}`);
 		}
 
 		// Draw the graphics to the render texture
@@ -247,28 +307,33 @@ export class LuminusMinimap {
 		// Clean up temporary graphics
 		tempGraphics.destroy();
 
-		// Calculate player marker position using the CLAMPED range (same as tile rendering)
-		// This ensures the marker aligns with the tiles
+		// Calculate player marker position (same as tile rendering)
+		// Position relative to start, then add center offset
 		const relativePlayerX = playerTileX - startX;
 		const relativePlayerY = playerTileY - startY;
 
-		// Calculate marker position as a percentage of the clamped range
-		let markerX = (relativePlayerX / tileRangeX) * this.width;
-		let markerY = (relativePlayerY / tileRangeY) * this.height;
+		// Calculate marker position in pixels
+		let markerX = relativePlayerX * tileScale + centerOffsetX;
+		let markerY = relativePlayerY * tileScale + centerOffsetY;
 
 		// Keep marker within visible bounds
 		const clampedMarkerX = Math.max(5, Math.min(this.width - 5, markerX));
 		const clampedMarkerY = Math.max(5, Math.min(this.height - 5, markerY));
 
+		// Debug player position
 		if (!this.hasLoggedOnce) {
-			console.log('[Minimap] Player marker calculation:', {
-				playerTile: { x: playerTileX, y: playerTileY },
-				clampedRange: { startX, startY, endX, endY },
-				relative: { x: relativePlayerX, y: relativePlayerY },
-				clampedRangeSize: { x: tileRangeX, y: tileRangeY },
-				markerRaw: { x: markerX, y: markerY },
-				markerClamped: { x: clampedMarkerX, y: clampedMarkerY },
-			});
+			console.log('[Minimap] Player position:');
+			console.log(`  World position: (${playerX}, ${playerY})`);
+			console.log(`  Tile position: (${playerTileX}, ${playerTileY})`);
+			console.log(`  View bounds: start(${startX}, ${startY}) end(${endX}, ${endY})`);
+			console.log(`  Relative position: (${relativePlayerX}, ${relativePlayerY})`);
+			console.log(`  Marker pixel position: (${markerX}, ${markerY})`);
+			console.log(`  Clamped marker position: (${clampedMarkerX}, ${clampedMarkerY})`);
+			console.log(`  Minimap size: ${this.width} x ${this.height}`);
+			console.log(
+				`  Marker position as %: (${((clampedMarkerX / this.width) * 100).toFixed(1)}%, ${((clampedMarkerY / this.height) * 100).toFixed(1)}%)`
+			);
+			this.hasLoggedOnce = true;
 		}
 
 		this.playerMarker.setPosition(clampedMarkerX, clampedMarkerY);
@@ -299,7 +364,8 @@ export class LuminusMinimap {
 		if (width) this.width = width;
 		if (height) this.height = height;
 
-		// Reposition to bottom-left
+		// Reposition to bottom-right
+		this.x = this.scene.cameras.main.width - this.width - this.padding;
 		this.y = this.scene.cameras.main.height - this.height - this.padding;
 		this.setPosition(this.x, this.y);
 
