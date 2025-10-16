@@ -495,4 +495,133 @@ describe('LuminusLightingManager', () => {
 			expect(() => lighting.removeLight(fakeLight)).not.toThrow();
 		});
 	});
+
+	describe('texture caching performance', () => {
+		beforeEach(() => {
+			// Mock textures.exists to return true (textures exist in cache)
+			(mockScene.textures as any).exists = jest.fn().mockReturnValue(true);
+			lighting.create();
+		});
+
+		it('should not create/destroy textures on every frame for same light properties', () => {
+			// Add multiple static lights with identical properties (as happens with dungeon torches)
+			// Using flicker: false to ensure consistent radius
+			lighting.addStaticLight(100, 200, 80, { color: 0xff8844, intensity: 0.7, flicker: false });
+			lighting.addStaticLight(300, 400, 80, { color: 0xff8844, intensity: 0.7, flicker: false });
+			lighting.addStaticLight(500, 600, 80, { color: 0xff8844, intensity: 0.7, flicker: false });
+
+			// Clear mocks to track only update calls
+			jest.clearAllMocks();
+
+			// First update creates the texture once
+			lighting.update();
+			const firstCallCount = (mockGraphics.generateTexture as jest.Mock).mock.calls.length;
+
+			// Subsequent updates should reuse the cached texture
+			lighting.update();
+			lighting.update();
+
+			// Should only generate texture once (on first frame), then reuse it
+			const totalCalls = (mockGraphics.generateTexture as jest.Mock).mock.calls.length;
+			expect(totalCalls).toBe(firstCallCount);
+			expect(totalCalls).toBeLessThanOrEqual(1);
+		});
+
+		it('should reuse textures for lights with identical properties', () => {
+			// Add two lights with identical properties
+			lighting.addStaticLight(100, 200, 80, { color: 0xffaa66, intensity: 0.8, flicker: false });
+			lighting.addStaticLight(300, 400, 80, { color: 0xffaa66, intensity: 0.8, flicker: false });
+
+			// Clear mocks to track only update calls
+			jest.clearAllMocks();
+
+			// Update once
+			lighting.update();
+
+			// generateTexture should be called at most once for identical light properties
+			const generateTextureCalls = (mockGraphics.generateTexture as jest.Mock).mock.calls.length;
+			expect(generateTextureCalls).toBeLessThanOrEqual(1);
+		});
+
+		it('should clean up cached textures on destroy', () => {
+			// Add some lights to create cached textures
+			lighting.addStaticLight(100, 200, 80);
+			lighting.addStaticLight(300, 400, 60);
+			lighting.update();
+
+			// Mock textures.exists to return true for cached textures
+			(mockScene.textures as any).exists = jest.fn().mockReturnValue(true);
+
+			// Clear mocks
+			jest.clearAllMocks();
+
+			// Destroy lighting manager
+			lighting.destroy();
+
+			// Should have attempted to remove textures
+			expect(mockScene.textures.remove).toHaveBeenCalled();
+		});
+
+		it('should not cause performance degradation with many lights over multiple frames', () => {
+			// Add many static lights with flicker disabled to test caching efficiency
+			for (let i = 0; i < 20; i++) {
+				lighting.addStaticLight(i * 100, i * 100, 80, {
+					color: 0xff8844,
+					intensity: 0.7,
+					flicker: false, // Disable flicker for consistent caching
+				});
+			}
+
+			// Clear mocks to track only update calls
+			jest.clearAllMocks();
+
+			// Run 60 frames (simulating 1 second at 60fps)
+			const startTime = Date.now();
+			for (let frame = 0; frame < 60; frame++) {
+				lighting.update();
+			}
+			const endTime = Date.now();
+
+			// The test should complete quickly (under 100ms for 60 frames)
+			// In the buggy version, this would take much longer due to texture creation/destruction
+			expect(endTime - startTime).toBeLessThan(100);
+
+			// Verify that draw was called (lights are being rendered)
+			expect(mockRenderTexture.draw).toHaveBeenCalled();
+
+			// With caching, we should only generate the texture once (first frame)
+			// Then reuse it for all 20 lights across all 60 frames
+			// Without the fix, this would be 20 * 60 = 1200 texture generations
+			const generateTextureCalls = (mockGraphics.generateTexture as jest.Mock).mock.calls.length;
+			expect(generateTextureCalls).toBeLessThanOrEqual(1);
+		});
+
+		it('should handle flicker without excessive texture generation', () => {
+			// With flicker enabled, radius varies but should still benefit from caching
+			// Add lights with limited flicker range
+			for (let i = 0; i < 10; i++) {
+				lighting.addStaticLight(i * 100, i * 100, 80, {
+					color: 0xff8844,
+					intensity: 0.7,
+					flicker: true,
+					flickerAmount: 4, // Radius can vary by ±4 pixels
+				});
+			}
+
+			// Clear mocks to track only update calls
+			jest.clearAllMocks();
+
+			// Run 30 frames
+			for (let frame = 0; frame < 30; frame++) {
+				lighting.update();
+			}
+
+			// With flicker, we'll create more textures due to radius variation
+			// but it should be FAR less than 10 lights * 30 frames = 300
+			// Flicker range is ±4, so max ~9 different radii per light config
+			// Realistically should be around 9-50 textures total with caching
+			const generateTextureCalls = (mockGraphics.generateTexture as jest.Mock).mock.calls.length;
+			expect(generateTextureCalls).toBeLessThan(100);
+		});
+	});
 });

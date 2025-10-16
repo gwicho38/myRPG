@@ -77,6 +77,10 @@ export class LuminusLightingManager {
 	private frameCounter: number = 0;
 	private lastUpdateFrame: number = 0;
 
+	// Texture cache to avoid creating/destroying textures every frame
+	private lightTextureCache: Map<string, string> = new Map();
+	private textureCounter: number = 0;
+
 	// State
 	private enabled: boolean = true;
 
@@ -220,51 +224,82 @@ export class LuminusLightingManager {
 	 * Draw smooth radial gradient (better quality)
 	 */
 	private drawSmoothLight(x: number, y: number, radius: number, color: number, intensity: number): void {
-		this.maskGraphics.clear();
+		// Create a cache key based on light properties
+		const cacheKey = `smooth_${radius}_${color}_${intensity}`;
 
-		// Extract RGB components
-		const r = (color >> 16) & 0xff;
-		const g = (color >> 8) & 0xff;
-		const b = color & 0xff;
+		// Check if we already have this texture cached
+		let textureName = this.lightTextureCache.get(cacheKey);
 
-		// Draw gradient circles from center outward
-		const steps = 20;
-		for (let i = steps; i > 0; i--) {
-			const ratio = i / steps;
-			const currentRadius = radius * ratio;
-			const alpha = intensity * (1 - ratio) * (1 - ratio); // Quadratic falloff
+		if (!textureName || !this.scene.textures.exists(textureName)) {
+			// Generate new texture name
+			textureName = `light_texture_${this.textureCounter++}`;
 
-			// Convert RGB to hex color
-			const hexColor = (r << 16) | (g << 8) | b;
-			this.maskGraphics.fillStyle(hexColor, alpha);
-			this.maskGraphics.fillCircle(x, y, currentRadius);
+			// Create the texture
+			this.maskGraphics.clear();
+
+			// Extract RGB components
+			const r = (color >> 16) & 0xff;
+			const g = (color >> 8) & 0xff;
+			const b = color & 0xff;
+
+			// Draw gradient circles from center outward
+			const steps = 20;
+			const centerX = radius;
+			const centerY = radius;
+
+			for (let i = steps; i > 0; i--) {
+				const ratio = i / steps;
+				const currentRadius = radius * ratio;
+				const alpha = intensity * (1 - ratio) * (1 - ratio); // Quadratic falloff
+
+				// Convert RGB to hex color
+				const hexColor = (r << 16) | (g << 8) | b;
+				this.maskGraphics.fillStyle(hexColor, alpha);
+				this.maskGraphics.fillCircle(centerX, centerY, currentRadius);
+			}
+
+			// Generate texture and cache it
+			this.maskGraphics.generateTexture(textureName, radius * 2, radius * 2);
+			this.lightTextureCache.set(cacheKey, textureName);
 		}
 
-		// Draw to lighting layer
-		this.maskGraphics.generateTexture('temp_light', radius * 2, radius * 2);
-		this.lightingLayer.draw('temp_light', x - radius, y - radius);
-		this.scene.textures.remove('temp_light');
+		// Draw the cached texture to lighting layer
+		this.lightingLayer.draw(textureName, x - radius, y - radius);
 	}
 
 	/**
 	 * Draw simple circle light (faster)
 	 */
 	private drawSimpleLight(x: number, y: number, radius: number, color: number, intensity: number): void {
-		this.maskGraphics.clear();
+		// Create a cache key based on light properties
+		const cacheKey = `simple_${radius}_${color}_${intensity}`;
 
-		const r = (color >> 16) & 0xff;
-		const g = (color >> 8) & 0xff;
-		const b = color & 0xff;
+		// Check if we already have this texture cached
+		let textureName = this.lightTextureCache.get(cacheKey);
 
-		// Convert RGB to hex color
-		const hexColor = (r << 16) | (g << 8) | b;
-		this.maskGraphics.fillStyle(hexColor, intensity);
-		this.maskGraphics.fillCircle(x, y, radius);
+		if (!textureName || !this.scene.textures.exists(textureName)) {
+			// Generate new texture name
+			textureName = `light_texture_${this.textureCounter++}`;
 
-		// Draw to lighting layer
-		this.maskGraphics.generateTexture('temp_light', radius * 2, radius * 2);
-		this.lightingLayer.draw('temp_light', x - radius, y - radius);
-		this.scene.textures.remove('temp_light');
+			// Create the texture
+			this.maskGraphics.clear();
+
+			const r = (color >> 16) & 0xff;
+			const g = (color >> 8) & 0xff;
+			const b = color & 0xff;
+
+			// Convert RGB to hex color
+			const hexColor = (r << 16) | (g << 8) | b;
+			this.maskGraphics.fillStyle(hexColor, intensity);
+			this.maskGraphics.fillCircle(radius, radius, radius);
+
+			// Generate texture and cache it
+			this.maskGraphics.generateTexture(textureName, radius * 2, radius * 2);
+			this.lightTextureCache.set(cacheKey, textureName);
+		}
+
+		// Draw the cached texture to lighting layer
+		this.lightingLayer.draw(textureName, x - radius, y - radius);
 	}
 
 	/**
@@ -422,6 +457,14 @@ export class LuminusLightingManager {
 		if (this.maskGraphics) {
 			this.maskGraphics.destroy();
 		}
+
+		// Clean up cached textures
+		for (const textureName of this.lightTextureCache.values()) {
+			if (this.scene.textures.exists(textureName)) {
+				this.scene.textures.remove(textureName);
+			}
+		}
+		this.lightTextureCache.clear();
 
 		this.playerLight = null;
 		this.staticLights = [];
