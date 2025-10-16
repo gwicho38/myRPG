@@ -52,6 +52,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 	public lastPathUpdate: number = 0;
 	public waypointReachedDistance: number = 10; // Distance to consider waypoint reached
 
+	// Performance optimization - throttle perception checks
+	public perceptionCheckInterval: number = 200; // Check every 200ms instead of every frame
+	public lastPerceptionCheck: number = 0;
+
 	// Animation properties from AnimationNames
 	public idlePrefixAnimation: string = 'idle-';
 	public walkPrefixAnimation: string = 'walk-';
@@ -135,7 +139,15 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 
 	public onUpdate(): void {
 		if (this && this.body) {
-			this.checkPlayerInRange();
+			// Throttle perception checks for performance
+			const now = this.scene.time.now;
+			if (now - this.lastPerceptionCheck > this.perceptionCheckInterval) {
+				this.lastPerceptionCheck = now;
+				this.checkPlayerInRange();
+			} else if (this.currentPath) {
+				// If we have a path, continue following it even between perception checks
+				this.followCurrentPath();
+			}
 		}
 	}
 
@@ -186,6 +198,30 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		if (!inRange) {
 			this.stopMovement();
 			this.currentPath = null;
+		}
+	}
+
+	/**
+	 * Continue following the current path (called between perception checks)
+	 */
+	private followCurrentPath(): void {
+		if (this.currentPath && this.currentWaypointIndex < this.currentPath.length) {
+			const waypoint = this.currentPath[this.currentWaypointIndex];
+			const distance = Phaser.Math.Distance.Between(this.container.x, this.container.y, waypoint.x, waypoint.y);
+
+			if (distance < this.waypointReachedDistance) {
+				// Reached waypoint, move to next one
+				this.currentWaypointIndex++;
+			} else {
+				// Move towards current waypoint
+				const angle = Phaser.Math.Angle.Between(this.container.x, this.container.y, waypoint.x, waypoint.y);
+				this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
+				(this.luminusAnimationManager as any).animateWithAngle(
+					`${this.texture.key}-${this.walkPrefixAnimation}`,
+					angle
+				);
+				this.changeBodySize(this.width, this.height);
+			}
 		}
 	}
 

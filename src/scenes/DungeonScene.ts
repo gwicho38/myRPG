@@ -374,7 +374,12 @@ export class DungeonScene extends Phaser.Scene {
 	}
 
 	update(): void {
+		// Performance profiling - log every 60 frames
+		const frameCount = this.game.loop.frame;
+		const startTime = performance.now();
+
 		this.fog.updateFog();
+		const fogTime = performance.now();
 
 		// Update player light to follow player
 		if (this.player && this.lighting) {
@@ -384,6 +389,18 @@ export class DungeonScene extends Phaser.Scene {
 		// Update lighting system
 		if (this.lighting) {
 			this.lighting.update();
+		}
+		const lightingTime = performance.now();
+
+		const totalTime = lightingTime - startTime;
+
+		// Log performance every 60 frames
+		if (frameCount % 60 === 0) {
+			console.log('[DungeonScene] Performance breakdown:');
+			console.log(`  Fog update: ${(fogTime - startTime).toFixed(2)}ms`);
+			console.log(`  Lighting update: ${(lightingTime - fogTime).toFixed(2)}ms`);
+			console.log(`  Total update: ${totalTime.toFixed(2)}ms`);
+			console.log(`  Enemy count: ${this.enemies.length}`);
 		}
 	}
 }
