@@ -122,9 +122,7 @@ export class LuminusFogWarManager {
 			this.imageMask.x = this.player.container.x;
 			this.imageMask.y = this.player.container.y;
 			this.noVisionRT!.erase(this.imageMask);
-			this.renderTexture!.erase(this.imageMask);
-			this.renderTexture!.erase(this.imageMask);
-			this.renderTexture!.erase(this.imageMask);
+			// Only erase once - erasing multiple times is wasteful
 			this.renderTexture!.erase(this.imageMask);
 		}
 	}

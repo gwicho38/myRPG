@@ -150,6 +150,15 @@ export class LuminusLightingManager {
 
 		this.lastUpdateFrame = this.frameCounter;
 
+		// Performance monitoring (log every 60 frames)
+		if (this.frameCounter % 60 === 0) {
+			const totalLights = this.staticLights.length + this.dynamicLights.length + (this.playerLight ? 1 : 0);
+			const cacheSize = this.lightTextureCache.size;
+			console.log(
+				`[LuminusLighting] Performance: ${totalLights} lights, ${cacheSize} cached textures, frame ${this.frameCounter}`
+			);
+		}
+
 		// Clear previous frame
 		this.lightingLayer.clear();
 		this.darknessLayer.clear();
@@ -243,7 +252,8 @@ export class LuminusLightingManager {
 			const b = color & 0xff;
 
 			// Draw gradient circles from center outward
-			const steps = 20;
+			// Reduced from 20 to 10 steps for better performance
+			const steps = 10;
 			const centerX = radius;
 			const centerY = radius;
 
