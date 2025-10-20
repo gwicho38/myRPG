@@ -27,11 +27,11 @@ import { debugHelper } from './utils/DebugHelper';
 import { crashReporter } from './utils/CrashReporter';
 
 // Create canvas with willReadFrequently attribute
-const canvas = document.getElementById('luminus-rpg') as HTMLCanvasElement;
+const canvas = document.getElementById('neverquest-rpg') as HTMLCanvasElement;
 if (!canvas) {
 	const newCanvas = document.createElement('canvas');
-	newCanvas.id = 'luminus-rpg';
-	const parent = document.getElementById('luminus-rpg-parent');
+	newCanvas.id = 'neverquest-rpg';
+	const parent = document.getElementById('neverquest-rpg-parent');
 	if (parent) {
 		parent.appendChild(newCanvas);
 	}
@@ -39,8 +39,8 @@ if (!canvas) {
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
-	parent: 'luminus-rpg-parent',
-	canvas: document.getElementById('luminus-rpg') as HTMLCanvasElement,
+	parent: 'neverquest-rpg-parent',
+	canvas: document.getElementById('neverquest-rpg') as HTMLCanvasElement,
 	width: 800,
 	height: 600,
 	render: {

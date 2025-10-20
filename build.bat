@@ -1,5 +1,5 @@
 @echo off
-echo Luminus RPG Build Script
+echo NeverQuest RPG Build Script
 echo =======================
 
 :menu

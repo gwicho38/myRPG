@@ -1,8 +1,8 @@
-# Luminus RPG Terminal Edition - Code Review & Improvement Suggestions
+# NeverQuest RPG Terminal Edition - Code Review & Improvement Suggestions
 
 ## Overview
 
-This document outlines improvement suggestions for the CLI-only version of Luminus RPG (entry point: `npm run terminal`). The terminal version is well-structured but has several areas for enhancement.
+This document outlines improvement suggestions for the CLI-only version of NeverQuest RPG (entry point: `npm run terminal`). The terminal version is well-structured but has several areas for enhancement.
 
 ## 🏗️ Architecture & Code Organization
 
