@@ -1,4 +1,4 @@
-# Luminus RPG - Comprehensive Build System
+# NeverQuest RPG - Comprehensive Build System
 # =======================================
 
 # Colors for output
@@ -12,7 +12,7 @@ WHITE := \033[37m
 RESET := \033[0m
 
 # Project variables
-PROJECT_NAME := luminus-rpg
+PROJECT_NAME := neverquest-rpg
 VERSION := $(shell node -p "require('./package.json').version")
 BUILD_DIR := builds
 DIST_DIR := dist
@@ -28,7 +28,7 @@ ANDROID_DIR := android
 
 .PHONY: help
 help: ## Show this help message
-	@echo "$(CYAN)🎮 Luminus RPG Build System$(RESET)"
+	@echo "$(CYAN)🎮 NeverQuest RPG Build System$(RESET)"
 	@echo "$(CYAN)=============================$(RESET)"
 	@echo ""
 	@echo "$(YELLOW)📋 Available targets:$(RESET)"

@@ -1,6 +1,6 @@
-# Contributing to Luminus RPG
+# Contributing to NeverQuest RPG
 
-Thank you for your interest in contributing to Luminus RPG! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to NeverQuest RPG! This document provides guidelines and instructions for contributing to the project.
 
 ## Code of Conduct
 
@@ -9,7 +9,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/luminus-rpg.git`
+2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/neverquest.git`
 3. Create a new branch: `git checkout -b feature/your-feature-name`
 4. Install dependencies: `npm install`
 5. Start the development server: `npm start`
@@ -33,6 +33,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 ### Component System
 
 The template follows an ECS (Entity-Component-System) pattern:
+
 - Components are located in `src/plugins`
 - Components should be modular and removable without breaking the game
 - Follow the existing component patterns
@@ -56,6 +57,7 @@ Fixes #issue-number
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -77,26 +79,30 @@ Types:
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Tests pass locally
 - [ ] New tests added (if applicable)
 - [ ] Manual testing completed
 
 ## Screenshots (if applicable)
+
 Add screenshots for UI changes
 ```
 
 ## Reporting Issues
 
-- Use the [GitHub Issues](https://github.com/SkyAlpha/luminus-rpg/issues) page
+- Use the [GitHub Issues](https://github.com/gwicho38/neverquest/issues) page
 - Check if the issue already exists
 - Provide detailed reproduction steps
 - Include error messages and screenshots if applicable
@@ -104,8 +110,9 @@ Add screenshots for UI changes
 ## Questions?
 
 If you have questions, feel free to:
+
 - Open an issue for discussion
 - Check existing documentation
 - Review closed issues and PRs
 
-Thank you for contributing to Luminus RPG!
+Thank you for contributing to NeverQuest RPG!

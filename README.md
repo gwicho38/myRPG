@@ -1,6 +1,6 @@
-# Luminus RPG PhaserJS Project Template
+# NeverQuest RPG PhaserJS Project Template
 
-[DEMO](https://skyalpha.github.io/luminus-rpg.github.io/)
+[DEMO](https://gwicho38.github.io/neverquest/)
 
 This is a Work in progress project, meant to be a code base for your 2D Action RPG game. It's based on the world class [Phaser Framework](https://phaser.io/), you should be able to use anything that the Phaser Framework provides in this project. Though it's not mandatory, it would be nice of you if you credit me for supplying this code base (I have put a lot of work on it).
 
@@ -27,7 +27,7 @@ There are a couple of tutorials on how to use features of this template, they ar
 
 ## Terminal Edition 🎮⌨️
 
-Play Luminus RPG directly in your terminal! The terminal version features:
+Play NeverQuest RPG directly in your terminal! The terminal version features:
 
 - ASCII/Unicode graphics
 - Full game mechanics (movement, combat, exploration)
@@ -38,7 +38,7 @@ See [TERMINAL_README.md](TERMINAL_README.md) for detailed information.
 
 ## Using specific Plugins
 
-The Luminus RPG template has a lot of plugins that are the core of it's mechanics. You might just want one of the plugins to use in your game. Just try to copy and paste a plugin and it's dependencies in your already created game. I haven't tested it yet, I will try it ASAP.
+The NeverQuest RPG template has a lot of plugins that are the core of it's mechanics. You might just want one of the plugins to use in your game. Just try to copy and paste a plugin and it's dependencies in your already created game. I haven't tested it yet, I will try it ASAP.
 
 ## Writing Code
 
@@ -51,7 +51,7 @@ by default).
 
 ## How to Contribute to this project.
 
-Just get a new [Issue](https://github.com/SkyAlpha/luminus-rpg/issues) and follow the coding steps.
+Just get a new [Issue](https://github.com/gwicho38/neverquest/issues) and follow the coding steps.
 
 ### Coding Step 1 - Coding issues
 
@@ -73,7 +73,7 @@ This project uses the [Git-Flow](https://danielkummer.github.io/git-flow-cheatsh
 
 ### Based on Phaser 3 Template
 
-Luminus RPG Template uses the [Phaser 3 Template](https://github.com/photonstorm/phaser3-project-template) and has ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/) that includes hot-reloading for development and production-ready builds.
+NeverQuest RPG Template uses the [Phaser 3 Template](https://github.com/photonstorm/phaser3-project-template) and has ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/) that includes hot-reloading for development and production-ready builds.
 
 You can load images via JavaScript module `import`.
 
@@ -107,7 +107,7 @@ you should be able to open `http://mycoolserver.com/index.html` and play your ga
 
 # MIT License
 
-Copyright 2021 ® Luminus Game Studio
+Copyright 2021 ® NeverQuest Game Studio
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

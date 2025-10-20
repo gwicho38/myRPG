@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Luminus RPG Build Script for macOS/Linux
+# NeverQuest RPG Build Script for macOS/Linux
 # Make executable with: chmod +x build.sh
 
-echo "🎮 Luminus RPG Build Script"
+echo "🎮 NeverQuest RPG Build Script"
 echo "=========================="
 
 show_menu() {
