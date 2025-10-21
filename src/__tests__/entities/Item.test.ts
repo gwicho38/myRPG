@@ -4,7 +4,7 @@ import { Item } from '../../entities/Item';
 jest.mock('phaser');
 
 // Mock other dependencies
-jest.mock('../../plugins/LuminusConsumableManager');
+jest.mock('../../plugins/NeverquestConsumableManager');
 jest.mock('uuid', () => ({ v4: () => 'test-uuid-12345' }));
 
 describe('Item', () => {
@@ -94,10 +94,10 @@ describe('Item', () => {
 			expect(mockScene.physics.add.existing).toHaveBeenCalledWith(item);
 		});
 
-		it('should initialize LuminusConsumableManager', () => {
+		it('should initialize NeverquestConsumableManager', () => {
 			item = new Item(mockScene, 50, 75, 1);
 
-			expect(item.luminusConsumableManager).toBeDefined();
+			expect(item.neverquestConsumableManager).toBeDefined();
 		});
 
 		it('should call pickItemLogic on creation', () => {
@@ -210,20 +210,20 @@ describe('Item', () => {
 	describe('consume', () => {
 		beforeEach(() => {
 			item = new Item(mockScene, 50, 75, 1);
-			item.luminusConsumableManager.useItem = jest.fn();
+			item.neverquestConsumableManager.useItem = jest.fn();
 		});
 
-		it('should call luminusConsumableManager.useItem', () => {
+		it('should call neverquestConsumableManager.useItem', () => {
 			item.consume(mockPlayer);
 
-			expect(item.luminusConsumableManager.useItem).toHaveBeenCalledWith(item, mockPlayer);
+			expect(item.neverquestConsumableManager.useItem).toHaveBeenCalledWith(item, mockPlayer);
 		});
 
 		it('should pass correct item and player', () => {
 			const anotherPlayer = { ...mockPlayer };
 			item.consume(anotherPlayer);
 
-			expect(item.luminusConsumableManager.useItem).toHaveBeenCalledWith(item, anotherPlayer);
+			expect(item.neverquestConsumableManager.useItem).toHaveBeenCalledWith(item, anotherPlayer);
 		});
 	});
 

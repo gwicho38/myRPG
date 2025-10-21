@@ -6,7 +6,7 @@ export default {
 			leftName: 'Game Master',
 			left: true,
 			message:
-				'Welcome to the Luminus RPG, a PhaserJS template for creating Action RPG Games. This is a Work in Progress project, so expect to find Bugs. If you find any, please contact me on the Phaser Discord server @SkyAlpha. I hope you enjoy the experience. Thx for playing.',
+				'Welcome to the Neverquest, a PhaserJS template for creating Action RPG Games. This is a Work in Progress project, so expect to find Bugs. If you find any, please contact me on the Phaser Discord server @SkyAlpha. I hope you enjoy the experience. Thx for playing.',
 			rightPortraitName: '',
 			rightName: '',
 			right: false,
@@ -16,7 +16,7 @@ export default {
 			leftName: 'Lucius',
 			left: true,
 			message:
-				"Oh!!! I see, so this is just a demonstration of what the Luminus RPG Template is capable of. Let's try it out!!",
+				"Oh!!! I see, so this is just a demonstration of what the Neverquest Template is capable of. Let's try it out!!",
 			rightPortraitName: '',
 			rightName: '',
 			right: false,

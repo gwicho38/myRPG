@@ -16,8 +16,8 @@ export interface IPreloadScene extends Phaser.Scene {
 }
 
 export interface IMainScene extends IGameScene {
-	luminusEnemyZones?: any;
-	luminusEnvironmentParticles?: any;
+	neverquestEnemyZones?: any;
+	neverquestEnvironmentParticles?: any;
 }
 
 export interface IDialogScene extends Phaser.Scene {

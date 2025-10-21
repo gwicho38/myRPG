@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { LuminusTiledInfoBox } from '../plugins/LuminusTiledInfoBox';
+import { NeverquestTiledInfoBox } from '../plugins/NeverquestTiledInfoBox';
 import { Player } from '../entities/Player';
 import { IDialogScene } from '../types/SceneTypes';
 
@@ -7,7 +7,7 @@ export class DialogScene extends Phaser.Scene implements IDialogScene {
 	public player: Player | null = null;
 	public map: Phaser.Tilemaps.Tilemap | null = null;
 	public mainScene: Phaser.Scene | null = null;
-	public luminusTiledInfoBox!: LuminusTiledInfoBox;
+	public neverquestTiledInfoBox!: NeverquestTiledInfoBox;
 
 	constructor() {
 		super({
@@ -22,12 +22,12 @@ export class DialogScene extends Phaser.Scene implements IDialogScene {
 	}
 
 	create(): void {
-		this.luminusTiledInfoBox = new LuminusTiledInfoBox(this.mainScene!, this.player!, this.map!, this);
-		this.luminusTiledInfoBox.create();
+		this.neverquestTiledInfoBox = new NeverquestTiledInfoBox(this.mainScene!, this.player!, this.map!, this);
+		this.neverquestTiledInfoBox.create();
 
 		this.scale.on('resize', (resize: { width: number; height: number }) => {
-			if (this.luminusTiledInfoBox && this.luminusTiledInfoBox.luminusDialogBox) {
-				this.luminusTiledInfoBox.luminusDialogBox.resizeComponents(resize.width, resize.height);
+			if (this.neverquestTiledInfoBox && this.neverquestTiledInfoBox.neverquestDialogBox) {
+				this.neverquestTiledInfoBox.neverquestDialogBox.resizeComponents(resize.width, resize.height);
 			}
 		});
 
@@ -37,6 +37,6 @@ export class DialogScene extends Phaser.Scene implements IDialogScene {
 	}
 
 	update(): void {
-		if (this.luminusTiledInfoBox) this.luminusTiledInfoBox.luminusDialogBox.checkUpdate();
+		if (this.neverquestTiledInfoBox) this.neverquestTiledInfoBox.neverquestDialogBox.checkUpdate();
 	}
 }

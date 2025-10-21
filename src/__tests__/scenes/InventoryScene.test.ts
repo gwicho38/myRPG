@@ -1,16 +1,16 @@
 import { InventoryScene, InventorySceneName } from '../../scenes/InventoryScene';
-import { LuminusInterfaceController } from '../../plugins/LuminusInterfaceController';
+import { NeverquestInterfaceController } from '../../plugins/NeverquestInterfaceController';
 import { PanelComponent } from '../../components/PanelComponent';
 import { InfoBox } from '../../components/InfoBox';
 import { Item } from '../../entities/Item';
-import { LuminusUtils } from '../../utils/LuminusUtils';
+import { NeverquestUtils } from '../../utils/NeverquestUtils';
 
 // Mock dependencies
-jest.mock('../../plugins/LuminusInterfaceController');
+jest.mock('../../plugins/NeverquestInterfaceController');
 jest.mock('../../components/PanelComponent');
 jest.mock('../../components/InfoBox');
 jest.mock('../../entities/Item');
-jest.mock('../../utils/LuminusUtils');
+jest.mock('../../utils/NeverquestUtils');
 
 describe('InventoryScene', () => {
 	let scene: InventoryScene;
@@ -147,7 +147,7 @@ describe('InventoryScene', () => {
 		};
 		(PanelComponent as jest.Mock).mockImplementation(() => mockPanelInstance);
 
-		// Mock LuminusInterfaceController
+		// Mock NeverquestInterfaceController
 		const mockInterfaceController = {
 			interfaceElements: [[]] as any[][],
 			closeAction: null as any,
@@ -156,7 +156,7 @@ describe('InventoryScene', () => {
 			updateHighlightedElement: jest.fn(),
 			recoverPositionFromPrevious: jest.fn(),
 		};
-		(LuminusInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
+		(NeverquestInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
 
 		// Mock Item
 		(Item as unknown as jest.Mock).mockImplementation(() => ({
@@ -174,8 +174,8 @@ describe('InventoryScene', () => {
 			consume: jest.fn(),
 		}));
 
-		// Mock LuminusUtils
-		(LuminusUtils.isMobile as jest.Mock) = jest.fn(() => false);
+		// Mock NeverquestUtils
+		(NeverquestUtils.isMobile as jest.Mock) = jest.fn(() => false);
 
 		// Create scene instance
 		scene = new InventoryScene();
@@ -253,9 +253,9 @@ describe('InventoryScene', () => {
 			scene.create();
 		});
 
-		it('should create LuminusInterfaceController', () => {
-			expect(LuminusInterfaceController).toHaveBeenCalledWith(scene);
-			expect(scene.luminusInterfaceController).toBeDefined();
+		it('should create NeverquestInterfaceController', () => {
+			expect(NeverquestInterfaceController).toHaveBeenCalledWith(scene);
+			expect(scene.neverquestInterfaceController).toBeDefined();
 		});
 
 		it('should create PanelComponent', () => {
@@ -305,13 +305,13 @@ describe('InventoryScene', () => {
 		});
 
 		it('should setup interface controller elements for slots', () => {
-			expect(scene.luminusInterfaceController.interfaceElements[1]).toBeDefined();
-			expect(scene.luminusInterfaceController.interfaceElements[1].length).toBeGreaterThan(0);
+			expect(scene.neverquestInterfaceController.interfaceElements[1]).toBeDefined();
+			expect(scene.neverquestInterfaceController.interfaceElements[1].length).toBeGreaterThan(0);
 		});
 
 		it('should set current element action for first slot', () => {
-			expect(scene.luminusInterfaceController.currentElementAction).toBeDefined();
-			expect(scene.luminusInterfaceController.currentLinePosition).toBe(1);
+			expect(scene.neverquestInterfaceController.currentElementAction).toBeDefined();
+			expect(scene.neverquestInterfaceController.currentLinePosition).toBe(1);
 		});
 	});
 
@@ -352,8 +352,8 @@ describe('InventoryScene', () => {
 		});
 
 		it('should setup interface controller close action', () => {
-			expect(scene.luminusInterfaceController.closeAction).toBeDefined();
-			expect(scene.luminusInterfaceController.closeAction.action).toBe('stopScene');
+			expect(scene.neverquestInterfaceController.closeAction).toBeDefined();
+			expect(scene.neverquestInterfaceController.closeAction.action).toBe('stopScene');
 		});
 	});
 
@@ -423,7 +423,7 @@ describe('InventoryScene', () => {
 				width: 50,
 				height: 50,
 			};
-			scene.luminusInterfaceController.currentElementAction = { element: mockSlot } as any;
+			scene.neverquestInterfaceController.currentElementAction = { element: mockSlot } as any;
 			scene.helpPanel = null;
 
 			scene.toggleInfoBox();
@@ -614,7 +614,7 @@ describe('InventoryScene', () => {
 			scene.create();
 
 			expect(scene.player).toBe(mockPlayer);
-			expect(scene.luminusInterfaceController).toBeDefined();
+			expect(scene.neverquestInterfaceController).toBeDefined();
 			expect(scene.panelComponent).toBeDefined();
 			expect(scene.slots.length).toBeGreaterThan(0);
 			expect(scene.closeButton).toBeDefined();
@@ -638,7 +638,7 @@ describe('InventoryScene', () => {
 			scene.init({ player: mockPlayer, isReset: true, interfaceControler: mockCachedController });
 			scene.create();
 
-			expect(scene.luminusInterfaceController.recoverPositionFromPrevious).toHaveBeenCalledWith(
+			expect(scene.neverquestInterfaceController.recoverPositionFromPrevious).toHaveBeenCalledWith(
 				mockCachedController
 			);
 		});

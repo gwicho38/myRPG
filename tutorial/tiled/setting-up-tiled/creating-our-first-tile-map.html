@@ -165,7 +165,7 @@ hljs.initLineNumbersOnLoad();
 <p><a href="https://i.ibb.co/PxFBBbH/Screen-Shot-2021-04-08-at-15-59-48.png" target="_blank"><img src="https://i.ibb.co/PxFBBbH/Screen-Shot-2021-04-08-at-15-59-48.png" alt="" class="center" /></a></p>
 <p>Save it and export it as a json file to the same folder that you save the .tmx file.</p>
 <p><a href="https://i.ibb.co/ZN8wcmT/Screen-Shot-2021-04-08-at-16-02-19.png" target="_blank"><img src="https://i.ibb.co/ZN8wcmT/Screen-Shot-2021-04-08-at-16-02-19.png" alt="" class="center" /></a></p>
-<p>Now let's open up the Luminus RPG Template and create a new Scene under the <code>src/scenes</code> folder</p>
+<p>Now let's open up the Neverquest Template and create a new Scene under the <code>src/scenes</code> folder</p>
 <pre><code>export class TutorialScene extends Phaser.Scene {
     constructor() {
         super({
@@ -202,9 +202,9 @@ import tutorial_map_json from '../assets/maps/tutorial/tutorial.json';</code></p
     },
     ];</code></pre>
 <p>Markdown those names, you will need them now.</p>
-<p>On your Scene file, you should create the LuminusMapCreator object like this.</p>
+<p>On your Scene file, you should create the NeverquestMapCreator object like this.</p>
 <pre><code>import { TilesetImageConfig } from '../models/TilesetImageConfig';
-import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
+import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
 
 export class TutorialScene extends Phaser.Scene {
     constructor() {
@@ -214,7 +214,7 @@ export class TutorialScene extends Phaser.Scene {
     }
 
     create() {
-        let map = new LuminusMapCreator(this);
+        let map = new NeverquestMapCreator(this);
         map.mapName = 'tutorial';
         map.tilesetImages = [
             new TilesetImageConfig(
@@ -238,7 +238,7 @@ export class TutorialScene extends Phaser.Scene {
 <p><a href="https://i.ibb.co/SNpQyr1/Screen-Shot-2021-04-08-at-16-26-20.png" target="_blank"><img src="https://i.ibb.co/SNpQyr1/Screen-Shot-2021-04-08-at-16-26-20.png" alt="" class="center" /></a></p>
 <p>If you're seeing something like the picture above, set your camera to center on 0</p>
 <pre><code>import { TilesetImageConfig } from '../models/TilesetImageConfig';
-import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
+import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
 
 export class TutorialScene extends Phaser.Scene {
     constructor() {
@@ -248,7 +248,7 @@ export class TutorialScene extends Phaser.Scene {
     }
 
     create() {
-        let map = new LuminusMapCreator(this);
+        let map = new NeverquestMapCreator(this);
         map.mapName = 'tutorial';
         map.tilesetImages = [
             new TilesetImageConfig(

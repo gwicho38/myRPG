@@ -1,4 +1,4 @@
-# Luminus RPG - Feature Roadmap & Development Plan
+# Neverquest - Feature Roadmap & Development Plan
 
 **Version:** 0.3.0 Planning
 **Date:** 2025-10-09
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Luminus RPG is evolving from a basic dungeon crawler into a feature-rich action RPG with multiple biomes, intelligent AI, atmospheric effects, and roguelike progression. This roadmap outlines features, improvements, and a structured plan for the next major releases.
+Neverquest is evolving from a basic dungeon crawler into a feature-rich action RPG with multiple biomes, intelligent AI, atmospheric effects, and roguelike progression. This roadmap outlines features, improvements, and a structured plan for the next major releases.
 
 ---
 
@@ -52,8 +52,8 @@ Luminus RPG is evolving from a basic dungeon crawler into a feature-rich action 
 
 **Implementation:**
 ```typescript
-// /src/plugins/LuminusPathfinding.ts
-export class LuminusPathfinding {
+// /src/plugins/NeverquestPathfinding.ts
+export class NeverquestPathfinding {
     easystar: EasyStar.js;
 
     findPath(startX: number, startY: number, endX: number, endY: number): Promise<Path> {
@@ -65,9 +65,9 @@ export class LuminusPathfinding {
 ```
 
 **Files to create:**
-- `src/plugins/LuminusPathfinding.ts`
+- `src/plugins/NeverquestPathfinding.ts`
 - `src/plugins/ai/EnemyBehaviors.ts`
-- `src/__tests__/plugins/LuminusPathfinding.test.ts`
+- `src/__tests__/plugins/NeverquestPathfinding.test.ts`
 
 **Effort:** 3-4 days
 
@@ -90,7 +90,7 @@ export class LuminusPathfinding {
 - Enemy alerting behavior
 
 **Files to create:**
-- `src/plugins/LuminusLineOfSight.ts`
+- `src/plugins/NeverquestLineOfSight.ts`
 - `src/utils/VisibilityPolygon.ts` (adapt from examples)
 
 **Effort:** 2-3 days
@@ -116,8 +116,8 @@ export class LuminusPathfinding {
 
 **Technical Approach:**
 ```typescript
-// /src/plugins/LuminusLighting.ts
-export class LuminusLighting {
+// /src/plugins/NeverquestLighting.ts
+export class NeverquestLighting {
     lightRadius: number = 100;
 
     create() {
@@ -139,7 +139,7 @@ export class LuminusLighting {
 - Consumable torches (burn duration)
 
 **Files to create:**
-- `src/plugins/LuminusLighting.ts`
+- `src/plugins/NeverquestLighting.ts`
 - `src/items/LightSources.ts`
 
 **Effort:** 2 days
@@ -405,7 +405,7 @@ Village (Hub) → Forest → Cave → Town → Desert → Ice Caverns → Volcan
 - Optional objectives (bonus stars)
 
 **Files to create:**
-- `src/plugins/LuminusQuestSystem.ts`
+- `src/plugins/NeverquestQuestSystem.ts`
 - `src/data/quests/MainQuests.ts`
 - `src/data/quests/SideQuests.ts`
 - `src/scenes/QuestLogScene.ts`
@@ -698,7 +698,7 @@ Village (Hub) → Forest → Cave → Town → Desert → Ice Caverns → Volcan
 ### Immediate Actions (Week 1)
 1. ✅ Fix minimap rendering bug
 2. ✅ Install and test easystarjs
-3. ✅ Create LuminusPathfinding plugin stub
+3. ✅ Create NeverquestPathfinding plugin stub
 4. ✅ Write tests for pathfinding
 
 ### Short Term (Weeks 2-4)
@@ -717,7 +717,7 @@ Village (Hub) → Forest → Cave → Town → Desert → Ice Caverns → Volcan
 
 ## Conclusion
 
-Luminus RPG has a solid foundation with procedural generation, combat, and save systems. The roadmap focuses on:
+Neverquest has a solid foundation with procedural generation, combat, and save systems. The roadmap focuses on:
 
 1. **Intelligence** - Smarter AI creates engaging combat
 2. **Atmosphere** - Lighting and effects enhance immersion

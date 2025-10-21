@@ -22,7 +22,12 @@
 			"Bash(cat:*)",
 			"Bash(for map in src/assets/maps/*/)",
 			"Bash(done)",
-			"Bash(find:*)"
+			"Bash(find:*)",
+			"Bash(python3:*)",
+			"Bash(mkdir:*)",
+			"Bash(mv:*)",
+			"Bash(rmdir:*)",
+			"Bash(rm:*)"
 		],
 		"deny": [],
 		"ask": []

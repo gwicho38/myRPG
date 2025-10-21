@@ -1,22 +1,22 @@
 import Phaser from 'phaser';
-import { LuminusWarp } from '../plugins/LuminusWarp';
-import { LuminusObjectMarker } from '../plugins/LuminusObjectMarker';
+import { NeverquestWarp } from '../plugins/NeverquestWarp';
+import { NeverquestObjectMarker } from '../plugins/NeverquestObjectMarker';
 import AnimatedTiles from '../plugins/AnimatedTiles';
-import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentParticles';
-import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
-import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
-import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
+import { NeverquestEnvironmentParticles } from '../plugins/NeverquestEnvironmentParticles';
+import { NeverquestEnemyZones } from '../plugins/NeverquestEnemyZones';
+import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
+import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
 
 export class OverworldScene extends Phaser.Scene {
 	player: any;
-	mapCreator: LuminusMapCreator | null;
+	mapCreator: NeverquestMapCreator | null;
 	map: Phaser.Tilemaps.Tilemap | null;
 	joystickScene: Phaser.Scene | null;
-	particles: LuminusEnvironmentParticles | null;
+	particles: NeverquestEnvironmentParticles | null;
 	themeSound: Phaser.Sound.BaseSound | null;
 	enemies: any[];
-	luminusEnemyZones: LuminusEnemyZones | null;
-	saveManager: LuminusSaveManager | null;
+	neverquestEnemyZones: NeverquestEnemyZones | null;
+	saveManager: NeverquestSaveManager | null;
 
 	constructor() {
 		super({
@@ -29,7 +29,7 @@ export class OverworldScene extends Phaser.Scene {
 		this.particles = null;
 		this.themeSound = null;
 		this.enemies = [];
-		this.luminusEnemyZones = null;
+		this.neverquestEnemyZones = null;
 		this.saveManager = null;
 	}
 
@@ -40,7 +40,7 @@ export class OverworldScene extends Phaser.Scene {
 	create(): void {
 		this.cameras.main.setZoom(2.5);
 
-		this.mapCreator = new LuminusMapCreator(this, 'overworld');
+		this.mapCreator = new NeverquestMapCreator(this, 'overworld');
 		this.mapCreator.create();
 
 		// Store map reference for other systems
@@ -52,9 +52,9 @@ export class OverworldScene extends Phaser.Scene {
 		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
 		camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-		const luminusWarp = new LuminusWarp(this, this.player, this.mapCreator.map);
-		luminusWarp.createWarps();
-		const interactiveMarkers = new LuminusObjectMarker(this, this.mapCreator.map);
+		const neverquestWarp = new NeverquestWarp(this, this.player, this.mapCreator.map);
+		neverquestWarp.createWarps();
+		const interactiveMarkers = new NeverquestObjectMarker(this, this.mapCreator.map);
 		interactiveMarkers.create();
 
 		this.scene.launch('DialogScene', {
@@ -68,7 +68,7 @@ export class OverworldScene extends Phaser.Scene {
 		this.scene.launch('HUDScene', { player: this.player, map: this.mapCreator.map });
 
 		(this.sys as any).animatedTiles.init(this.mapCreator.map);
-		this.particles = new LuminusEnvironmentParticles(this, this.mapCreator.map);
+		this.particles = new NeverquestEnvironmentParticles(this, this.mapCreator.map);
 		this.particles.create();
 
 		this.sound.volume = 0.35;
@@ -79,10 +79,10 @@ export class OverworldScene extends Phaser.Scene {
 
 		this.enemies = [];
 
-		this.luminusEnemyZones = new LuminusEnemyZones(this, this.mapCreator.map);
-		this.luminusEnemyZones.create();
+		this.neverquestEnemyZones = new NeverquestEnemyZones(this, this.mapCreator.map);
+		this.neverquestEnemyZones.create();
 
-		this.saveManager = new LuminusSaveManager(this);
+		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
 		this.setupSaveKeybinds();
 	}

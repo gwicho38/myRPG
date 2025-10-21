@@ -1,6 +1,6 @@
-# Luminus RPG - Terminal Edition
+# Neverquest - Terminal Edition
 
-A text-based version of Luminus RPG that runs in modern terminal emulators like Kitty, Ghostty, iTerm2, and more!
+A text-based version of Neverquest that runs in modern terminal emulators like Kitty, Ghostty, iTerm2, and more!
 
 ## Features
 
@@ -237,7 +237,7 @@ Compared to the web version:
 
 ## License
 
-Same as the main Luminus RPG project - MIT License
+Same as the main Neverquest project - MIT License
 
 ---
 

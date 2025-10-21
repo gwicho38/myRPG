@@ -1,12 +1,12 @@
 import { AttributeScene, AttributeSceneName } from '../../scenes/AttributeScene';
-import { LuminusInterfaceController } from '../../plugins/LuminusInterfaceController';
+import { NeverquestInterfaceController } from '../../plugins/NeverquestInterfaceController';
 import { PanelComponent } from '../../components/PanelComponent';
 import { ButtonMinus } from '../../components/UI/ButtonMinus';
 import { ButtonPlus } from '../../components/UI/ButtonPlus';
 import { SceneToggleWatcher } from '../../scenes/watchers/SceneToggleWatcher';
 
 // Mock dependencies
-jest.mock('../../plugins/LuminusInterfaceController');
+jest.mock('../../plugins/NeverquestInterfaceController');
 jest.mock('../../components/PanelComponent');
 jest.mock('../../components/UI/ButtonMinus');
 jest.mock('../../components/UI/ButtonPlus');
@@ -113,7 +113,7 @@ describe('AttributeScene', () => {
 		};
 		(PanelComponent as jest.Mock).mockImplementation(() => mockPanelInstance);
 
-		// Mock LuminusInterfaceController
+		// Mock NeverquestInterfaceController
 		const mockInterfaceController = {
 			interfaceElements: [[[]]] as any[][][],
 			closeAction: null as any,
@@ -121,7 +121,7 @@ describe('AttributeScene', () => {
 			createFirstRow: jest.fn(),
 			updateHighlightedElement: jest.fn(),
 		};
-		(LuminusInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
+		(NeverquestInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
 
 		// Mock ButtonMinus
 		const mockButtonMinus = {
@@ -210,8 +210,8 @@ describe('AttributeScene', () => {
 			scene.create();
 		});
 
-		it('should create LuminusInterfaceController', () => {
-			expect(LuminusInterfaceController).toHaveBeenCalledWith(scene);
+		it('should create NeverquestInterfaceController', () => {
+			expect(NeverquestInterfaceController).toHaveBeenCalledWith(scene);
 			expect(scene.interfaceController).toBeDefined();
 		});
 

@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { ENTITIES } from '../consts/Entities';
 import { AttributesManager } from '../plugins/attributes/AttributesManager';
-import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
-import { LuminusHealthBar } from '../plugins/LuminusHealthBar';
-import { LuminusKeyboardMouseController } from '../plugins/LuminusKeyboardMouseController';
-import { LuminusMovement } from '../plugins/LuminusMovement';
+import { NeverquestHUDProgressBar } from '../plugins/HUD/NeverquestHUDProgressBar';
+import { NeverquestHealthBar } from '../plugins/NeverquestHealthBar';
+import { NeverquestKeyboardMouseController } from '../plugins/NeverquestKeyboardMouseController';
+import { NeverquestMovement } from '../plugins/NeverquestMovement';
 import { IInventoryItem } from '../types/ItemTypes';
 import { BaseEntity, IBaseEntity } from './BaseEntity';
 import { EntityAttributes, IEntityAttributes } from './EntityAttributes';
@@ -38,12 +38,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	public container: Phaser.GameObjects.Container;
 	public speed: number;
 	public items: IInventoryItem[];
-	public healthBar: LuminusHealthBar;
+	public healthBar: NeverquestHealthBar;
 	public walkDust: any;
 	public hitZone: Phaser.GameObjects.Zone;
-	public luminusKeyboardMouseController: LuminusKeyboardMouseController;
-	public luminusMovement: LuminusMovement;
-	public luminusHUDProgressBar: LuminusHUDProgressBar | null = null;
+	public neverquestKeyboardMouseController: NeverquestKeyboardMouseController;
+	public neverquestMovement: NeverquestMovement;
+	public neverquestHUDProgressBar: NeverquestHUDProgressBar | null = null;
 	public joystickScene: any;
 
 	// Original properties from JS version
@@ -101,7 +101,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		/**
 		 * The Health Bar.
 		 */
-		this.healthBar = new LuminusHealthBar(
+		this.healthBar = new NeverquestHealthBar(
 			this.scene,
 			0,
 			0,
@@ -116,8 +116,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		/**
 		 * The class responsible for managing Keyboard and Mouse inputs.
 		 */
-		this.luminusKeyboardMouseController = new LuminusKeyboardMouseController(this.scene, this);
-		this.luminusKeyboardMouseController.create();
+		this.neverquestKeyboardMouseController = new NeverquestKeyboardMouseController(this.scene, this);
+		this.neverquestKeyboardMouseController.create();
 
 		this.scene.scene.launch('JoystickScene', {
 			player: this,
@@ -132,8 +132,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		/**
 		 * This object is responsible for moving the entity.
 		 */
-		this.luminusMovement = new LuminusMovement(this.scene, this, this.joystickScene);
-		console.log('[Player] Constructor - after luminusMovement created:', { canAtack: this.canAtack });
+		this.neverquestMovement = new NeverquestMovement(this.scene, this, this.joystickScene);
+		console.log('[Player] Constructor - after neverquestMovement created:', { canAtack: this.canAtack });
 
 		this.play('character-idle-down');
 
@@ -182,7 +182,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	 */
 	onUpdate(): void {
 		this.updateMovementDependencies();
-		if (this.luminusMovement) this.luminusMovement.move();
+		if (this.neverquestMovement) this.neverquestMovement.move();
 	}
 
 	/**

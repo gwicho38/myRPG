@@ -88,20 +88,20 @@ make open-android  # or npm run open:android
 
 ## Requirements by Platform
 
-| Platform | Requirements |
-|----------|-------------|
-| **Web** | None (just Node.js) |
-| **macOS** | macOS + Xcode |
-| **Windows** | Windows recommended |
-| **Linux** | Any OS with Node.js |
-| **iOS** | macOS + Xcode + Apple Developer Account |
-| **Android** | Android Studio + JDK 17 |
+| Platform    | Requirements                            |
+| ----------- | --------------------------------------- |
+| **Web**     | None (just Node.js)                     |
+| **macOS**   | macOS + Xcode                           |
+| **Windows** | Windows recommended                     |
+| **Linux**   | Any OS with Node.js                     |
+| **iOS**     | macOS + Xcode + Apple Developer Account |
+| **Android** | Android Studio + JDK 17                 |
 
 ## First Time Setup
 
 ```bash
 git clone <repo>
-cd luminus-rpg
+cd neverquest
 npm install
 npm run build
 ```

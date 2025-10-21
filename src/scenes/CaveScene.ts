@@ -1,24 +1,24 @@
 import Phaser from 'phaser';
-import { LuminusWarp } from '../plugins/LuminusWarp';
-import { LuminusObjectMarker } from '../plugins/LuminusObjectMarker';
+import { NeverquestWarp } from '../plugins/NeverquestWarp';
+import { NeverquestObjectMarker } from '../plugins/NeverquestObjectMarker';
 import AnimatedTiles from '../plugins/AnimatedTiles';
-import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentParticles';
-import { LuminusEnemyZones } from '../plugins/LuminusEnemyZones';
-import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
-import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
+import { NeverquestEnvironmentParticles } from '../plugins/NeverquestEnvironmentParticles';
+import { NeverquestEnemyZones } from '../plugins/NeverquestEnemyZones';
+import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
+import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
 import { Player } from '../entities/Player';
 import { IGameScene } from '../types/SceneTypes';
 
 export class CaveScene extends Phaser.Scene implements IGameScene {
 	public player: Player | null = null;
 	public map?: Phaser.Tilemaps.Tilemap;
-	public mapCreator?: LuminusMapCreator;
+	public mapCreator?: NeverquestMapCreator;
 	public joystickScene: any;
-	public particles!: LuminusEnvironmentParticles;
+	public particles!: NeverquestEnvironmentParticles;
 	public themeSound!: Phaser.Sound.BaseSound;
 	public enemies: any[] = [];
-	public luminusEnemyZones!: LuminusEnemyZones;
-	public saveManager!: LuminusSaveManager;
+	public neverquestEnemyZones!: NeverquestEnemyZones;
+	public saveManager!: NeverquestSaveManager;
 
 	constructor() {
 		super({
@@ -33,7 +33,7 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 	create(): void {
 		this.cameras.main.setZoom(2.5);
 
-		this.mapCreator = new LuminusMapCreator(this, 'cave_dungeon');
+		this.mapCreator = new NeverquestMapCreator(this, 'cave_dungeon');
 		this.mapCreator.create();
 
 		// Store map reference for other systems
@@ -45,9 +45,9 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 		// Set camera bounds to match the map size so camera doesn't go beyond the map edges
 		camera.setBounds(0, 0, this.map!.widthInPixels, this.map!.heightInPixels);
 
-		const luminusWarp = new LuminusWarp(this as any, this.player! as any, this.mapCreator.map);
-		luminusWarp.createWarps();
-		const interactiveMarkers = new LuminusObjectMarker(this, this.mapCreator.map);
+		const neverquestWarp = new NeverquestWarp(this as any, this.player! as any, this.mapCreator.map);
+		neverquestWarp.createWarps();
+		const interactiveMarkers = new NeverquestObjectMarker(this, this.mapCreator.map);
 		interactiveMarkers.create();
 
 		this.scene.launch('DialogScene', {
@@ -61,7 +61,7 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 		this.scene.launch('HUDScene', { player: this.player, map: this.mapCreator!.map });
 
 		(this.sys as any).animatedTiles.init(this.mapCreator.map);
-		this.particles = new LuminusEnvironmentParticles(this, this.mapCreator.map);
+		this.particles = new NeverquestEnvironmentParticles(this, this.mapCreator.map);
 		this.particles.create();
 
 		this.sound.volume = 0.35;
@@ -72,10 +72,10 @@ export class CaveScene extends Phaser.Scene implements IGameScene {
 
 		this.enemies = [];
 
-		this.luminusEnemyZones = new LuminusEnemyZones(this, this.mapCreator.map);
-		this.luminusEnemyZones.create();
+		this.neverquestEnemyZones = new NeverquestEnemyZones(this, this.mapCreator.map);
+		this.neverquestEnemyZones.create();
 
-		this.saveManager = new LuminusSaveManager(this);
+		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
 		this.setupSaveKeybinds();
 	}

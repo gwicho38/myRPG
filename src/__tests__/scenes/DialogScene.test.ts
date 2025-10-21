@@ -1,8 +1,8 @@
 import { DialogScene } from '../../scenes/DialogScene';
-import { LuminusTiledInfoBox } from '../../plugins/LuminusTiledInfoBox';
+import { NeverquestTiledInfoBox } from '../../plugins/NeverquestTiledInfoBox';
 
 // Mock dependencies
-jest.mock('../../plugins/LuminusTiledInfoBox');
+jest.mock('../../plugins/NeverquestTiledInfoBox');
 
 describe('DialogScene', () => {
 	let scene: DialogScene;
@@ -11,7 +11,7 @@ describe('DialogScene', () => {
 	let mockPlayer: any;
 	let mockMap: any;
 	let mockMainScene: any;
-	let mockLuminusTiledInfoBox: any;
+	let mockNeverquestTiledInfoBox: any;
 
 	beforeEach(() => {
 		// Mock player
@@ -47,18 +47,18 @@ describe('DialogScene', () => {
 			on: jest.fn(),
 		};
 
-		// Mock LuminusTiledInfoBox instance
+		// Mock NeverquestTiledInfoBox instance
 		const mockDialogBox = {
 			resizeComponents: jest.fn(),
 			checkUpdate: jest.fn(),
 		};
 
-		mockLuminusTiledInfoBox = {
+		mockNeverquestTiledInfoBox = {
 			create: jest.fn(),
-			luminusDialogBox: mockDialogBox,
+			neverquestDialogBox: mockDialogBox,
 		};
 
-		(LuminusTiledInfoBox as jest.Mock).mockImplementation(() => mockLuminusTiledInfoBox);
+		(NeverquestTiledInfoBox as jest.Mock).mockImplementation(() => mockNeverquestTiledInfoBox);
 
 		// Create scene instance
 		scene = new DialogScene();
@@ -106,16 +106,16 @@ describe('DialogScene', () => {
 			scene.create();
 		});
 
-		it('should create LuminusTiledInfoBox with correct arguments', () => {
-			expect(LuminusTiledInfoBox).toHaveBeenCalledWith(mockMainScene, mockPlayer, mockMap, scene);
+		it('should create NeverquestTiledInfoBox with correct arguments', () => {
+			expect(NeverquestTiledInfoBox).toHaveBeenCalledWith(mockMainScene, mockPlayer, mockMap, scene);
 		});
 
-		it('should call create on luminusTiledInfoBox', () => {
-			expect(mockLuminusTiledInfoBox.create).toHaveBeenCalled();
+		it('should call create on neverquestTiledInfoBox', () => {
+			expect(mockNeverquestTiledInfoBox.create).toHaveBeenCalled();
 		});
 
-		it('should store luminusTiledInfoBox reference', () => {
-			expect(scene.luminusTiledInfoBox).toBe(mockLuminusTiledInfoBox);
+		it('should store neverquestTiledInfoBox reference', () => {
+			expect(scene.neverquestTiledInfoBox).toBe(mockNeverquestTiledInfoBox);
 		});
 
 		it('should register resize event listener', () => {
@@ -139,26 +139,26 @@ describe('DialogScene', () => {
 
 			resizeCallback(newSize);
 
-			expect(mockLuminusTiledInfoBox.luminusDialogBox.resizeComponents).toHaveBeenCalledWith(1024, 768);
+			expect(mockNeverquestTiledInfoBox.neverquestDialogBox.resizeComponents).toHaveBeenCalledWith(1024, 768);
 		});
 
-		it('should handle resize when luminusTiledInfoBox exists', () => {
+		it('should handle resize when neverquestTiledInfoBox exists', () => {
 			const resizeCallback = mockScale.on.mock.calls.find((call: any) => call[0] === 'resize')[1];
 			const newSize = { width: 800, height: 600 };
 
 			expect(() => resizeCallback(newSize)).not.toThrow();
 		});
 
-		it('should handle resize gracefully when luminusDialogBox is missing', () => {
-			scene.luminusTiledInfoBox = { ...mockLuminusTiledInfoBox, luminusDialogBox: null };
+		it('should handle resize gracefully when neverquestDialogBox is missing', () => {
+			scene.neverquestTiledInfoBox = { ...mockNeverquestTiledInfoBox, neverquestDialogBox: null };
 			const resizeCallback = mockScale.on.mock.calls.find((call: any) => call[0] === 'resize')[1];
 			const newSize = { width: 800, height: 600 };
 
 			expect(() => resizeCallback(newSize)).not.toThrow();
 		});
 
-		it('should handle resize gracefully when luminusTiledInfoBox is missing', () => {
-			scene.luminusTiledInfoBox = null as any;
+		it('should handle resize gracefully when neverquestTiledInfoBox is missing', () => {
+			scene.neverquestTiledInfoBox = null as any;
 			const resizeCallback = mockScale.on.mock.calls.find((call: any) => call[0] === 'resize')[1];
 			const newSize = { width: 800, height: 600 };
 
@@ -187,11 +187,11 @@ describe('DialogScene', () => {
 
 		it('should call checkUpdate on dialog box', () => {
 			scene.update();
-			expect(mockLuminusTiledInfoBox.luminusDialogBox.checkUpdate).toHaveBeenCalled();
+			expect(mockNeverquestTiledInfoBox.neverquestDialogBox.checkUpdate).toHaveBeenCalled();
 		});
 
-		it('should handle update when luminusTiledInfoBox is null', () => {
-			scene.luminusTiledInfoBox = null as any;
+		it('should handle update when neverquestTiledInfoBox is null', () => {
+			scene.neverquestTiledInfoBox = null as any;
 			expect(() => scene.update()).not.toThrow();
 		});
 
@@ -215,8 +215,8 @@ describe('DialogScene', () => {
 			expect(scene.mainScene).toBe(mockMainScene);
 
 			// Verify plugin creation
-			expect(LuminusTiledInfoBox).toHaveBeenCalledWith(mockMainScene, mockPlayer, mockMap, scene);
-			expect(mockLuminusTiledInfoBox.create).toHaveBeenCalled();
+			expect(NeverquestTiledInfoBox).toHaveBeenCalledWith(mockMainScene, mockPlayer, mockMap, scene);
+			expect(mockNeverquestTiledInfoBox.create).toHaveBeenCalled();
 
 			// Verify event listeners
 			expect(mockScale.on).toHaveBeenCalledWith('resize', expect.any(Function));
@@ -234,8 +234,8 @@ describe('DialogScene', () => {
 			resizeCallback({ width: 1024, height: 768 });
 			resizeCallback({ width: 1920, height: 1080 });
 
-			expect(mockLuminusTiledInfoBox.luminusDialogBox.resizeComponents).toHaveBeenCalledTimes(3);
-			expect(mockLuminusTiledInfoBox.luminusDialogBox.resizeComponents).toHaveBeenCalledWith(1920, 1080);
+			expect(mockNeverquestTiledInfoBox.neverquestDialogBox.resizeComponents).toHaveBeenCalledTimes(3);
+			expect(mockNeverquestTiledInfoBox.neverquestDialogBox.resizeComponents).toHaveBeenCalledWith(1920, 1080);
 		});
 
 		it('should handle update loop continuously', () => {
@@ -247,14 +247,14 @@ describe('DialogScene', () => {
 				scene.update();
 			}
 
-			expect(mockLuminusTiledInfoBox.luminusDialogBox.checkUpdate).toHaveBeenCalledTimes(10);
+			expect(mockNeverquestTiledInfoBox.neverquestDialogBox.checkUpdate).toHaveBeenCalledTimes(10);
 		});
 
-		it('should pass correct scene reference to LuminusTiledInfoBox', () => {
+		it('should pass correct scene reference to NeverquestTiledInfoBox', () => {
 			scene.init({ player: mockPlayer, map: mockMap, scene: mockMainScene });
 			scene.create();
 
-			const callArgs = (LuminusTiledInfoBox as jest.Mock).mock.calls[0];
+			const callArgs = (NeverquestTiledInfoBox as jest.Mock).mock.calls[0];
 			expect(callArgs[0]).toBe(mockMainScene);
 			expect(callArgs[1]).toBe(mockPlayer);
 			expect(callArgs[2]).toBe(mockMap);

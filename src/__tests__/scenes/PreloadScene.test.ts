@@ -1,5 +1,5 @@
 import { PreloadScene } from '../../scenes/PreloadScene';
-import { Images, TilemapConfig, LuminusAudios, AtlasConfig, ASEPRITE_CONFIG } from '../../consts/GameAssets';
+import { Images, TilemapConfig, NeverquestAudios, AtlasConfig, ASEPRITE_CONFIG } from '../../consts/GameAssets';
 import { Animations } from '../../consts/Animations';
 
 describe('PreloadScene', () => {
@@ -146,8 +146,8 @@ describe('PreloadScene', () => {
 			});
 
 			it('should load all audio from config', () => {
-				expect(mockLoad.audio).toHaveBeenCalledTimes(LuminusAudios.length);
-				LuminusAudios.forEach((audio: any) => {
+				expect(mockLoad.audio).toHaveBeenCalledTimes(NeverquestAudios.length);
+				NeverquestAudios.forEach((audio: any) => {
 					expect(mockLoad.audio).toHaveBeenCalledWith(audio.name, audio.audio);
 				});
 			});

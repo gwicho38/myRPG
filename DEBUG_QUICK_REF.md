@@ -12,27 +12,27 @@
 
 ```javascript
 // Help
-luminusDebug.help();
+neverquestDebug.help();
 
 // State dumps
-luminusDebug.quickDump(); // Console output
-luminusDebug.download(); // Download JSON
-luminusDebug.copy(); // Copy to clipboard
+neverquestDebug.quickDump(); // Console output
+neverquestDebug.download(); // Download JSON
+neverquestDebug.copy(); // Copy to clipboard
 
 // Inspect game state
-luminusDebug.scenes(); // Active scenes
-luminusDebug.player(); // Player state
-luminusDebug.enemies(); // Enemy list
+neverquestDebug.scenes(); // Active scenes
+neverquestDebug.player(); // Player state
+neverquestDebug.enemies(); // Enemy list
 
 // Dev cheats
-luminusDebug.teleport(x, y); // Move player
-luminusDebug.setHealth(100); // Set HP
+neverquestDebug.teleport(x, y); // Move player
+neverquestDebug.setHealth(100); // Set HP
 
 // Logging
-luminus.setLogLevel('debug'); // More verbose
-luminus.enableCategory('Battle'); // Filter logs
-luminus.exportLogs(); // Download logs
-luminus.showMemory(); // Memory usage
+neverquest.setLogLevel('debug'); // More verbose
+neverquest.enableCategory('Battle'); // Filter logs
+neverquest.exportLogs(); // Download logs
+neverquest.showMemory(); // Memory usage
 ```
 
 ## 🤖 For Claude/AI Assistance
@@ -61,36 +61,36 @@ When you need help from Claude:
 ```javascript
 // 1. Reproduce bug
 // 2. Capture state
-luminusDebug.download();
+neverquestDebug.download();
 
 // 3. Check errors
-const dump = luminusDebug.dump();
+const dump = neverquestDebug.dump();
 dump.errors;
 
 // 4. Check relevant logs
-luminus.enableCategory('Battle');
+neverquest.enableCategory('Battle');
 ```
 
 ### Feature Development
 
 ```javascript
 // 1. Enable debug logging
-luminus.setLogLevel('debug');
-luminus.enableCategory('YourFeature');
+neverquest.setLogLevel('debug');
+neverquest.enableCategory('YourFeature');
 
 // 2. Test feature
 // 3. Verify state
-luminusDebug.quickDump();
+neverquestDebug.quickDump();
 
 // 4. Export logs
-luminus.exportLogs();
+neverquest.exportLogs();
 ```
 
 ### Performance Check
 
 ```javascript
-luminus.showMemory();
-const dump = luminusDebug.dump();
+neverquest.showMemory();
+const dump = neverquestDebug.dump();
 dump.metadata.performance;
 ```
 

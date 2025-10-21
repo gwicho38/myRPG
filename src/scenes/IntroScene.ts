@@ -65,16 +65,16 @@ export class IntroScene extends Phaser.Scene {
 	logoPhaserFontFamily: string;
 
 	/**
-	 * The Luminus logo sprite / texture name
+	 * The Neverquest logo sprite / texture name
 	 * @default
 	 */
-	luminusLogo: string;
+	neverquestLogo: string;
 
 	/**
-	 * The Luminus logo Text.
+	 * The Neverquest logo Text.
 	 * @default
 	 */
-	luminusLogoText: string;
+	neverquestLogoText: string;
 
 	/**
 	 * Particles Sprite / Texture name.
@@ -83,16 +83,16 @@ export class IntroScene extends Phaser.Scene {
 	particlesSpriteName: string;
 
 	/**
-	 * The Luminus Logo font Family.
+	 * The Neverquest Logo font Family.
 	 * @default
 	 */
-	luminusLogoFontFamily: string;
+	neverquestLogoFontFamily: string;
 
 	/**
-	 * The font size of the text above the luminus logo.
+	 * The font size of the text above the neverquest logo.
 	 * @default
 	 */
-	luminusLogoFontSize: string;
+	neverquestLogoFontSize: string;
 
 	/**
 	 * Returns if the device is mobile
@@ -122,11 +122,11 @@ export class IntroScene extends Phaser.Scene {
 		this.phaserLogoSpriteName = 'logo_phaser';
 		this.phaserLogoText = 'Proudly created with';
 		this.logoPhaserFontFamily = "'Press Start 2P'";
-		this.luminusLogo = 'luminus_candle';
-		this.luminusLogoText = 'Luminus Game Studio';
+		this.neverquestLogo = 'neverquest_candle';
+		this.neverquestLogoText = 'Neverquest Game Studio';
 		this.particlesSpriteName = 'flares';
-		this.luminusLogoFontFamily = "'Press Start 2P'";
-		this.luminusLogoFontSize = '25px';
+		this.neverquestLogoFontFamily = "'Press Start 2P'";
+		this.neverquestLogoFontSize = '25px';
 		this.isMobile = null;
 		this.tweensCompleted = 0;
 		this.totalTweens = 2;
@@ -141,7 +141,7 @@ export class IntroScene extends Phaser.Scene {
 
 		// LOGO Part.
 		this.createPhaserLogo();
-		this.createLuminusLogo();
+		this.createNeverquestLogo();
 
 		// this.input.on('pointerdown', (pointer) => {
 		//     this.timeline.destroy();
@@ -238,17 +238,17 @@ export class IntroScene extends Phaser.Scene {
 		});
 	}
 
-	createLuminusLogo(): void {
-		this.studioImage = this.add.image(this.centerX, this.centerY, this.luminusLogo);
+	createNeverquestLogo(): void {
+		this.studioImage = this.add.image(this.centerX, this.centerY, this.neverquestLogo);
 		this.studioImage.alpha = 0;
 
 		this.studioText = this.add.text(
 			this.centerX,
 			this.centerY - this.studioImage.height / 2 - 60,
-			this.luminusLogoText,
+			this.neverquestLogoText,
 			{
-				fontFamily: this.luminusLogoFontFamily,
-				fontSize: this.luminusLogoFontSize,
+				fontFamily: this.neverquestLogoFontFamily,
+				fontSize: this.neverquestLogoFontSize,
 			}
 		);
 		this.studioText.setOrigin(0.5, 0.5);

@@ -1,13 +1,13 @@
 /**
- * Comprehensive Debug Helper for Luminus RPG
+ * Comprehensive Debug Helper for Neverquest
  *
  * This utility provides a full game state dump that can be used by Claude or developers
  * to understand the current state of the game, debug issues, and develop new features.
  *
  * Usage:
  * - Press F9 to dump state to console and download
- * - Use window.luminusDebug.dump() in console
- * - Use window.luminusDebug.copyToClipboard() to copy state to clipboard
+ * - Use window.neverquestDebug.dump() in console
+ * - Use window.neverquestDebug.copyToClipboard() to copy state to clipboard
  */
 
 import { logger, GameLogCategory } from './Logger';
@@ -219,7 +219,7 @@ class DebugHelper {
 		sceneManager.scenes.forEach((scene: any) => {
 			const plugins = Object.keys(scene).filter(
 				(key) =>
-					scene[key] && typeof scene[key] === 'object' && scene[key].constructor?.name?.includes('Luminus')
+					scene[key] && typeof scene[key] === 'object' && scene[key].constructor?.name?.includes('Neverquest')
 			);
 
 			scenes.push({
@@ -474,7 +474,7 @@ class DebugHelper {
 	quickDump(): void {
 		const dump = this.dump();
 
-		console.group('🎮 Luminus RPG Debug Dump');
+		console.group('🎮 Neverquest Debug Dump');
 		console.log('⏰ Timestamp:', dump.metadata.timestamp);
 		console.log('🎬 Active Scene:', dump.metadata.activeScene);
 		console.log('📊 Performance:', dump.metadata.performance);
@@ -498,7 +498,7 @@ class DebugHelper {
 		const dump = this.dump();
 		const dataStr = JSON.stringify(dump, null, 2);
 		const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-		const exportFileDefaultName = `luminus-debug-${Date.now()}.json`;
+		const exportFileDefaultName = `neverquest-debug-${Date.now()}.json`;
 
 		const linkElement = document.createElement('a');
 		linkElement.setAttribute('href', dataUri);
@@ -703,7 +703,7 @@ class DebugHelper {
 		const endX = Math.min(map.width, desiredEndX);
 		const endY = Math.min(map.height, desiredEndY);
 
-		// Use CLAMPED range for both tile and marker positioning (matching LuminusMinimap)
+		// Use CLAMPED range for both tile and marker positioning (matching NeverquestMinimap)
 		// This fills the minimap with only the visible tiles
 		const actualTileRangeX = endX - startX;
 		const actualTileRangeY = endY - startY;
@@ -794,7 +794,7 @@ class DebugHelper {
 	setupConsoleCommands(): void {
 		if (typeof window === 'undefined' || !this.isEnabled) return;
 
-		(window as any).luminusDebug = {
+		(window as any).neverquestDebug = {
 			dump: () => this.dump(),
 			quickDump: () => this.quickDump(),
 			download: () => this.dumpAndDownload(),
@@ -808,7 +808,7 @@ class DebugHelper {
 			giveItem: (itemId: string, quantity?: number) => this.giveItem(itemId, quantity),
 			help: () => {
 				console.log(`
-🎮 Luminus Debug Commands
+🎮 Neverquest Debug Commands
 ========================
 
 Keyboard Shortcuts:
@@ -817,26 +817,26 @@ Keyboard Shortcuts:
   F11 - Toggle performance overlay
 
 Console Commands:
-  luminusDebug.dump()           - Get full state dump object
-  luminusDebug.quickDump()      - Print formatted dump to console
-  luminusDebug.download()       - Download dump as JSON file
-  luminusDebug.copy()           - Copy dump to clipboard
-  luminusDebug.scenes()         - List active scenes
-  luminusDebug.player()         - Get player info
-  luminusDebug.enemies()        - Get enemy info
-  luminusDebug.minimap()        - Get minimap debug info
-  luminusDebug.teleport(x, y)   - Teleport player
-  luminusDebug.setHealth(hp)    - Set player health
-  luminusDebug.giveItem(id, qty) - Give item to player
-  luminusDebug.help()           - Show this help
+  neverquestDebug.dump()           - Get full state dump object
+  neverquestDebug.quickDump()      - Print formatted dump to console
+  neverquestDebug.download()       - Download dump as JSON file
+  neverquestDebug.copy()           - Copy dump to clipboard
+  neverquestDebug.scenes()         - List active scenes
+  neverquestDebug.player()         - Get player info
+  neverquestDebug.enemies()        - Get enemy info
+  neverquestDebug.minimap()        - Get minimap debug info
+  neverquestDebug.teleport(x, y)   - Teleport player
+  neverquestDebug.setHealth(hp)    - Set player health
+  neverquestDebug.giveItem(id, qty) - Give item to player
+  neverquestDebug.help()           - Show this help
 
-Also available: window.luminus (logger commands)
+Also available: window.neverquest (logger commands)
 				`);
 			},
 		};
 
-		console.log('🎮 Luminus Debug Helper initialized');
-		console.log('   Use luminusDebug.help() for available commands');
+		console.log('🎮 Neverquest Debug Helper initialized');
+		console.log('   Use neverquestDebug.help() for available commands');
 		console.log('   Press F9 for full debug dump, F10 for quick dump');
 	}
 }

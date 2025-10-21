@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import { LuminusSoundManager } from '../plugins/LuminusSoundManager';
+import { NeverquestSoundManager } from '../plugins/NeverquestSoundManager';
 import { PanelComponent } from '../components/PanelComponent';
 
 const COLOR_LIGHT = 0x7b5e57;
 const COLOR_DARK = 0x260e04;
 
 export class SettingScene extends Phaser.Scene {
-	luminusSoundManager: LuminusSoundManager | null;
+	neverquestSoundManager: NeverquestSoundManager | null;
 	margin: number;
 	dialogXPosition: number;
 	dialogYPosition: number;
@@ -36,7 +36,7 @@ export class SettingScene extends Phaser.Scene {
 			key: 'SettingScene',
 		});
 
-		this.luminusSoundManager = null;
+		this.neverquestSoundManager = null;
 		this.margin = 10;
 		this.dialogXPosition = this.margin;
 		this.dialogYPosition = 75;
@@ -62,8 +62,8 @@ export class SettingScene extends Phaser.Scene {
 	}
 
 	create(): void {
-		this.luminusSoundManager = new LuminusSoundManager(this);
-		this.luminusSoundManager.create();
+		this.neverquestSoundManager = new NeverquestSoundManager(this);
+		this.neverquestSoundManager.create();
 		this.panelComponent = new PanelComponent(this);
 		this.panelComponent.setTitleText('Settings');
 
@@ -108,14 +108,14 @@ export class SettingScene extends Phaser.Scene {
 				width: this.sliderWidth,
 				height: this.sliderHeight,
 				orientation: 'x',
-				value: this.luminusSoundManager!.getVolume(),
+				value: this.neverquestSoundManager!.getVolume(),
 
 				track: this.rexUI.add.roundRectangle(0, 0, 0, 0, 6, COLOR_DARK),
 				thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
 
 				valuechangeCallback: (value: number) => {
 					this.textAudioSlider!.text = `Audio: ${parseFloat(value.toFixed(1)) * 100}`;
-					this.luminusSoundManager!.setVolume(value);
+					this.neverquestSoundManager!.setVolume(value);
 				},
 				space: {
 					top: 4,

@@ -1,4 +1,4 @@
-import { LuminusUtils } from '../../utils/LuminusUtils';
+import { NeverquestUtils } from '../../utils/NeverquestUtils';
 
 export class ButtonPlus extends Phaser.GameObjects.Sprite {
 	scene: Phaser.Scene;
@@ -14,7 +14,7 @@ export class ButtonPlus extends Phaser.GameObjects.Sprite {
 		this.scene.add.existing(this);
 		this.setInteractive();
 		this.on('pointerdown', (_pointer: Phaser.Input.Pointer) => {
-			LuminusUtils.executeFunctionByName(action, scene, args);
+			NeverquestUtils.executeFunctionByName(action, scene, args);
 			this.play({ key: 'touch_button_plus' }).once(
 				Phaser.Animations.Events.ANIMATION_COMPLETE,
 				(_animationState: Phaser.Animations.AnimationState, _frame: Phaser.Animations.AnimationFrame) => {

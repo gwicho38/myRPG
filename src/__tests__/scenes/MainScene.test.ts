@@ -1,19 +1,19 @@
 import { MainScene } from '../../scenes/MainScene';
-import { LuminusMapCreator } from '../../plugins/LuminusMapCreator';
-import { LuminusWarp } from '../../plugins/LuminusWarp';
-import { LuminusObjectMarker } from '../../plugins/LuminusObjectMarker';
-import { LuminusEnvironmentParticles } from '../../plugins/LuminusEnvironmentParticles';
-import { LuminusEnemyZones } from '../../plugins/LuminusEnemyZones';
-import { LuminusSaveManager } from '../../plugins/LuminusSaveManager';
+import { NeverquestMapCreator } from '../../plugins/NeverquestMapCreator';
+import { NeverquestWarp } from '../../plugins/NeverquestWarp';
+import { NeverquestObjectMarker } from '../../plugins/NeverquestObjectMarker';
+import { NeverquestEnvironmentParticles } from '../../plugins/NeverquestEnvironmentParticles';
+import { NeverquestEnemyZones } from '../../plugins/NeverquestEnemyZones';
+import { NeverquestSaveManager } from '../../plugins/NeverquestSaveManager';
 import AnimatedTiles from '../../plugins/AnimatedTiles';
 
 // Mock all plugin dependencies
-jest.mock('../../plugins/LuminusMapCreator');
-jest.mock('../../plugins/LuminusWarp');
-jest.mock('../../plugins/LuminusObjectMarker');
-jest.mock('../../plugins/LuminusEnvironmentParticles');
-jest.mock('../../plugins/LuminusEnemyZones');
-jest.mock('../../plugins/LuminusSaveManager');
+jest.mock('../../plugins/NeverquestMapCreator');
+jest.mock('../../plugins/NeverquestWarp');
+jest.mock('../../plugins/NeverquestObjectMarker');
+jest.mock('../../plugins/NeverquestEnvironmentParticles');
+jest.mock('../../plugins/NeverquestEnemyZones');
+jest.mock('../../plugins/NeverquestSaveManager');
 jest.mock('../../plugins/AnimatedTiles');
 
 describe('MainScene', () => {
@@ -88,44 +88,44 @@ describe('MainScene', () => {
 			},
 		};
 
-		// Mock LuminusMapCreator
+		// Mock NeverquestMapCreator
 		const mockMapCreatorInstance = {
 			create: jest.fn(),
 			map: mockMap,
 			player: mockPlayer,
 		};
 
-		(LuminusMapCreator as jest.Mock).mockImplementation(() => mockMapCreatorInstance);
+		(NeverquestMapCreator as jest.Mock).mockImplementation(() => mockMapCreatorInstance);
 
-		// Mock LuminusWarp
+		// Mock NeverquestWarp
 		const mockWarpInstance = {
 			createWarps: jest.fn(),
 		};
 
-		(LuminusWarp as jest.Mock).mockImplementation(() => mockWarpInstance);
+		(NeverquestWarp as jest.Mock).mockImplementation(() => mockWarpInstance);
 
-		// Mock LuminusObjectMarker
+		// Mock NeverquestObjectMarker
 		const mockObjectMarkerInstance = {
 			create: jest.fn(),
 		};
 
-		(LuminusObjectMarker as jest.Mock).mockImplementation(() => mockObjectMarkerInstance);
+		(NeverquestObjectMarker as jest.Mock).mockImplementation(() => mockObjectMarkerInstance);
 
-		// Mock LuminusEnvironmentParticles
+		// Mock NeverquestEnvironmentParticles
 		const mockParticlesInstance = {
 			create: jest.fn(),
 		};
 
-		(LuminusEnvironmentParticles as jest.Mock).mockImplementation(() => mockParticlesInstance);
+		(NeverquestEnvironmentParticles as jest.Mock).mockImplementation(() => mockParticlesInstance);
 
-		// Mock LuminusEnemyZones
+		// Mock NeverquestEnemyZones
 		const mockEnemyZonesInstance = {
 			create: jest.fn(),
 		};
 
-		(LuminusEnemyZones as jest.Mock).mockImplementation(() => mockEnemyZonesInstance);
+		(NeverquestEnemyZones as jest.Mock).mockImplementation(() => mockEnemyZonesInstance);
 
-		// Mock LuminusSaveManager
+		// Mock NeverquestSaveManager
 		const mockSaveManagerInstance = {
 			create: jest.fn(),
 			saveGame: jest.fn(),
@@ -135,7 +135,7 @@ describe('MainScene', () => {
 			showSaveNotification: jest.fn(),
 		};
 
-		(LuminusSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);
+		(NeverquestSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);
 
 		// Create scene instance
 		scene = new MainScene();
@@ -167,7 +167,7 @@ describe('MainScene', () => {
 			expect(freshScene.particles).toBeNull();
 			expect(freshScene.themeSound).toBeNull();
 			expect(freshScene.enemies).toEqual([]);
-			expect(freshScene.luminusEnemyZones).toBeNull();
+			expect(freshScene.neverquestEnemyZones).toBeNull();
 			expect(freshScene.saveManager).toBeNull();
 		});
 	});
@@ -200,8 +200,8 @@ describe('MainScene', () => {
 		});
 
 		describe('Map Creation', () => {
-			it('should create LuminusMapCreator', () => {
-				expect(LuminusMapCreator).toHaveBeenCalledWith(scene);
+			it('should create NeverquestMapCreator', () => {
+				expect(NeverquestMapCreator).toHaveBeenCalledWith(scene);
 				expect(scene.mapCreator).not.toBeNull();
 			});
 
@@ -215,23 +215,23 @@ describe('MainScene', () => {
 		});
 
 		describe('Warp System', () => {
-			it('should create LuminusWarp', () => {
-				expect(LuminusWarp).toHaveBeenCalledWith(scene, scene.player, scene.mapCreator?.map);
+			it('should create NeverquestWarp', () => {
+				expect(NeverquestWarp).toHaveBeenCalledWith(scene, scene.player, scene.mapCreator?.map);
 			});
 
 			it('should call createWarps()', () => {
-				const warpInstance = (LuminusWarp as jest.Mock).mock.results[0].value;
+				const warpInstance = (NeverquestWarp as jest.Mock).mock.results[0].value;
 				expect(warpInstance.createWarps).toHaveBeenCalled();
 			});
 		});
 
 		describe('Interactive Markers', () => {
-			it('should create LuminusObjectMarker', () => {
-				expect(LuminusObjectMarker).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
+			it('should create NeverquestObjectMarker', () => {
+				expect(NeverquestObjectMarker).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
 			});
 
 			it('should call create() on object markers', () => {
-				const markerInstance = (LuminusObjectMarker as jest.Mock).mock.results[0].value;
+				const markerInstance = (NeverquestObjectMarker as jest.Mock).mock.results[0].value;
 				expect(markerInstance.create).toHaveBeenCalled();
 			});
 		});
@@ -265,8 +265,8 @@ describe('MainScene', () => {
 		});
 
 		describe('Environment Particles', () => {
-			it('should create LuminusEnvironmentParticles', () => {
-				expect(LuminusEnvironmentParticles).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
+			it('should create NeverquestEnvironmentParticles', () => {
+				expect(NeverquestEnvironmentParticles).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
 				expect(scene.particles).not.toBeNull();
 			});
 
@@ -295,19 +295,19 @@ describe('MainScene', () => {
 				expect(scene.enemies).toEqual([]);
 			});
 
-			it('should create LuminusEnemyZones', () => {
-				expect(LuminusEnemyZones).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
-				expect(scene.luminusEnemyZones).not.toBeNull();
+			it('should create NeverquestEnemyZones', () => {
+				expect(NeverquestEnemyZones).toHaveBeenCalledWith(scene, scene.mapCreator?.map);
+				expect(scene.neverquestEnemyZones).not.toBeNull();
 			});
 
 			it('should call enemyZones.create()', () => {
-				expect(scene.luminusEnemyZones?.create).toHaveBeenCalled();
+				expect(scene.neverquestEnemyZones?.create).toHaveBeenCalled();
 			});
 		});
 
 		describe('Save System', () => {
-			it('should create LuminusSaveManager', () => {
-				expect(LuminusSaveManager).toHaveBeenCalledWith(scene);
+			it('should create NeverquestSaveManager', () => {
+				expect(NeverquestSaveManager).toHaveBeenCalledWith(scene);
 				expect(scene.saveManager).not.toBeNull();
 			});
 
@@ -509,7 +509,7 @@ describe('MainScene', () => {
 			const callOrder: string[] = [];
 
 			// Track creation order
-			(LuminusMapCreator as jest.Mock).mockImplementation((s) => {
+			(NeverquestMapCreator as jest.Mock).mockImplementation((s) => {
 				callOrder.push('MapCreator');
 				return {
 					create: jest.fn(() => callOrder.push('MapCreator.create')),
@@ -517,27 +517,27 @@ describe('MainScene', () => {
 				};
 			});
 
-			(LuminusWarp as jest.Mock).mockImplementation(() => {
+			(NeverquestWarp as jest.Mock).mockImplementation(() => {
 				callOrder.push('Warp');
 				return { createWarps: jest.fn(() => callOrder.push('Warp.createWarps')) };
 			});
 
-			(LuminusObjectMarker as jest.Mock).mockImplementation(() => {
+			(NeverquestObjectMarker as jest.Mock).mockImplementation(() => {
 				callOrder.push('ObjectMarker');
 				return { create: jest.fn(() => callOrder.push('ObjectMarker.create')) };
 			});
 
-			(LuminusEnvironmentParticles as jest.Mock).mockImplementation(() => {
+			(NeverquestEnvironmentParticles as jest.Mock).mockImplementation(() => {
 				callOrder.push('Particles');
 				return { create: jest.fn(() => callOrder.push('Particles.create')) };
 			});
 
-			(LuminusEnemyZones as jest.Mock).mockImplementation(() => {
+			(NeverquestEnemyZones as jest.Mock).mockImplementation(() => {
 				callOrder.push('EnemyZones');
 				return { create: jest.fn(() => callOrder.push('EnemyZones.create')) };
 			});
 
-			(LuminusSaveManager as jest.Mock).mockImplementation(() => {
+			(NeverquestSaveManager as jest.Mock).mockImplementation(() => {
 				callOrder.push('SaveManager');
 				return { create: jest.fn(() => callOrder.push('SaveManager.create')) };
 			});
@@ -567,7 +567,7 @@ describe('MainScene', () => {
 			expect(scene.mapCreator).not.toBeNull();
 			expect(scene.map).not.toBeNull();
 			expect(scene.particles).not.toBeNull();
-			expect(scene.luminusEnemyZones).not.toBeNull();
+			expect(scene.neverquestEnemyZones).not.toBeNull();
 			expect(scene.saveManager).not.toBeNull();
 			expect(scene.themeSound).not.toBeNull();
 
@@ -613,10 +613,10 @@ describe('MainScene', () => {
 			const mapRef = scene.mapCreator?.map;
 
 			// Verify map is passed to all systems that need it
-			expect(LuminusWarp).toHaveBeenCalledWith(scene, scene.player, mapRef);
-			expect(LuminusObjectMarker).toHaveBeenCalledWith(scene, mapRef);
-			expect(LuminusEnvironmentParticles).toHaveBeenCalledWith(scene, mapRef);
-			expect(LuminusEnemyZones).toHaveBeenCalledWith(scene, mapRef);
+			expect(NeverquestWarp).toHaveBeenCalledWith(scene, scene.player, mapRef);
+			expect(NeverquestObjectMarker).toHaveBeenCalledWith(scene, mapRef);
+			expect(NeverquestEnvironmentParticles).toHaveBeenCalledWith(scene, mapRef);
+			expect(NeverquestEnemyZones).toHaveBeenCalledWith(scene, mapRef);
 			expect(mockScene.launch).toHaveBeenCalledWith('DialogScene', expect.objectContaining({ map: mapRef }));
 			expect(mockScene.launch).toHaveBeenCalledWith('HUDScene', expect.objectContaining({ map: mapRef }));
 		});

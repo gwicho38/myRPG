@@ -3,7 +3,7 @@ import { ButtonMinus } from '../components/UI/ButtonMinus';
 import { ButtonPlus } from '../components/UI/ButtonPlus';
 import lodash from 'lodash';
 import { SceneToggleWatcher } from './watchers/SceneToggleWatcher';
-import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
+import { NeverquestInterfaceController } from '../plugins/NeverquestInterfaceController';
 import { PanelComponent } from '../components/PanelComponent';
 import { Player } from '../entities/Player';
 
@@ -34,7 +34,7 @@ export class AttributeScene extends Phaser.Scene {
 	public attributesConfiguration: AttributeConfiguration[];
 	public attributesUiArray: AttributeUI[] = [];
 	public panelComponent: PanelComponent | null = null;
-	public interfaceController!: LuminusInterfaceController;
+	public interfaceController!: NeverquestInterfaceController;
 	public lastRawAttributes: any;
 	public closeButton: any;
 	public availableAttributesText!: Phaser.GameObjects.Text;
@@ -81,7 +81,7 @@ export class AttributeScene extends Phaser.Scene {
 	}
 
 	create(): void {
-		this.interfaceController = new LuminusInterfaceController(this);
+		this.interfaceController = new NeverquestInterfaceController(this);
 		this.lastRawAttributes = lodash.cloneDeep(this.player!.attributes.rawAttributes);
 		this.attributesUiArray = [];
 		this.panelComponent = new PanelComponent(this);

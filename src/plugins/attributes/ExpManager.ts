@@ -1,4 +1,4 @@
-import { LuminusEntityTextDisplay } from '../LuminusEntityTextDisplay';
+import { NeverquestEntityTextDisplay } from '../NeverquestEntityTextDisplay';
 import { HUDScene } from '../../scenes/HUDScene';
 import { ParticlePool } from '../effects/ParticlePool';
 
@@ -31,7 +31,7 @@ interface Entity {
 }
 
 export class ExpManager {
-	static displayText: LuminusEntityTextDisplay;
+	static displayText: NeverquestEntityTextDisplay;
 	private static particlePool: Map<Phaser.Scene, ParticlePool> = new Map();
 
 	/**
@@ -87,7 +87,7 @@ export class ExpManager {
 	 */
 	static levelUpEffects(entity: Entity): void {
 		entity.scene.sound.play('level_up');
-		this.displayText = new LuminusEntityTextDisplay(entity.scene);
+		this.displayText = new NeverquestEntityTextDisplay(entity.scene);
 		// Display 999 as a placeholder for "LEVEL UP!!"
 		this.displayText.displayDamage(999, entity);
 

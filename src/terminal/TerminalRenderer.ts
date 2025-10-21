@@ -16,7 +16,7 @@ export class TerminalRenderer {
 		// Create the main screen
 		this.screen = blessed.screen({
 			smartCSR: true,
-			title: 'Luminus RPG - Terminal Edition',
+			title: 'Neverquest - Terminal Edition',
 			fullUnicode: true,
 			dockBorders: true,
 		});

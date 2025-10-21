@@ -31,7 +31,7 @@ function createWindow() {
 			height: windowHeight,
 			minWidth: 800,
 			minHeight: 600,
-			title: 'Luminus RPG',
+			title: 'Neverquest',
 			icon: getAppIcon(),
 			show: false, // Don't show until ready
 			webPreferences: {
@@ -298,12 +298,12 @@ function createMenu() {
 			label: 'Help',
 			submenu: [
 				{
-					label: 'About Luminus RPG',
+					label: 'About Neverquest',
 					click: () => {
 						dialog.showMessageBox(mainWindow, {
 							type: 'info',
-							title: 'About Luminus RPG',
-							message: 'Luminus RPG',
+							title: 'About Neverquest',
+							message: 'Neverquest',
 							detail: 'A modern Action RPG built with Phaser and Electron\nVersion: 0.1.1',
 						});
 					},
@@ -327,7 +327,7 @@ function setupAutoUpdater() {
 	// autoUpdater.setFeedURL({
 	//     provider: 'github',
 	//     owner: 'SkyAlpha',
-	//     repo: 'luminus-rpg',
+	//     repo: 'neverquest',
 	//     private: false,
 	//     token: process.env.GITHUB_TOKEN // Optional: for private repos
 	// });
@@ -418,7 +418,7 @@ app.on('web-contents-created', (event, contents) => {
 });
 
 // Handle app protocol for security
-app.setAsDefaultProtocolClient('luminus-rpg');
+app.setAsDefaultProtocolClient('neverquest');
 
 // Prevent navigation to external URLs
 app.on('web-contents-created', (event, contents) => {

@@ -29,12 +29,12 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix. The sufix is automatically added by the LuminusAnimationManager class, like this:
+	 * The Neverquest animation manager expects the animations to have a prefix. The sufix is automatically added by the NeverquestAnimationManager class, like this:
 	 * prefix: 'walk'
 	 * sufix: '-right'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -47,12 +47,12 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix. The sufix is automatically added by the LuminusAnimationManager class, like this:
+	 * The Neverquest animation manager expects the animations to have a prefix. The sufix is automatically added by the NeverquestAnimationManager class, like this:
 	 * prefix: 'atk'
 	 * sufix: '-right'
 	 * By default the prefix is just 'atk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -65,12 +65,12 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix. The sufix is automatically added by the LuminusAnimationManager class, like this:
+	 * The Neverquest animation manager expects the animations to have a prefix. The sufix is automatically added by the NeverquestAnimationManager class, like this:
 	 * prefix: 'walk'
 	 * sufix: '-right'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -83,13 +83,13 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix.
+	 * The Neverquest animation manager expects the animations to have a prefix.
 	 * The sufix is can be changed in this variable:
 	 * prefix: 'walk'
 	 * sufix: '-up'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -102,13 +102,13 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix.
+	 * The Neverquest animation manager expects the animations to have a prefix.
 	 * The sufix is can be changed in this variable:
 	 * prefix: 'walk'
 	 * sufix: '-down'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -121,13 +121,13 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix.
+	 * The Neverquest animation manager expects the animations to have a prefix.
 	 * The sufix is can be changed in this variable:
 	 * prefix: 'walk'
 	 * sufix: '-right'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example
@@ -140,13 +140,13 @@ export class AnimationNames {
 	/**
 	 * This is specific for those who are using the joystick.
 	 *
-	 * The Luminus animation manager expects the animations to have a prefix.
+	 * The Neverquest animation manager expects the animations to have a prefix.
 	 * The sufix is can be changed in this variable:
 	 * prefix: 'walk'
 	 * sufix: '-left'
 	 * By default the prefix is just 'walk' and the sufix is the direction that the player animation should play.
 	 *
-	 * The luminus animation manager will play the default animation directions
+	 * The neverquest animation manager will play the default animation directions
 	 * 'up', 'right', 'down', 'left'
 	 *
 	 * @example

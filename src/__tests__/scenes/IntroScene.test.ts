@@ -118,11 +118,11 @@ describe('IntroScene', () => {
 			expect(scene.phaserLogoSpriteName).toBe('logo_phaser');
 			expect(scene.phaserLogoText).toBe('Proudly created with');
 			expect(scene.logoPhaserFontFamily).toBe("'Press Start 2P'");
-			expect(scene.luminusLogo).toBe('luminus_candle');
-			expect(scene.luminusLogoText).toBe('Luminus Game Studio');
+			expect(scene.neverquestLogo).toBe('neverquest_candle');
+			expect(scene.neverquestLogoText).toBe('Neverquest Game Studio');
 			expect(scene.particlesSpriteName).toBe('flares');
-			expect(scene.luminusLogoFontFamily).toBe("'Press Start 2P'");
-			expect(scene.luminusLogoFontSize).toBe('25px');
+			expect(scene.neverquestLogoFontFamily).toBe("'Press Start 2P'");
+			expect(scene.neverquestLogoFontSize).toBe('25px');
 			expect(scene.isMobile).toBeNull();
 			expect(scene.tweensCompleted).toBe(0);
 			expect(scene.totalTweens).toBe(2);
@@ -160,8 +160,8 @@ describe('IntroScene', () => {
 			expect(mockAdd.image).toHaveBeenCalledWith(400, 300, 'logo_phaser');
 		});
 
-		it('should call createLuminusLogo', () => {
-			expect(mockAdd.image).toHaveBeenCalledWith(400, 300, 'luminus_candle');
+		it('should call createNeverquestLogo', () => {
+			expect(mockAdd.image).toHaveBeenCalledWith(400, 300, 'neverquest_candle');
 		});
 
 		it('should register resize event listener', () => {
@@ -374,13 +374,13 @@ describe('IntroScene', () => {
 		});
 	});
 
-	describe('createLuminusLogo()', () => {
+	describe('createNeverquestLogo()', () => {
 		beforeEach(() => {
 			scene.create();
 		});
 
-		it('should create Luminus studio image', () => {
-			expect(mockAdd.image).toHaveBeenCalledWith(scene.centerX, scene.centerY, 'luminus_candle');
+		it('should create Neverquest studio image', () => {
+			expect(mockAdd.image).toHaveBeenCalledWith(scene.centerX, scene.centerY, 'neverquest_candle');
 			expect(scene.studioImage).toBeDefined();
 		});
 
@@ -392,7 +392,7 @@ describe('IntroScene', () => {
 			expect(mockAdd.text).toHaveBeenCalledWith(
 				scene.centerX,
 				expect.any(Number),
-				'Luminus Game Studio',
+				'Neverquest Game Studio',
 				expect.objectContaining({
 					fontFamily: "'Press Start 2P'",
 					fontSize: '25px',
@@ -409,7 +409,7 @@ describe('IntroScene', () => {
 			expect(scene.studioText.alpha).toBe(0);
 		});
 
-		it('should create tween for Luminus logo', () => {
+		it('should create tween for Neverquest logo', () => {
 			expect(mockTweens.add).toHaveBeenCalledWith(
 				expect.objectContaining({
 					targets: [scene.studioImage, scene.studioText],
@@ -423,19 +423,19 @@ describe('IntroScene', () => {
 		});
 
 		it('should have delayed tween start', () => {
-			const luminusTweenConfig = mockTweens.add.mock.calls.find((call: any) =>
+			const neverquestTweenConfig = mockTweens.add.mock.calls.find((call: any) =>
 				call[0].targets.includes(scene.studioImage)
 			)[0];
-			expect(luminusTweenConfig.delay).toBe(4000);
+			expect(neverquestTweenConfig.delay).toBe(4000);
 		});
 
 		it('should handle tween completion', () => {
-			const luminusTweenConfig = mockTweens.add.mock.calls.find((call: any) =>
+			const neverquestTweenConfig = mockTweens.add.mock.calls.find((call: any) =>
 				call[0].targets.includes(scene.studioImage)
 			)[0];
 			const spyOnTweenComplete = jest.spyOn(scene, 'onTweenComplete');
 
-			luminusTweenConfig.onComplete();
+			neverquestTweenConfig.onComplete();
 
 			expect(spyOnTweenComplete).toHaveBeenCalled();
 		});
@@ -553,15 +553,15 @@ describe('IntroScene', () => {
 
 			// Get tween configs
 			const phaserTweenConfig = mockTweens.add.mock.calls[0][0];
-			const luminusTweenConfig = mockTweens.add.mock.calls[1][0];
+			const neverquestTweenConfig = mockTweens.add.mock.calls[1][0];
 
 			// Simulate Phaser logo tween completion
 			phaserTweenConfig.onComplete();
 			expect(scene.tweensCompleted).toBe(1);
 			expect(mockScene.start).not.toHaveBeenCalled();
 
-			// Simulate Luminus logo tween completion
-			luminusTweenConfig.onComplete();
+			// Simulate Neverquest logo tween completion
+			neverquestTweenConfig.onComplete();
 			expect(scene.tweensCompleted).toBe(2);
 			expect(mockScene.start).toHaveBeenCalledWith('MainMenuScene');
 		});
@@ -597,13 +597,13 @@ describe('IntroScene', () => {
 
 			// Should create Phaser logo first
 			expect(imageCalls[0][2]).toBe('logo_phaser');
-			// Then Luminus logo
-			expect(imageCalls[1][2]).toBe('luminus_candle');
+			// Then Neverquest logo
+			expect(imageCalls[1][2]).toBe('neverquest_candle');
 
 			// Should create Phaser text first
 			expect(textCalls[0][2]).toBe('Proudly created with');
-			// Then Luminus text
-			expect(textCalls[1][2]).toBe('Luminus Game Studio');
+			// Then Neverquest text
+			expect(textCalls[1][2]).toBe('Neverquest Game Studio');
 		});
 
 		it('should destroy particles after Phaser logo tween', () => {

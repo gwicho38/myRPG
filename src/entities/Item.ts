@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { v4 as uuidv4 } from 'uuid';
 import { DB_SEED_ITEMS } from '../consts/DB_SEED/Items';
 import { PlayerConfig } from '../consts/player/Player';
-import { LuminusConsumableManager } from '../plugins/LuminusConsumableManager';
+import { NeverquestConsumableManager } from '../plugins/NeverquestConsumableManager';
 import { Player } from './Player';
 import { IItemConfig, IInventoryItem } from '../types/ItemTypes';
 import { BuffType } from '../models/BuffType';
@@ -21,7 +21,7 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
 	public inventoryScale: number;
 	public useSfx: string;
 	public scenePlayerVariableName: string;
-	public luminusConsumableManager: LuminusConsumableManager;
+	public neverquestConsumableManager: NeverquestConsumableManager;
 
 	constructor(scene: Phaser.Scene, x: number, y: number, id: number) {
 		const itemConfig: IItemConfig | undefined = DB_SEED_ITEMS.find((i) => i.id === id);
@@ -47,7 +47,7 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
 		this.scene.physics.add.existing(this);
 
 		this.scenePlayerVariableName = PlayerConfig.variableName;
-		this.luminusConsumableManager = new LuminusConsumableManager();
+		this.neverquestConsumableManager = new NeverquestConsumableManager();
 
 		this.pickItemLogic();
 	}
@@ -104,6 +104,6 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
 	}
 
 	public consume(player: Player): void {
-		this.luminusConsumableManager.useItem(this, player);
+		this.neverquestConsumableManager.useItem(this, player);
 	}
 }

@@ -13,7 +13,7 @@ import spread from '../assets/sprites/spread.png';
 import maximize from '../assets/sprites/maximize.png';
 import close from '../assets/sprites/close_button.png';
 import logo_phaser from '../assets/sprites/logo.png';
-import luminus_candle from '../assets/sprites/candle.png';
+import neverquest_candle from '../assets/sprites/candle.png';
 import cog_settings from '../assets/sprites/cog_settings.png';
 import settings_background from '../assets/sprites/settings_background.png';
 import landscape_mobile from '../assets/sprites/landscape.png';
@@ -233,8 +233,8 @@ export const Images = [
 		image: logo_phaser,
 	},
 	{
-		name: 'luminus_candle',
-		image: luminus_candle,
+		name: 'neverquest_candle',
+		image: neverquest_candle,
 	},
 	{
 		name: 'rain',
@@ -473,7 +473,7 @@ export const TilemapConfig = [
 	},
 ];
 
-export const LuminusAudios = [
+export const NeverquestAudios = [
 	{
 		name: 'space_sound',
 		audio: space_sound_key,

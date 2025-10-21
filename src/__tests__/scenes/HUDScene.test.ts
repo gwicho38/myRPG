@@ -1,16 +1,16 @@
 import { HUDScene } from '../../scenes/HUDScene';
-import { LuminusHUDProgressBar } from '../../plugins/HUD/LuminusHUDProgressBar';
-import { LuminusMessageLog } from '../../plugins/HUD/LuminusMessageLog';
-import { LuminusMinimap } from '../../plugins/HUD/LuminusMinimap';
+import { NeverquestHUDProgressBar } from '../../plugins/HUD/NeverquestHUDProgressBar';
+import { NeverquestMessageLog } from '../../plugins/HUD/NeverquestMessageLog';
+import { NeverquestMinimap } from '../../plugins/HUD/NeverquestMinimap';
 import { SceneToggleWatcher } from '../../scenes/watchers/SceneToggleWatcher';
-import { LuminusUtils } from '../../utils/LuminusUtils';
+import { NeverquestUtils } from '../../utils/NeverquestUtils';
 
 // Mock dependencies
-jest.mock('../../plugins/HUD/LuminusHUDProgressBar');
-jest.mock('../../plugins/HUD/LuminusMessageLog');
-jest.mock('../../plugins/HUD/LuminusMinimap');
+jest.mock('../../plugins/HUD/NeverquestHUDProgressBar');
+jest.mock('../../plugins/HUD/NeverquestMessageLog');
+jest.mock('../../plugins/HUD/NeverquestMinimap');
 jest.mock('../../scenes/watchers/SceneToggleWatcher');
-jest.mock('../../utils/LuminusUtils');
+jest.mock('../../utils/NeverquestUtils');
 
 describe('HUDScene', () => {
 	let scene: HUDScene;
@@ -106,25 +106,25 @@ describe('HUDScene', () => {
 			gamepad: mockGamepad,
 		};
 
-		// Mock LuminusHUDProgressBar
-		(LuminusHUDProgressBar as jest.Mock).mockImplementation(() => ({}));
+		// Mock NeverquestHUDProgressBar
+		(NeverquestHUDProgressBar as jest.Mock).mockImplementation(() => ({}));
 
-		// Mock LuminusMessageLog
+		// Mock NeverquestMessageLog
 		const mockMessageLogInstance = {
 			log: jest.fn(),
 			setPosition: jest.fn(),
 		};
-		(LuminusMessageLog as jest.Mock).mockImplementation(() => mockMessageLogInstance);
+		(NeverquestMessageLog as jest.Mock).mockImplementation(() => mockMessageLogInstance);
 
-		// Mock LuminusMinimap
+		// Mock NeverquestMinimap
 		const mockMinimapInstance = {
 			update: jest.fn(),
 			resize: jest.fn(),
 		};
-		(LuminusMinimap as jest.Mock).mockImplementation(() => mockMinimapInstance);
+		(NeverquestMinimap as jest.Mock).mockImplementation(() => mockMinimapInstance);
 
-		// Mock LuminusUtils
-		(LuminusUtils.isMobile as jest.Mock) = jest.fn(() => false);
+		// Mock NeverquestUtils
+		(NeverquestUtils.isMobile as jest.Mock) = jest.fn(() => false);
 
 		// Mock SceneToggleWatcher
 		(SceneToggleWatcher.toggleScene as jest.Mock) = jest.fn();
@@ -208,7 +208,7 @@ describe('HUDScene', () => {
 			});
 
 			it('should create health bar', () => {
-				expect(LuminusHUDProgressBar).toHaveBeenCalledWith(
+				expect(NeverquestHUDProgressBar).toHaveBeenCalledWith(
 					scene,
 					scene.hp_hud.x,
 					scene.hp_hud.y,
@@ -267,7 +267,7 @@ describe('HUDScene', () => {
 			});
 
 			it('should not create shortcut icons on mobile without gamepad', () => {
-				(LuminusUtils.isMobile as jest.Mock).mockReturnValue(true);
+				(NeverquestUtils.isMobile as jest.Mock).mockReturnValue(true);
 				mockInput.gamepad.pad1 = null;
 
 				scene.create();
@@ -277,7 +277,7 @@ describe('HUDScene', () => {
 			});
 
 			it('should create shortcut icons on mobile with gamepad', () => {
-				(LuminusUtils.isMobile as jest.Mock).mockReturnValue(true);
+				(NeverquestUtils.isMobile as jest.Mock).mockReturnValue(true);
 				mockInput.gamepad.pad1 = {};
 
 				scene.create();
@@ -336,14 +336,14 @@ describe('HUDScene', () => {
 
 		it('should create minimap with map reference', () => {
 			scene.createMinimap();
-			expect(LuminusMinimap).toHaveBeenCalledWith(scene, mockPlayer, mockMap);
+			expect(NeverquestMinimap).toHaveBeenCalledWith(scene, mockPlayer, mockMap);
 			expect(scene.minimap).toBeDefined();
 		});
 
 		it('should not create minimap without map reference', () => {
 			scene.map = undefined;
 			scene.createMinimap();
-			expect(LuminusMinimap).not.toHaveBeenCalled();
+			expect(NeverquestMinimap).not.toHaveBeenCalled();
 		});
 	});
 
@@ -354,12 +354,12 @@ describe('HUDScene', () => {
 		});
 
 		it('should create message log with correct dimensions', () => {
-			expect(LuminusMessageLog).toHaveBeenCalledWith(scene, 190, 450, 600, 140);
+			expect(NeverquestMessageLog).toHaveBeenCalledWith(scene, 190, 450, 600, 140);
 			expect(scene.messageLog).toBeDefined();
 		});
 
 		it('should log welcome messages', () => {
-			expect(scene.messageLog.log).toHaveBeenCalledWith('✨ Welcome to Luminus RPG!');
+			expect(scene.messageLog.log).toHaveBeenCalledWith('✨ Welcome to Neverquest!');
 			expect(scene.messageLog.log).toHaveBeenCalledWith('🎮 Use arrow keys or WASD to move');
 			expect(scene.messageLog.log).toHaveBeenCalledWith('⚔️ Press Space to attack nearby enemies');
 		});

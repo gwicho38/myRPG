@@ -183,7 +183,7 @@ export class CrashReporter {
 	private saveCrashLogs(): void {
 		if (typeof localStorage !== 'undefined') {
 			try {
-				localStorage.setItem('luminus-crash-logs', JSON.stringify(this.crashLogs));
+				localStorage.setItem('neverquest-crash-logs', JSON.stringify(this.crashLogs));
 			} catch (error) {
 				console.error('Failed to save crash logs to localStorage:', error);
 			}
@@ -193,7 +193,7 @@ export class CrashReporter {
 	private loadCrashLogs(): void {
 		if (typeof localStorage !== 'undefined') {
 			try {
-				const saved = localStorage.getItem('luminus-crash-logs');
+				const saved = localStorage.getItem('neverquest-crash-logs');
 				if (saved) {
 					this.crashLogs = JSON.parse(saved);
 				}

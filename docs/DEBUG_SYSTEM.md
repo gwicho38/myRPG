@@ -1,6 +1,6 @@
-# Luminus RPG Debug System
+# Neverquest Debug System
 
-This document describes the comprehensive debugging and development utilities available in Luminus RPG. These tools are designed to make it easy to understand the game state, debug issues, and develop new features efficiently.
+This document describes the comprehensive debugging and development utilities available in Neverquest. These tools are designed to make it easy to understand the game state, debug issues, and develop new features efficiently.
 
 ## Quick Start
 
@@ -9,7 +9,7 @@ This document describes the comprehensive debugging and development utilities av
 1. **Start the dev server**: `make dev` or `npm run dev`
 2. **Open the game**: Browser automatically opens to `http://localhost:8080`
 3. **Open browser console**: Press F12
-4. **Access debug tools**: Type `luminusDebug.help()` or press F9
+4. **Access debug tools**: Type `neverquestDebug.help()` or press F9
 
 ### For Claude/AI Assistance
 
@@ -19,7 +19,7 @@ When you need to share your game state with Claude for debugging or feature deve
 2. Share the JSON file with Claude
 3. Or use **F10** for a quick console dump and copy/paste the output
 
-## Debug Helper (`luminusDebug`)
+## Debug Helper (`neverquestDebug`)
 
 The Debug Helper provides comprehensive game state information and development utilities.
 
@@ -33,30 +33,30 @@ The Debug Helper provides comprehensive game state information and development u
 
 ### Console Commands
 
-All commands are available via `window.luminusDebug` or just `luminusDebug`:
+All commands are available via `window.neverquestDebug` or just `neverquestDebug`:
 
 #### Information Commands
 
 ```javascript
 // Get help
-luminusDebug.help()
+neverquestDebug.help()
 
 // Get full state dump object
-const state = luminusDebug.dump()
+const state = neverquestDebug.dump()
 
 // Print formatted dump to console
-luminusDebug.quickDump()
+neverquestDebug.quickDump()
 
 // List active scenes
-luminusDebug.scenes()
+neverquestDebug.scenes()
 // Example output: ["PreloadScene", "MainScene", "HUDScene"]
 
 // Get player information
-luminusDebug.player()
+neverquestDebug.player()
 // Example output: { position: {x: 400, y: 300}, health: 100, level: 5, ... }
 
 // Get enemy information
-luminusDebug.enemies()
+neverquestDebug.enemies()
 // Example output: [{ id: "enemy_0", position: {x: 500, y: 400}, health: 50, ... }]
 ```
 
@@ -64,26 +64,26 @@ luminusDebug.enemies()
 
 ```javascript
 // Download dump as JSON file
-luminusDebug.download()
+neverquestDebug.download()
 
 // Copy dump to clipboard
-luminusDebug.copy()
+neverquestDebug.copy()
 ```
 
 #### Development/Cheat Commands
 
 ```javascript
 // Teleport player to position
-luminusDebug.teleport(400, 300)
+neverquestDebug.teleport(400, 300)
 
 // Set player health
-luminusDebug.setHealth(100)
+neverquestDebug.setHealth(100)
 
 // Give item to player (when implemented)
-luminusDebug.giveItem("potion", 5)
+neverquestDebug.giveItem("potion", 5)
 ```
 
-## Logger (`luminus`)
+## Logger (`neverquest`)
 
 The Logger provides structured logging with categories and log levels.
 
@@ -91,27 +91,27 @@ The Logger provides structured logging with categories and log levels.
 
 ```javascript
 // Get help
-luminus.log  // Access the logger instance
+neverquest.log  // Access the logger instance
 
 // Set log level (ERROR, WARN, INFO, DEBUG, TRACE)
-luminus.setLogLevel('debug')
-luminus.setLogLevel('trace')
+neverquest.setLogLevel('debug')
+neverquest.setLogLevel('trace')
 
 // Enable/disable specific categories
-luminus.enableCategory('Battle')
-luminus.disableCategory('Animation')
+neverquest.enableCategory('Battle')
+neverquest.disableCategory('Animation')
 
 // Show all logging categories
-luminus.showCategories()
+neverquest.showCategories()
 
 // Export logs as file
-luminus.exportLogs()
+neverquest.exportLogs()
 
 // Clear log buffer
-luminus.clearLogs()
+neverquest.clearLogs()
 
 // Show memory usage
-luminus.showMemory()
+neverquest.showMemory()
 ```
 
 ### Log Categories
@@ -203,7 +203,7 @@ The debug dump JSON contains the following sections:
       "isSleeping": false,
       "gameObjectCount": 42,
       "pluginCount": 8,
-      "plugins": ["LuminusMovement", "LuminusBattleManager", ...],
+      "plugins": ["NeverquestMovement", "NeverquestBattleManager", ...],
       "children": 42
     }
   ]
@@ -288,9 +288,9 @@ Claude: Looking at your debug dump:
 - Player position: {x: 400, y: 300}
 - Active scenes: ["MainScene", "HUDScene"]
 - Enemies: 0 active enemies
-- Recent errors show LuminusBattleManager.takeDamage() being called
+- Recent errors show NeverquestBattleManager.takeDamage() being called
 
-The issue appears to be in LuminusBattleManager.ts:257 where...
+The issue appears to be in NeverquestBattleManager.ts:257 where...
 ```
 
 ## Development Workflow
@@ -298,11 +298,11 @@ The issue appears to be in LuminusBattleManager.ts:257 where...
 ### Feature Development
 
 1. **Start dev server**: `make dev`
-2. **Enable debug logging**: `luminus.setLogLevel('debug')`
-3. **Enable specific categories**: `luminus.enableCategory('Battle')`
+2. **Enable debug logging**: `neverquest.setLogLevel('debug')`
+3. **Enable specific categories**: `neverquest.enableCategory('Battle')`
 4. **Implement feature**
 5. **Test and dump state**: Press F10 to verify
-6. **Export logs if needed**: `luminus.exportLogs()`
+6. **Export logs if needed**: `neverquest.exportLogs()`
 
 ### Bug Fixing
 
@@ -316,7 +316,7 @@ The issue appears to be in LuminusBattleManager.ts:257 where...
 
 ### Performance Optimization
 
-1. **Enable memory logging**: `luminus.showMemory()`
+1. **Enable memory logging**: `neverquest.showMemory()`
 2. **Monitor FPS**: Check `metadata.performance.fps` in dumps
 3. **Profile specific operations**:
 ```typescript
@@ -332,11 +332,11 @@ endTimer();
 
 In browser console:
 ```javascript
-luminus.setLogLevel('trace')  // Most verbose
-luminus.setLogLevel('debug')
-luminus.setLogLevel('info')   // Default
-luminus.setLogLevel('warn')
-luminus.setLogLevel('error')  // Least verbose
+neverquest.setLogLevel('trace')  // Most verbose
+neverquest.setLogLevel('debug')
+neverquest.setLogLevel('info')   // Default
+neverquest.setLogLevel('warn')
+neverquest.setLogLevel('error')  // Least verbose
 ```
 
 Log levels are persisted in localStorage.
@@ -345,12 +345,12 @@ Log levels are persisted in localStorage.
 
 ```javascript
 // Disable all except specific categories
-luminus.disableCategory('*')
-luminus.enableCategory('Battle')
-luminus.enableCategory('Player')
+neverquest.disableCategory('*')
+neverquest.enableCategory('Battle')
+neverquest.enableCategory('Player')
 
 // Re-enable all
-luminus.enableCategory('*')
+neverquest.enableCategory('*')
 ```
 
 ## Production Considerations
@@ -366,8 +366,8 @@ luminus.enableCategory('*')
 
 Check browser console for initialization message:
 ```
-🎮 Luminus Debug Helper initialized
-   Use luminusDebug.help() for available commands
+🎮 Neverquest Debug Helper initialized
+   Use neverquestDebug.help() for available commands
 ```
 
 If missing, check that dev server is running in development mode.
@@ -376,13 +376,13 @@ If missing, check that dev server is running in development mode.
 
 - Ensure game window has focus
 - Check browser console for errors
-- Try using `luminusDebug.download()` directly
+- Try using `neverquestDebug.download()` directly
 
 ### Performance issues
 
-- Reduce log level: `luminus.setLogLevel('warn')`
-- Disable verbose categories: `luminus.disableCategory('Animation')`
-- Clear log buffer: `luminus.clearLogs()`
+- Reduce log level: `neverquest.setLogLevel('warn')`
+- Disable verbose categories: `neverquest.disableCategory('Animation')`
+- Clear log buffer: `neverquest.clearLogs()`
 
 ## API Reference
 
@@ -396,48 +396,48 @@ See inline documentation in:
 
 ```javascript
 // Enable movement logging
-luminus.enableCategory('Input')
-luminus.setLogLevel('debug')
+neverquest.enableCategory('Input')
+neverquest.setLogLevel('debug')
 
 // Check player state
-luminusDebug.player()
+neverquestDebug.player()
 
 // Teleport to test position
-luminusDebug.teleport(100, 100)
+neverquestDebug.teleport(100, 100)
 
 // Download full dump
-luminusDebug.download()
+neverquestDebug.download()
 ```
 
 ### Example 2: Debugging Battle System
 
 ```javascript
 // Enable battle logging
-luminus.enableCategory('Battle')
-luminus.enableCategory('Enemy')
+neverquest.enableCategory('Battle')
+neverquest.enableCategory('Enemy')
 
 // Check enemies
-luminusDebug.enemies()
+neverquestDebug.enemies()
 
 // Set player health for testing
-luminusDebug.setHealth(10)
+neverquestDebug.setHealth(10)
 
 // Monitor state
-luminusDebug.quickDump()
+neverquestDebug.quickDump()
 ```
 
 ### Example 3: Performance Analysis
 
 ```javascript
 // Show current memory
-luminus.showMemory()
+neverquest.showMemory()
 
 // Get full performance data
-const dump = luminusDebug.dump()
+const dump = neverquestDebug.dump()
 console.log(dump.metadata.performance)
 
 // Export logs for analysis
-luminus.exportLogs()
+neverquest.exportLogs()
 ```
 
 ## Best Practices

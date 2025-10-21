@@ -1,5 +1,5 @@
 /**
- * Comprehensive logging system for Luminus RPG
+ * Comprehensive logging system for Neverquest
  */
 
 export enum LogLevel {
@@ -46,12 +46,12 @@ class Logger {
 	private loadConfiguration(): void {
 		// Try to load from localStorage in browser
 		if (typeof window !== 'undefined' && window.localStorage) {
-			const savedLevel = window.localStorage.getItem('luminus_log_level');
+			const savedLevel = window.localStorage.getItem('neverquest_log_level');
 			if (savedLevel) {
 				this.logLevel = parseInt(savedLevel, 10) as LogLevel;
 			}
 
-			const savedCategories = window.localStorage.getItem('luminus_log_categories');
+			const savedCategories = window.localStorage.getItem('neverquest_log_categories');
 			if (savedCategories) {
 				this.enabledCategories = new Set(JSON.parse(savedCategories));
 			}
@@ -81,7 +81,7 @@ class Logger {
 	setLogLevel(level: LogLevel): void {
 		this.logLevel = level;
 		if (typeof window !== 'undefined' && window.localStorage) {
-			window.localStorage.setItem('luminus_log_level', level.toString());
+			window.localStorage.setItem('neverquest_log_level', level.toString());
 		}
 	}
 
@@ -97,7 +97,10 @@ class Logger {
 
 	private saveCategories(): void {
 		if (typeof window !== 'undefined' && window.localStorage) {
-			window.localStorage.setItem('luminus_log_categories', JSON.stringify(Array.from(this.enabledCategories)));
+			window.localStorage.setItem(
+				'neverquest_log_categories',
+				JSON.stringify(Array.from(this.enabledCategories))
+			);
 		}
 	}
 
@@ -223,7 +226,7 @@ class Logger {
 
 		const dataStr = this.exportLogs();
 		const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-		const exportFileDefaultName = `luminus-logs-${Date.now()}.json`;
+		const exportFileDefaultName = `neverquest-logs-${Date.now()}.json`;
 
 		const linkElement = document.createElement('a');
 		linkElement.setAttribute('href', dataUri);
@@ -246,7 +249,7 @@ class Logger {
 	setupConsoleCommands(): void {
 		if (typeof window === 'undefined' || this.isProduction) return;
 
-		(window as any).luminus = {
+		(window as any).neverquest = {
 			log: this,
 			setLogLevel: (level: string) => {
 				const levelValue = LogLevel[level.toUpperCase() as keyof typeof LogLevel];
@@ -263,7 +266,7 @@ class Logger {
 			showMemory: () => this.logMemoryUsage(),
 		};
 
-		console.log('Luminus Logger initialized. Use window.luminus for debugging commands.');
+		console.log('Neverquest Logger initialized. Use window.neverquest for debugging commands.');
 	}
 }
 

@@ -1,15 +1,15 @@
 import Phaser from 'phaser';
 import { TilesetImageConfig } from '../models/TilesetImageConfig';
 import AnimatedTiles from '../plugins/AnimatedTiles';
-import { LuminusEnvironmentParticles } from '../plugins/LuminusEnvironmentParticles';
-import { LuminusMapCreator } from '../plugins/LuminusMapCreator';
-import { LuminusObjectMarker } from '../plugins/LuminusObjectMarker';
-import { LuminusWarp } from '../plugins/LuminusWarp';
+import { NeverquestEnvironmentParticles } from '../plugins/NeverquestEnvironmentParticles';
+import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
+import { NeverquestObjectMarker } from '../plugins/NeverquestObjectMarker';
+import { NeverquestWarp } from '../plugins/NeverquestWarp';
 import { Player } from '../entities/Player';
 
 export class TutorialScene extends Phaser.Scene {
 	public player!: Player;
-	public particles!: LuminusEnvironmentParticles;
+	public particles!: NeverquestEnvironmentParticles;
 
 	constructor() {
 		super({
@@ -22,7 +22,7 @@ export class TutorialScene extends Phaser.Scene {
 	}
 
 	create(): void {
-		const map = new LuminusMapCreator(this);
+		const map = new NeverquestMapCreator(this);
 		map.mapName = 'tutorial';
 		map.tilesetImages = [
 			new TilesetImageConfig('tutorial_tileset_extruded', 'tutorial_tileset'),
@@ -38,7 +38,7 @@ export class TutorialScene extends Phaser.Scene {
 		// Infinite maps have negative coordinate chunks and setting bounds would break movement
 
 		// Created Particles
-		this.particles = new LuminusEnvironmentParticles(this, map.map);
+		this.particles = new NeverquestEnvironmentParticles(this, map.map);
 		this.particles.create();
 
 		// Dialogs
@@ -49,11 +49,11 @@ export class TutorialScene extends Phaser.Scene {
 		});
 
 		// Markers.
-		const interactiveMarkers = new LuminusObjectMarker(this, map.map);
+		const interactiveMarkers = new NeverquestObjectMarker(this, map.map);
 		interactiveMarkers.create();
 
-		const luminusWarp = new LuminusWarp(this as any, this.player as any, map.map);
-		luminusWarp.createWarps();
+		const neverquestWarp = new NeverquestWarp(this as any, this.player as any, map.map);
+		neverquestWarp.createWarps();
 	}
 
 	update(): void {}

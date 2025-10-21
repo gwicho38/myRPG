@@ -39,16 +39,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Jest mock scope issue preventing all tests from running
 - Linting errors (2 errors → 0 errors)
 - webpack-dev-server compatibility issues
-- Player walking animations in LuminusAnimationManager constructor
+- Player walking animations in NeverquestAnimationManager constructor
 - Test setup configuration for proper mock imports
 
 ### Removed
 
 - Duplicate JavaScript versions of TypeScript files:
-    - `LuminusAnimationManager.js`
-    - `LuminusDialogBox.js`
-    - `LuminusMovement.js`
-    - `LuminusSaveManager.js`
+    - `NeverquestAnimationManager.js`
+    - `NeverquestDialogBox.js`
+    - `NeverquestMovement.js`
+    - `NeverquestSaveManager.js`
 
 ### Security
 

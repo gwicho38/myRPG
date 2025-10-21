@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 import { MainMenuScene } from '../../scenes/MainMenuScene';
-import { LuminusInterfaceController } from '../../plugins/LuminusInterfaceController';
-import { LuminusSaveManager } from '../../plugins/LuminusSaveManager';
+import { NeverquestInterfaceController } from '../../plugins/NeverquestInterfaceController';
+import { NeverquestSaveManager } from '../../plugins/NeverquestSaveManager';
 import { PanelComponent } from '../../components/PanelComponent';
 
 // Mock the dependencies
-jest.mock('../../plugins/LuminusInterfaceController');
-jest.mock('../../plugins/LuminusSaveManager');
+jest.mock('../../plugins/NeverquestInterfaceController');
+jest.mock('../../plugins/NeverquestSaveManager');
 jest.mock('../../components/PanelComponent');
 
 // Mock Phaser events
@@ -116,7 +116,7 @@ describe('MainMenuScene', () => {
 			exists: jest.fn(() => true),
 		};
 
-		// Mock LuminusInterfaceController
+		// Mock NeverquestInterfaceController
 		const mockInterfaceController = {
 			interfaceElements: [[]] as any[][],
 			closeAction: null as any,
@@ -128,15 +128,15 @@ describe('MainMenuScene', () => {
 			clearItems: jest.fn(),
 		};
 
-		(LuminusInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
+		(NeverquestInterfaceController as jest.Mock).mockImplementation(() => mockInterfaceController);
 
-		// Mock LuminusSaveManager
+		// Mock NeverquestSaveManager
 		const mockSaveManagerInstance = {
 			hasSaveData: jest.fn(() => false),
 			loadGame: jest.fn(),
 		};
 
-		(LuminusSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);
+		(NeverquestSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);
 
 		// Mock PanelComponent
 		const mockPanelInstance = {
@@ -172,7 +172,7 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should initialize with null values', () => {
-			expect(scene.luminusInterfaceControler).toBeNull();
+			expect(scene.neverquestInterfaceControler).toBeNull();
 			expect(scene.gameStartText).toBeNull();
 			expect(scene.video).toBeNull();
 			expect(scene.themeSound).toBeNull();
@@ -264,9 +264,9 @@ describe('MainMenuScene', () => {
 		});
 
 		describe('Interface Controller', () => {
-			it('should create LuminusInterfaceController', () => {
-				expect(LuminusInterfaceController).toHaveBeenCalledWith(scene);
-				expect(scene.luminusInterfaceControler).not.toBeNull();
+			it('should create NeverquestInterfaceController', () => {
+				expect(NeverquestInterfaceController).toHaveBeenCalledWith(scene);
+				expect(scene.neverquestInterfaceControler).not.toBeNull();
 			});
 		});
 
@@ -292,7 +292,7 @@ describe('MainMenuScene', () => {
 			});
 
 			it('should create Save Manager', () => {
-				expect(LuminusSaveManager).toHaveBeenCalledWith(scene);
+				expect(NeverquestSaveManager).toHaveBeenCalledWith(scene);
 				expect(scene.saveManager).not.toBeNull();
 			});
 
@@ -418,12 +418,12 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should initialize interface elements array', () => {
-			expect(scene.luminusInterfaceControler?.interfaceElements[0]).toBeDefined();
-			expect(scene.luminusInterfaceControler?.interfaceElements[0][0]).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.interfaceElements[0]).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.interfaceElements[0][0]).toBeDefined();
 		});
 
 		it('should create Start Game action', () => {
-			const firstAction = scene.luminusInterfaceControler?.interfaceElements[0][0][0];
+			const firstAction = scene.neverquestInterfaceControler?.interfaceElements[0][0][0];
 			expect(firstAction).toEqual({
 				element: scene.gameStartText,
 				action: 'startGame',
@@ -433,7 +433,7 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should create Load Game action', () => {
-			const loadGameAction = scene.luminusInterfaceControler?.interfaceElements[0][1][0];
+			const loadGameAction = scene.neverquestInterfaceControler?.interfaceElements[0][1][0];
 			expect(loadGameAction).toEqual({
 				element: scene.loadGameText,
 				action: 'loadGame',
@@ -443,7 +443,7 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should create Credits action', () => {
-			const creditsAction = scene.luminusInterfaceControler?.interfaceElements[0][2][0];
+			const creditsAction = scene.neverquestInterfaceControler?.interfaceElements[0][2][0];
 			expect(creditsAction).toEqual({
 				element: scene.creditsText,
 				action: 'showCredits',
@@ -453,16 +453,16 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should set first action as current', () => {
-			expect(scene.luminusInterfaceControler?.currentElementAction).toBeDefined();
-			expect(scene.luminusInterfaceControler?.currentElementAction?.action).toBe('startGame');
+			expect(scene.neverquestInterfaceControler?.currentElementAction).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.currentElementAction?.action).toBe('startGame');
 		});
 
 		it('should clear close action', () => {
-			expect(scene.luminusInterfaceControler?.closeAction).toBeNull();
+			expect(scene.neverquestInterfaceControler?.closeAction).toBeNull();
 		});
 
 		it('should update highlighted element', () => {
-			expect(scene.luminusInterfaceControler?.updateHighlightedElement).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.updateHighlightedElement).toHaveBeenCalled();
 		});
 	});
 
@@ -473,7 +473,7 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should add to menu history', () => {
-			expect(scene.luminusInterfaceControler?.menuHistoryAdd).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.menuHistoryAdd).toHaveBeenCalled();
 		});
 
 		it('should create PanelComponent', () => {
@@ -507,16 +507,16 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should create close action', () => {
-			expect(scene.luminusInterfaceControler?.closeAction).toBeDefined();
-			expect(scene.luminusInterfaceControler?.closeAction?.action).toBe('closeCredits');
+			expect(scene.neverquestInterfaceControler?.closeAction).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.closeAction?.action).toBe('closeCredits');
 		});
 
 		it('should remove current selection highlight', () => {
-			expect(scene.luminusInterfaceControler?.removeCurrentSelectionHighlight).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.removeCurrentSelectionHighlight).toHaveBeenCalled();
 		});
 
 		it('should clear interface items', () => {
-			expect(scene.luminusInterfaceControler?.clearItems).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.clearItems).toHaveBeenCalled();
 		});
 
 		it('should register close button pointerup event', () => {
@@ -541,21 +541,21 @@ describe('MainMenuScene', () => {
 		});
 
 		it('should clear close action', () => {
-			expect(scene.luminusInterfaceControler?.closeAction).toBeNull();
+			expect(scene.neverquestInterfaceControler?.closeAction).toBeNull();
 		});
 
 		it('should reset current element action to main menu', () => {
 			// closeCredits calls setMainMenuActions() which sets currentElementAction to first menu item
-			expect(scene.luminusInterfaceControler?.currentElementAction).toBeDefined();
-			expect(scene.luminusInterfaceControler?.currentElementAction?.action).toBe('startGame');
+			expect(scene.neverquestInterfaceControler?.currentElementAction).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.currentElementAction?.action).toBe('startGame');
 		});
 
 		it('should clear interface items', () => {
-			expect(scene.luminusInterfaceControler?.clearItems).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.clearItems).toHaveBeenCalled();
 		});
 
 		it('should restore menu history', () => {
-			expect(scene.luminusInterfaceControler?.menuHistoryRetrieve).toHaveBeenCalled();
+			expect(scene.neverquestInterfaceControler?.menuHistoryRetrieve).toHaveBeenCalled();
 		});
 	});
 
@@ -740,9 +740,9 @@ describe('MainMenuScene', () => {
 			expect(scene.themeSound).not.toBeNull();
 
 			// Verify menu actions configured
-			expect(scene.luminusInterfaceControler?.interfaceElements[0][0]).toBeDefined();
-			expect(scene.luminusInterfaceControler?.interfaceElements[0][1]).toBeDefined();
-			expect(scene.luminusInterfaceControler?.interfaceElements[0][2]).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.interfaceElements[0][0]).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.interfaceElements[0][1]).toBeDefined();
+			expect(scene.neverquestInterfaceControler?.interfaceElements[0][2]).toBeDefined();
 		});
 
 		it('should handle credits open and close cycle', () => {

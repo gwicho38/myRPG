@@ -54,7 +54,7 @@ describe('AttributesManager', () => {
 				},
 			},
 			healthBar: mockHealthBar,
-			luminusHUDProgressBar: mockHUDProgressBar,
+			neverquestHUDProgressBar: mockHUDProgressBar,
 		};
 
 		manager = new AttributesManager(mockScene, mockEntity);
@@ -237,14 +237,14 @@ describe('AttributesManager', () => {
 			expect(mockHealthBar.full).toBe(mockEntity.attributes.baseHealth);
 		});
 
-		it('should call luminusHUDProgressBar.updateHealth on first time', () => {
+		it('should call neverquestHUDProgressBar.updateHealth on first time', () => {
 			manager.firstTime = true;
 			manager.calculateHealth();
 
 			expect(mockHUDProgressBar.updateHealth).toHaveBeenCalled();
 		});
 
-		it('should call luminusHUDProgressBar.updateHealth on level up', () => {
+		it('should call neverquestHUDProgressBar.updateHealth on level up', () => {
 			manager.firstTime = false;
 			manager.leveledUp = true;
 			manager.calculateHealth();
@@ -270,8 +270,8 @@ describe('AttributesManager', () => {
 			}).not.toThrow();
 		});
 
-		it('should handle entity without luminusHUDProgressBar', () => {
-			mockEntity.luminusHUDProgressBar = null;
+		it('should handle entity without neverquestHUDProgressBar', () => {
+			mockEntity.neverquestHUDProgressBar = null;
 			manager.firstTime = true;
 
 			expect(() => {

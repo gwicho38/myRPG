@@ -2,8 +2,8 @@ import Phaser from 'phaser';
 import { InfoBox } from '../components/InfoBox';
 import { PanelComponent } from '../components/PanelComponent';
 import { Item } from '../entities/Item';
-import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
-import { LuminusUtils } from '../utils/LuminusUtils';
+import { NeverquestInterfaceController } from '../plugins/NeverquestInterfaceController';
+import { NeverquestUtils } from '../utils/NeverquestUtils';
 import { Player } from '../entities/Player';
 export const InventorySceneName = 'InventoryScene';
 
@@ -143,14 +143,14 @@ export class InventoryScene extends Phaser.Scene {
 	/**
 	 * The class that will control the interface.
 	 */
-	luminusInterfaceController!: LuminusInterfaceController;
+	neverquestInterfaceController!: NeverquestInterfaceController;
 
 	isReset: boolean;
 
 	/**
-	 * @type { LuminusInterfaceController }
+	 * @type { NeverquestInterfaceController }
 	 */
-	cachedInterfaceControler: LuminusInterfaceController | null;
+	cachedInterfaceControler: NeverquestInterfaceController | null;
 
 	/**
 	 * The information box for
@@ -203,7 +203,7 @@ export class InventoryScene extends Phaser.Scene {
 	create(): void {
 		// Prevent that the panel is open.
 		this.destroyHelpPanel();
-		this.luminusInterfaceController = new LuminusInterfaceController(this);
+		this.neverquestInterfaceController = new NeverquestInterfaceController(this);
 		this.panelComponent = new PanelComponent(this);
 		this.inventoryBackground = this.panelComponent.panelBackground;
 		this.inventoryTitle = this.panelComponent.panelTitle;
@@ -211,7 +211,7 @@ export class InventoryScene extends Phaser.Scene {
 		this.createSlots();
 		this.createCloseButton();
 		this.createItems();
-		if (!LuminusUtils.isMobile() || (LuminusUtils.isMobile() && this.input.gamepad!.pad1))
+		if (!NeverquestUtils.isMobile() || (NeverquestUtils.isMobile() && this.input.gamepad!.pad1))
 			this.createLegendSection();
 		if (this.input.gamepad!.pad1) {
 			this.registerGamepad();
@@ -232,7 +232,7 @@ export class InventoryScene extends Phaser.Scene {
 		});
 
 		if (this.cachedInterfaceControler) {
-			this.luminusInterfaceController.recoverPositionFromPrevious(this.cachedInterfaceControler);
+			this.neverquestInterfaceController.recoverPositionFromPrevious(this.cachedInterfaceControler);
 		}
 
 		this.registerKeyboardShortcuts();
@@ -264,7 +264,7 @@ export class InventoryScene extends Phaser.Scene {
 	 */
 	toggleInfoBox(): void {
 		if (!this.helpPanel) {
-			const slot = this.luminusInterfaceController.currentElementAction.element as InventorySlot;
+			const slot = this.neverquestInterfaceController.currentElementAction.element as InventorySlot;
 			if (slot.item) {
 				this.createInfoBox(slot);
 			}
@@ -302,16 +302,16 @@ export class InventoryScene extends Phaser.Scene {
 			this.stopScene();
 		});
 
-		this.luminusInterfaceController.interfaceElements[0] = [];
-		this.luminusInterfaceController.interfaceElements[0][0] = [];
+		this.neverquestInterfaceController.interfaceElements[0] = [];
+		this.neverquestInterfaceController.interfaceElements[0][0] = [];
 		const firstAction = {
 			element: this.closeButton,
 			action: 'stopScene',
 			context: this,
 			args: 'InventoryScene',
 		};
-		this.luminusInterfaceController.closeAction = firstAction;
-		this.luminusInterfaceController.interfaceElements[0][0].push(firstAction);
+		this.neverquestInterfaceController.closeAction = firstAction;
+		this.neverquestInterfaceController.interfaceElements[0][0].push(firstAction);
 	}
 
 	stopScene(): void {
@@ -363,16 +363,16 @@ export class InventoryScene extends Phaser.Scene {
 				this.backgroundSlotPaddingBottom
 		);
 
-		if (!LuminusUtils.isMobile() || (LuminusUtils.isMobile() && this.input.gamepad!.pad1))
+		if (!NeverquestUtils.isMobile() || (NeverquestUtils.isMobile() && this.input.gamepad!.pad1))
 			slotsWorkingHeight = slotsWorkingHeight - this.legendHeight; // Pixels for Legends.
 
 		// Max number of Slots taking in count the Available space, Slot Size and Margin.
 		const slotsNumberVertical = Math.floor(slotsWorkingHeight / (this.slotSize + this.slotMargin));
 
 		// Creates the seccond line
-		this.luminusInterfaceController.interfaceElements[1] = [];
+		this.neverquestInterfaceController.interfaceElements[1] = [];
 		for (let row = 0; row < slotsNumberVertical; row++) {
-			this.luminusInterfaceController.interfaceElements[1][row] = [];
+			this.neverquestInterfaceController.interfaceElements[1][row] = [];
 			for (let col = 0; col < slotsNumberHorizontal; col++) {
 				const slot = this.add
 					.image(
@@ -395,13 +395,13 @@ export class InventoryScene extends Phaser.Scene {
 					context: this,
 					args: slot,
 				};
-				this.luminusInterfaceController.interfaceElements[1][row].push(element);
+				this.neverquestInterfaceController.interfaceElements[1][row].push(element);
 
 				if (row === 0 && col === 0) {
-					this.luminusInterfaceController.currentElementAction = element;
-					if (!LuminusUtils.isMobile() || (LuminusUtils.isMobile() && this.input.gamepad!.pad1))
-						this.luminusInterfaceController.updateHighlightedElement(element.element);
-					this.luminusInterfaceController.currentLinePosition = 1;
+					this.neverquestInterfaceController.currentElementAction = element;
+					if (!NeverquestUtils.isMobile() || (NeverquestUtils.isMobile() && this.input.gamepad!.pad1))
+						this.neverquestInterfaceController.updateHighlightedElement(element.element);
+					this.neverquestInterfaceController.currentLinePosition = 1;
 				}
 			}
 		}
@@ -521,7 +521,7 @@ export class InventoryScene extends Phaser.Scene {
 							context: this,
 							args: slot,
 						};
-						this.luminusInterfaceController.currentElementAction = element;
+						this.neverquestInterfaceController.currentElementAction = element;
 						if (time === 0) {
 							time = pointer.upTime;
 							return;
@@ -622,14 +622,14 @@ export class InventoryScene extends Phaser.Scene {
 				this.player.items[i].count--;
 				if (this.player.items[i].count <= 0) {
 					slot.item.destroy();
-					// this.luminusInterfaceController.currentElementAction.action = null;
+					// this.neverquestInterfaceController.currentElementAction.action = null;
 					this.player.items.splice(i, 1);
 					text.setText('');
 					text.destroy();
 					this.scene.restart({
 						player: this.player,
 						isReset: true,
-						interfaceControler: this.luminusInterfaceController,
+						interfaceControler: this.neverquestInterfaceController,
 					});
 					// TODO - Rearange the items.
 				} else {

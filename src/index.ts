@@ -1,30 +1,30 @@
 import Phaser from 'phaser';
-import { MainScene } from './scenes/MainScene';
 import { Plugin as NineSlicePlugin } from 'phaser3-nineslice';
-import { DialogScene } from './scenes/DialogScene';
-import { JoystickScene } from './scenes/JoystickScene';
-import { HUDScene } from './scenes/HUDScene';
-import { PreloadScene } from './scenes/PreloadScene';
-import { VideoPlayerScene } from './scenes/VideoPlayerScene';
-import { IntroScene } from './scenes/IntroScene';
-import { SettingScene } from './scenes/SettingScene';
-import OutlinePostFx from 'phaser3-rex-plugins/plugins/outlinepipeline.js';
 import OutlinePipelinePlugin from 'phaser3-rex-plugins/plugins/outlinepipeline-plugin.js';
+import OutlinePostFx from 'phaser3-rex-plugins/plugins/outlinepipeline.js';
 import YoutubePlayerPlugin from 'phaser3-rex-plugins/plugins/youtubeplayer-plugin.js';
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
-import { MobileCheckScene } from './scenes/MobileCheckScene';
-import { DungeonScene } from './scenes/DungeonScene';
-import { InventoryScene } from './scenes/InventoryScene';
-import { TutorialScene } from './scenes/TutorialScene';
-import { MainMenuScene } from './scenes/MainMenuScene';
-import { AttributeScene } from './scenes/AttributeScene';
-import { TownScene } from './scenes/TownScene';
-import { CaveScene } from './scenes/CaveScene';
-import { OverworldScene } from './scenes/OverworldScene';
-import { GameOverScene } from './scenes/GameOverScene';
-import { logger } from './utils/Logger';
-import { debugHelper } from './utils/DebugHelper';
+// import { AttributeScene } from './scenes/AttributeScene';
+// import { CaveScene } from './scenes/CaveScene';
+// import { DialogScene } from './scenes/DialogScene';
+// import { DungeonScene } from './scenes/DungeonScene';
+// import { GameOverScene } from './scenes/GameOverScene';
+// import { HUDScene } from './scenes/HUDScene';
+import { IntroScene } from './scenes/IntroScene';
+// import { InventoryScene } from './scenes/InventoryScene';
+// import { JoystickScene } from './scenes/JoystickScene';
+// import { MainMenuScene } from './scenes/MainMenuScene';
+// import { MainScene } from './scenes/MainScene';
+// import { MobileCheckScene } from './scenes/MobileCheckScene';
+// import { OverworldScene } from './scenes/OverworldScene';
+import { PreloadScene } from './scenes/PreloadScene';
+// import { SettingScene } from './scenes/SettingScene';
+// import { TownScene } from './scenes/TownScene';
+// import { TutorialScene } from './scenes/TutorialScene';
+// import { VideoPlayerScene } from './scenes/VideoPlayerScene';
 import { crashReporter } from './utils/CrashReporter';
+import { debugHelper } from './utils/DebugHelper';
+import { logger } from './utils/Logger';
 
 // Create canvas with willReadFrequently attribute
 const canvas = document.getElementById('neverquest-rpg') as HTMLCanvasElement;
@@ -45,7 +45,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	height: 600,
 	render: {
 		antialias: false,
-		pixelArt: false,
+		pixelArt: true,
 		roundPixels: false,
 		transparent: false,
 	},
@@ -66,24 +66,24 @@ const config: Phaser.Types.Core.GameConfig = {
 		// Preload should come first
 		PreloadScene,
 		IntroScene,
-		MainScene,
-		DungeonScene,
-		TownScene,
-		CaveScene,
-		OverworldScene,
-		MobileCheckScene,
-		TutorialScene,
-		MainMenuScene,
+		// MainScene,
+		// DungeonScene,
+		// TownScene,
+		// CaveScene,
+		// OverworldScene,
+		// MobileCheckScene,
+		// TutorialScene,
+		// MainMenuScene,
 
 		// UI Scenes should be loaded after the game Scenes.
-		JoystickScene,
-		DialogScene,
-		HUDScene,
-		InventoryScene,
-		SettingScene,
-		VideoPlayerScene,
-		AttributeScene,
-		GameOverScene,
+		// JoystickScene,
+		// DialogScene,
+		// HUDScene,
+		// InventoryScene,
+		// SettingScene,
+		// VideoPlayerScene,
+		// AttributeScene,
+		// GameOverScene,
 	],
 	input: {
 		gamepad: true,

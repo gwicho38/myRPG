@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Luminus RPG</string>
-    <string name="title_activity_main">Luminus RPG</string>
-    <string name="package_name">com.luminusgames.rpg</string>
-    <string name="custom_url_scheme">com.luminusgames.rpg</string>
+    <string name="app_name">Neverquest</string>
+    <string name="title_activity_main">Neverquest</string>
+    <string name="package_name">com.neverquest.rpg</string>
+    <string name="custom_url_scheme">com.neverquest.rpg</string>
 </resources>

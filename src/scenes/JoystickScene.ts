@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import joystick from '../plugins/VirtualJoystick/VirtualJoystickPlugin';
 import joystick_atlas_image from '../assets/sprites/joystick-0.png';
 import joystick_json from '../assets/sprites/joystick.json';
-import { LuminusBattleManager } from '../plugins/LuminusBattleManager';
+import { NeverquestBattleManager } from '../plugins/NeverquestBattleManager';
 
 export class JoystickScene extends Phaser.Scene {
 	useOnScreenControls: boolean;
@@ -17,7 +17,7 @@ export class JoystickScene extends Phaser.Scene {
 	stickPositionMultiplier: number;
 	buttonAMultiplierXposition: number;
 	buttonAMultiplierYposition: number;
-	luminusBattleManager: LuminusBattleManager | null;
+	neverquestBattleManager: NeverquestBattleManager | null;
 	phantomStick: any;
 	pad: any;
 
@@ -38,7 +38,7 @@ export class JoystickScene extends Phaser.Scene {
 		this.stickPositionMultiplier = 0.1;
 		this.buttonAMultiplierXposition = 0.18;
 		this.buttonAMultiplierYposition = 0.25;
-		this.luminusBattleManager = null;
+		this.neverquestBattleManager = null;
 		this.phantomStick = null;
 	}
 
@@ -120,14 +120,14 @@ export class JoystickScene extends Phaser.Scene {
 		this.events.emit('JoystickReady');
 		// this.debugText = this.add.text(0, 0);
 		this.createButtonActions();
-		this.luminusBattleManager = new LuminusBattleManager();
+		this.neverquestBattleManager = new NeverquestBattleManager();
 	}
 
 	createButtonActions(): void {
 		if (this.buttonA) {
 			this.buttonA.on('down', () => {
 				if (this.player && this.player.active && this.player.canAtack && !this.player.isAtacking) {
-					this.luminusBattleManager.atack(this.player);
+					this.neverquestBattleManager.atack(this.player);
 				}
 			});
 		}

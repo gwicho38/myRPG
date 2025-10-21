@@ -1,19 +1,15 @@
 {
-  "jslint.enable": false,
-  "editor.wordWrapColumn": 120,
-  "prettier.printWidth": 120,
-  "prettier.tabWidth": 4,
-  "prettier.singleQuote": true,
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": null,
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "workbench.colorCustomizations": {
-    "editorCursor.foreground": "#e9dbb7",
-    "activityBarBadge.background": "#e9dbb7",
-    "activityBarBadge.foreground": "#262626",
-    "statusBar.background": "#262626",
-    "statusBar.foreground": "#e9dbb7"
-  }
+	"jslint.enable": false,
+	"editor.wordWrapColumn": 120,
+	"prettier.printWidth": 120,
+	"prettier.tabWidth": 4,
+	"prettier.singleQuote": true,
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": null,
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"workbench.colorCustomizations": {
+		"editorCursor.foreground": "#e9dbb7"
+	}
 }
