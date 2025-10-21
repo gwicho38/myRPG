@@ -1,8 +1,8 @@
 import { JoystickScene } from '../../scenes/JoystickScene';
-import { LuminusBattleManager } from '../../plugins/LuminusBattleManager';
+import { NeverquestBattleManager } from '../../plugins/NeverquestBattleManager';
 
 // Mock dependencies
-jest.mock('../../plugins/LuminusBattleManager');
+jest.mock('../../plugins/NeverquestBattleManager');
 jest.mock('../../plugins/VirtualJoystick/VirtualJoystickPlugin', () => ({}), { virtual: true });
 
 describe('JoystickScene', () => {
@@ -96,11 +96,11 @@ describe('JoystickScene', () => {
 			},
 		};
 
-		// Mock LuminusBattleManager
+		// Mock NeverquestBattleManager
 		const mockBattleManager = {
 			atack: jest.fn(),
 		};
-		(LuminusBattleManager as jest.Mock).mockImplementation(() => mockBattleManager);
+		(NeverquestBattleManager as jest.Mock).mockImplementation(() => mockBattleManager);
 
 		// Create scene instance
 		scene = new JoystickScene();
@@ -128,7 +128,7 @@ describe('JoystickScene', () => {
 			expect(scene.stick).toBeNull();
 			expect(scene.buttonA).toBeNull();
 			expect(scene.buttonB).toBeNull();
-			expect(scene.luminusBattleManager).toBeNull();
+			expect(scene.neverquestBattleManager).toBeNull();
 			expect(scene.phantomStick).toBeNull();
 		});
 
@@ -225,8 +225,8 @@ describe('JoystickScene', () => {
 		});
 
 		it('should create battle manager', () => {
-			expect(LuminusBattleManager).toHaveBeenCalled();
-			expect(scene.luminusBattleManager).toBeDefined();
+			expect(NeverquestBattleManager).toHaveBeenCalled();
+			expect(scene.neverquestBattleManager).toBeDefined();
 		});
 
 		it('should register pointerdown event handler', () => {
@@ -262,7 +262,7 @@ describe('JoystickScene', () => {
 		});
 
 		it('should still create battle manager', () => {
-			expect(scene.luminusBattleManager).toBeDefined();
+			expect(scene.neverquestBattleManager).toBeDefined();
 		});
 
 		it('should still emit JoystickReady event', () => {
@@ -390,7 +390,7 @@ describe('JoystickScene', () => {
 
 			handler();
 
-			expect(scene.luminusBattleManager!.atack).toHaveBeenCalledWith(scene.player);
+			expect(scene.neverquestBattleManager!.atack).toHaveBeenCalledWith(scene.player);
 		});
 
 		it('should not attack if player not active', () => {
@@ -399,10 +399,10 @@ describe('JoystickScene', () => {
 			const downCall = scene.buttonA.on.mock.calls.find((call: any) => call[0] === 'down');
 			const handler = downCall[1];
 
-			(scene.luminusBattleManager!.atack as jest.Mock).mockClear();
+			(scene.neverquestBattleManager!.atack as jest.Mock).mockClear();
 			handler();
 
-			expect(scene.luminusBattleManager!.atack).not.toHaveBeenCalled();
+			expect(scene.neverquestBattleManager!.atack).not.toHaveBeenCalled();
 		});
 
 		it('should not attack if player cannot attack', () => {
@@ -411,10 +411,10 @@ describe('JoystickScene', () => {
 			const downCall = scene.buttonA.on.mock.calls.find((call: any) => call[0] === 'down');
 			const handler = downCall[1];
 
-			(scene.luminusBattleManager!.atack as jest.Mock).mockClear();
+			(scene.neverquestBattleManager!.atack as jest.Mock).mockClear();
 			handler();
 
-			expect(scene.luminusBattleManager!.atack).not.toHaveBeenCalled();
+			expect(scene.neverquestBattleManager!.atack).not.toHaveBeenCalled();
 		});
 
 		it('should not attack if player is already attacking', () => {
@@ -423,10 +423,10 @@ describe('JoystickScene', () => {
 			const downCall = scene.buttonA.on.mock.calls.find((call: any) => call[0] === 'down');
 			const handler = downCall[1];
 
-			(scene.luminusBattleManager!.atack as jest.Mock).mockClear();
+			(scene.neverquestBattleManager!.atack as jest.Mock).mockClear();
 			handler();
 
-			expect(scene.luminusBattleManager!.atack).not.toHaveBeenCalled();
+			expect(scene.neverquestBattleManager!.atack).not.toHaveBeenCalled();
 		});
 
 		it('should handle null player gracefully', () => {
@@ -469,7 +469,7 @@ describe('JoystickScene', () => {
 			expect(scene.stick).toBeDefined();
 			expect(scene.phantomStick).toBeDefined();
 			expect(scene.buttonA).toBeDefined();
-			expect(scene.luminusBattleManager).toBeDefined();
+			expect(scene.neverquestBattleManager).toBeDefined();
 		});
 
 		it('should handle full touch interaction cycle', () => {
@@ -512,7 +512,7 @@ describe('JoystickScene', () => {
 			expect(scene.stick).toBeNull();
 			expect(scene.phantomStick).toBeNull();
 			expect(scene.buttonA).toBeNull();
-			expect(scene.luminusBattleManager).toBeDefined();
+			expect(scene.neverquestBattleManager).toBeDefined();
 		});
 	});
 });

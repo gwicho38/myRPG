@@ -46,7 +46,7 @@ describe('AnimationNames', () => {
 
 	describe('animation key formatting', () => {
 		it('should allow proper concatenation with prefix and suffix', () => {
-			// Simulate how LuminusAnimationManager builds animation keys
+			// Simulate how NeverquestAnimationManager builds animation keys
 			const texture = 'character';
 			const prefix = animationNames.walkPrefixAnimation;
 			const suffix = animationNames.rightAnimationSufix;

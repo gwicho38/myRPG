@@ -11,7 +11,7 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-We take the security of Luminus RPG seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of Neverquest seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 ### Please DO NOT:
 

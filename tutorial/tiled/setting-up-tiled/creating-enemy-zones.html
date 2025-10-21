@@ -173,16 +173,16 @@ hljs.initLineNumbersOnLoad();
 <p><img src="https://i.ibb.co/xDsx6yN/Screen-Shot-2021-04-07-at-15-23-29.png" alt="" class="center" /><img src="https://i.ibb.co/R2XBKCW/Screen-Shot-2021-04-07-at-15-22-53.png" alt="" class="center" /></p>
 <p>When You are done with that your properties panel should look like this.</p>
 <p><a href="https://i.ibb.co/QvYzMF3/Screen-Shot-2021-04-07-at-15-26-09.png"><img src="https://i.ibb.co/QvYzMF3/Screen-Shot-2021-04-07-at-15-26-09.png" alt="" class="center" /></a></p>
-<p>Last but not least, you must create the <code>LuminusEnemyZones</code> configuration, inside the <code>create</code> method of your Scene.</p>
+<p>Last but not least, you must create the <code>NeverquestEnemyZones</code> configuration, inside the <code>create</code> method of your Scene.</p>
 <pre><code>    /**
     * @param this { Phaser.Scene } The phaser Scene Context.
     * @param map { Phaser.Tilemaps } The Tilemap that you have created.
     */
-    this.luminusEnemyZones = new LuminusEnemyZones(this, map);
-    this.luminusEnemyZones.tiledObjectLayer = 'your-object-layer' // Use this line only if you changed the Object Layer Name
-    this.luminusEnemyZones.create();</code></pre>
+    this.neverquestEnemyZones = new NeverquestEnemyZones(this, map);
+    this.neverquestEnemyZones.tiledObjectLayer = 'your-object-layer' // Use this line only if you changed the Object Layer Name
+    this.neverquestEnemyZones.create();</code></pre>
 <p><code>this</code> is the Scene Context and <code>map</code>is the <a href="https://phaser.io/examples/v3/view/tilemap/tiled-json-map">Phaser Tiled </a> Map that you created on <a href="https://www.mapeditor.org/">Tiled</a>. Remember, this code should be called only once in your <code>create</code> scene method.</p>
-<p>You can read more about the <code>LuminusEnemyZones</code> on the JSDocs provided by the Template. Just run <code>npm run jsdoc</code> on the root of the template project.</p>
+<p>You can read more about the <code>NeverquestEnemyZones</code> on the JSDocs provided by the Template. Just run <code>npm run jsdoc</code> on the root of the template project.</p>
 <h4><a href="how-to-add-warps.html">Previous Step - How add Warps</a></h4>
 
                 </section>

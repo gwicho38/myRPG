@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { IconNamesConst } from '../consts/UI/IconNames';
-import { LuminusHUDProgressBar } from '../plugins/HUD/LuminusHUDProgressBar';
-import { LuminusMessageLog } from '../plugins/HUD/LuminusMessageLog';
-import { LuminusMinimap } from '../plugins/HUD/LuminusMinimap';
-import { LuminusUtils } from '../utils/LuminusUtils';
+import { NeverquestHUDProgressBar } from '../plugins/HUD/NeverquestHUDProgressBar';
+import { NeverquestMessageLog } from '../plugins/HUD/NeverquestMessageLog';
+import { NeverquestMinimap } from '../plugins/HUD/NeverquestMinimap';
+import { NeverquestUtils } from '../utils/NeverquestUtils';
 import { AttributeSceneName } from './AttributeScene';
 import { InventorySceneName } from './InventoryScene';
 import { SceneToggleWatcher } from './watchers/SceneToggleWatcher';
@@ -27,7 +27,7 @@ export class HUDScene extends Phaser.Scene {
 	/**
 	 * The minimap component
 	 */
-	minimap?: LuminusMinimap;
+	minimap?: NeverquestMinimap;
 
 	/**
 	 * Maximize image/sprite name.
@@ -135,12 +135,12 @@ export class HUDScene extends Phaser.Scene {
 	/**
 	 * The Health bar that will display the player's current HP
 	 */
-	health_bar!: LuminusHUDProgressBar;
+	health_bar!: NeverquestHUDProgressBar;
 
 	/**
 	 * The message log that displays game events
 	 */
-	messageLog!: LuminusMessageLog;
+	messageLog!: NeverquestMessageLog;
 
 	/**
 	 * The inventory sprite shortcut name.
@@ -244,7 +244,13 @@ export class HUDScene extends Phaser.Scene {
 
 		this.sp_hud = this.add.image(25, 45, 'sp_hud_2x');
 
-		this.health_bar = new LuminusHUDProgressBar(this, this.hp_hud.x, this.hp_hud.y, this.hp_hud.width, this.player);
+		this.health_bar = new NeverquestHUDProgressBar(
+			this,
+			this.hp_hud.x,
+			this.hp_hud.y,
+			this.hp_hud.width,
+			this.player
+		);
 
 		this.maximize = this.add
 			.image(
@@ -300,7 +306,7 @@ export class HUDScene extends Phaser.Scene {
 			SceneToggleWatcher.toggleScene(this, this.inventorySceneName, this.player);
 		});
 
-		if (!LuminusUtils.isMobile() || (LuminusUtils.isMobile() && this.input.gamepad!.pad1)) {
+		if (!NeverquestUtils.isMobile() || (NeverquestUtils.isMobile() && this.input.gamepad!.pad1)) {
 			this.createInventoryShortcutIcon();
 			this.createAttributesShortcutIcon();
 		}
@@ -350,7 +356,7 @@ export class HUDScene extends Phaser.Scene {
 	createMinimap(): void {
 		// Only create minimap if we have a map reference
 		if (this.map) {
-			this.minimap = new LuminusMinimap(this, this.player, this.map);
+			this.minimap = new NeverquestMinimap(this, this.player, this.map);
 		}
 	}
 
@@ -360,10 +366,10 @@ export class HUDScene extends Phaser.Scene {
 		const logX = this.cameras.main.width - logWidth - 10;
 		const logY = this.cameras.main.height - logHeight - 10;
 
-		this.messageLog = new LuminusMessageLog(this, logX, logY, logWidth, logHeight);
+		this.messageLog = new NeverquestMessageLog(this, logX, logY, logWidth, logHeight);
 
 		// Welcome message
-		this.messageLog.log('✨ Welcome to Luminus RPG!');
+		this.messageLog.log('✨ Welcome to Neverquest!');
 		this.messageLog.log('🎮 Use arrow keys or WASD to move');
 		this.messageLog.log('⚔️ Press Space to attack nearby enemies');
 	}

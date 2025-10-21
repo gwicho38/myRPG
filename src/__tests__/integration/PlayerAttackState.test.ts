@@ -6,7 +6,7 @@
 
 import Phaser from 'phaser';
 import { Player } from '../../entities/Player';
-import { LuminusBattleManager } from '../../plugins/LuminusBattleManager';
+import { NeverquestBattleManager } from '../../plugins/NeverquestBattleManager';
 
 describe('Player Attack State Integration Tests', () => {
 	let scene: Phaser.Scene;
@@ -69,7 +69,7 @@ describe('Player Attack State Integration Tests', () => {
 
 	describe('Attack State Transitions', () => {
 		test('canAtack should be set to false when attack starts', () => {
-			const battleManager = new LuminusBattleManager();
+			const battleManager = new NeverquestBattleManager();
 			player.canAtack = true;
 			player.canMove = true;
 
@@ -81,7 +81,7 @@ describe('Player Attack State Integration Tests', () => {
 		});
 
 		test('canAtack should be restored after attack animation completes', (done) => {
-			const battleManager = new LuminusBattleManager();
+			const battleManager = new NeverquestBattleManager();
 			player.canAtack = true;
 			player.canMove = true;
 
@@ -112,7 +112,7 @@ describe('Player Attack State Integration Tests', () => {
 
 	describe('Block State Interactions', () => {
 		test('blocking should disable canAtack', () => {
-			const battleManager = new LuminusBattleManager();
+			const battleManager = new NeverquestBattleManager();
 			player.canBlock = true;
 			player.canMove = true;
 			player.canAtack = true;
@@ -124,7 +124,7 @@ describe('Player Attack State Integration Tests', () => {
 		});
 
 		test('stopping block should restore canAtack', () => {
-			const battleManager = new LuminusBattleManager();
+			const battleManager = new NeverquestBattleManager();
 			player.isBlocking = true;
 			player.canBlock = true;
 			player.canAtack = false;
@@ -174,7 +174,7 @@ describe('Player Attack State Integration Tests', () => {
 
 	describe('Race Condition Prevention', () => {
 		test('multiple rapid attacks should not leave canAtack stuck false', (done) => {
-			const battleManager = new LuminusBattleManager();
+			const battleManager = new NeverquestBattleManager();
 			player.canAtack = true;
 			player.canMove = true;
 

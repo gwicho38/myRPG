@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Animations } from '../consts/Animations';
-import { ASEPRITE_CONFIG, AtlasConfig, Images, LuminusAudios, TilemapConfig } from '../consts/GameAssets';
+import { ASEPRITE_CONFIG, AtlasConfig, Images, NeverquestAudios, TilemapConfig } from '../consts/GameAssets';
 import { IPreloadScene } from '../types/SceneTypes';
 
 export class PreloadScene extends Phaser.Scene implements IPreloadScene {
@@ -40,7 +40,7 @@ export class PreloadScene extends Phaser.Scene implements IPreloadScene {
 		this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
 		// Sound
-		LuminusAudios.forEach((value: any) => {
+		NeverquestAudios.forEach((value: any) => {
 			this.load.audio(value.name, value.audio);
 		});
 

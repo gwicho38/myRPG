@@ -1,4 +1,4 @@
-import { LuminusUtils } from '../utils/LuminusUtils';
+import { NeverquestUtils } from '../utils/NeverquestUtils';
 
 /**
  * @class
@@ -148,7 +148,7 @@ export class PanelComponent {
 	 * Creates the Panel Background Layer.
 	 */
 	createBackground(): void {
-		if (LuminusUtils.isMobile()) {
+		if (NeverquestUtils.isMobile()) {
 			this.panelMaxWidth = this.scene.cameras.main.width - this.panelScreenMargin * 4;
 			this.panelMaxHeight = this.scene.cameras.main.height - this.panelScreenMargin * 4;
 		}

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.luminusgames.rpg"
+    namespace "com.neverquest.rpg"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.luminusgames.rpg"
+        applicationId "com.neverquest.rpg"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

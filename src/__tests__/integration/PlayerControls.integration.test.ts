@@ -3,14 +3,14 @@
  * Tests interactions between dialog system, battle system, and player movement
  */
 
-import { LuminusDialogBox } from '../../plugins/LuminusDialogBox';
-import { LuminusBattleManager } from '../../plugins/LuminusBattleManager';
+import { NeverquestDialogBox } from '../../plugins/NeverquestDialogBox';
+import { NeverquestBattleManager } from '../../plugins/NeverquestBattleManager';
 
 describe('Player Controls Integration Tests', () => {
 	let mockScene: any;
 	let mockPlayer: any;
-	let dialogBox: LuminusDialogBox;
-	let battleManager: LuminusBattleManager;
+	let dialogBox: NeverquestDialogBox;
+	let battleManager: NeverquestBattleManager;
 
 	beforeEach(() => {
 		// Create comprehensive mock scene
@@ -122,10 +122,10 @@ describe('Player Controls Integration Tests', () => {
 			clearTint: jest.fn(),
 		};
 
-		dialogBox = new LuminusDialogBox(mockScene, mockPlayer);
+		dialogBox = new NeverquestDialogBox(mockScene, mockPlayer);
 		dialogBox.create();
 
-		battleManager = new LuminusBattleManager();
+		battleManager = new NeverquestBattleManager();
 	});
 
 	describe('Dialog and Block Interaction', () => {

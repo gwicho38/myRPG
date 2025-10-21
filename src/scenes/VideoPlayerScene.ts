@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { LuminusSoundManager } from '../plugins/LuminusSoundManager';
+import { NeverquestSoundManager } from '../plugins/NeverquestSoundManager';
 
 export class VideoPlayerScene extends Phaser.Scene {
 	background: Phaser.GameObjects.RenderTexture | null;
@@ -12,7 +12,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 	closeButtonScale: number;
 	closeButtonMarginX: number;
 	closeButtonMarginY: number;
-	luminusSoundManager: LuminusSoundManager | null;
+	neverquestSoundManager: NeverquestSoundManager | null;
 	player: any;
 
 	constructor() {
@@ -30,14 +30,14 @@ export class VideoPlayerScene extends Phaser.Scene {
 		this.closeButtonScale = 0.3;
 		this.closeButtonMarginX = 50;
 		this.closeButtonMarginY = 30;
-		this.luminusSoundManager = null;
+		this.neverquestSoundManager = null;
 		this.player = null;
 	}
 
 	preload(): void {
-		this.luminusSoundManager = new LuminusSoundManager(this);
-		this.luminusSoundManager.create();
-		this.luminusSoundManager.stopAllAudio();
+		this.neverquestSoundManager = new NeverquestSoundManager(this);
+		this.neverquestSoundManager.create();
+		this.neverquestSoundManager.stopAllAudio();
 	}
 
 	create(): void {
@@ -87,7 +87,7 @@ export class VideoPlayerScene extends Phaser.Scene {
 			this.closeButton.on('pointerdown', () => {
 				// Just to make sure everything works if thereis no player.
 				if (this.player && this.player.container.body) this.player.container.body.maxSpeed = this.player.speed;
-				this.luminusSoundManager!.resumeAllAudio();
+				this.neverquestSoundManager!.resumeAllAudio();
 				this.scene.stop();
 			});
 		}

@@ -1,25 +1,25 @@
 import Phaser from 'phaser';
 import { Player } from '../entities/Player';
-import { LuminusDungeonGenerator } from '../plugins/LuminusDungeonGenerator';
-import { LuminusFogWarManager } from '../plugins/LuminusFogWarManager';
-import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
-import { LuminusPathfinding } from '../plugins/LuminusPathfinding';
-import { LuminusLineOfSight } from '../plugins/LuminusLineOfSight';
-import { LuminusLightingManager } from '../plugins/LuminusLightingManager';
+import { NeverquestDungeonGenerator } from '../plugins/NeverquestDungeonGenerator';
+import { NeverquestFogWarManager } from '../plugins/NeverquestFogWarManager';
+import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
+import { NeverquestPathfinding } from '../plugins/NeverquestPathfinding';
+import { NeverquestLineOfSight } from '../plugins/NeverquestLineOfSight';
+import { NeverquestLightingManager } from '../plugins/NeverquestLightingManager';
 import { Enemy } from '../entities/Enemy';
 import { PlayerConfig } from '../consts/player/Player';
 
 export class DungeonScene extends Phaser.Scene {
-	dungeon!: LuminusDungeonGenerator;
+	dungeon!: NeverquestDungeonGenerator;
 	player!: Player;
 	enemies: Enemy[];
 	themeSong!: Phaser.Sound.BaseSound;
 	ambientSound!: Phaser.Sound.BaseSound;
-	fog!: LuminusFogWarManager;
-	lighting!: LuminusLightingManager;
-	saveManager!: LuminusSaveManager;
-	pathfinding!: LuminusPathfinding;
-	lineOfSight!: LuminusLineOfSight;
+	fog!: NeverquestFogWarManager;
+	lighting!: NeverquestLightingManager;
+	saveManager!: NeverquestSaveManager;
+	pathfinding!: NeverquestPathfinding;
+	lineOfSight!: NeverquestLineOfSight;
 	exitPortal!: Phaser.GameObjects.Zone;
 	previousScene: string = 'MainScene'; // Track which scene to return to
 
@@ -43,18 +43,18 @@ export class DungeonScene extends Phaser.Scene {
 	 * Creates the Dungeon Scene
 	 */
 	create(): void {
-		this.dungeon = new LuminusDungeonGenerator(this);
+		this.dungeon = new NeverquestDungeonGenerator(this);
 		this.dungeon.create();
 
 		// Initialize pathfinding system
-		this.pathfinding = new LuminusPathfinding(this, this.dungeon.map, this.dungeon.groundLayer, {
+		this.pathfinding = new NeverquestPathfinding(this, this.dungeon.map, this.dungeon.groundLayer, {
 			walkableTiles: [0], // Tile index 0 is walkable (floor)
 			allowDiagonal: true,
 			dontCrossCorners: true,
 		});
 
 		// Initialize line-of-sight system
-		this.lineOfSight = new LuminusLineOfSight(this, this.dungeon.map, this.dungeon.groundLayer);
+		this.lineOfSight = new NeverquestLineOfSight(this, this.dungeon.map, this.dungeon.groundLayer);
 
 		this.player = new Player(
 			this,
@@ -118,11 +118,11 @@ export class DungeonScene extends Phaser.Scene {
 		});
 		this.ambientSound.play();
 
-		this.fog = new LuminusFogWarManager(this, this.dungeon.map, this.player);
+		this.fog = new NeverquestFogWarManager(this, this.dungeon.map, this.player);
 		this.fog.createFog();
 
 		// Initialize dynamic lighting system for atmospheric dungeons
-		this.lighting = new LuminusLightingManager(this, {
+		this.lighting = new NeverquestLightingManager(this, {
 			ambientDarkness: 0.9, // Very dark dungeons
 			defaultLightRadius: 120, // Player torch radius
 			enableFlicker: true,
@@ -133,7 +133,7 @@ export class DungeonScene extends Phaser.Scene {
 		// Add some static lights to the dungeon (torches on walls)
 		this.addDungeonTorches();
 
-		this.saveManager = new LuminusSaveManager(this);
+		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
 		this.setupSaveKeybinds();
 
@@ -313,7 +313,7 @@ export class DungeonScene extends Phaser.Scene {
 
 			// Clean up player
 			if (this.player) {
-				this.player.luminusMovement = null;
+				this.player.neverquestMovement = null;
 				this.player.destroy();
 			}
 

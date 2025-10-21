@@ -28,7 +28,7 @@ interface EntityStats {
 interface Entity {
 	attributes: EntityStats;
 	healthBar?: any;
-	luminusHUDProgressBar?: any;
+	neverquestHUDProgressBar?: any;
 }
 
 /**
@@ -139,7 +139,7 @@ export class AttributesManager {
 				this.entity.healthBar.full = this.entity.attributes.baseHealth;
 			}
 			this.entity.attributes.health = this.entity.attributes.baseHealth;
-			if (this.entity.luminusHUDProgressBar) this.entity.luminusHUDProgressBar.updateHealth();
+			if (this.entity.neverquestHUDProgressBar) this.entity.neverquestHUDProgressBar.updateHealth();
 		}
 	}
 	/**

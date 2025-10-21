@@ -217,8 +217,8 @@ describe('Player', () => {
 	});
 
 	test('should have movement capabilities', () => {
-		expect(player.luminusMovement).toBeDefined();
-		expect(player.luminusKeyboardMouseController).toBeDefined();
+		expect(player.neverquestMovement).toBeDefined();
+		expect(player.neverquestKeyboardMouseController).toBeDefined();
 	});
 
 	test('should initialize with items array', () => {

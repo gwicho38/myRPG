@@ -1,9 +1,9 @@
 import { SettingScene } from '../../scenes/SettingScene';
-import { LuminusSoundManager } from '../../plugins/LuminusSoundManager';
+import { NeverquestSoundManager } from '../../plugins/NeverquestSoundManager';
 import { PanelComponent } from '../../components/PanelComponent';
 
 // Mock dependencies
-jest.mock('../../plugins/LuminusSoundManager');
+jest.mock('../../plugins/NeverquestSoundManager');
 jest.mock('../../components/PanelComponent');
 
 describe('SettingScene', () => {
@@ -89,13 +89,13 @@ describe('SettingScene', () => {
 		};
 		(PanelComponent as jest.Mock).mockImplementation(() => mockPanelInstance);
 
-		// Mock LuminusSoundManager
+		// Mock NeverquestSoundManager
 		const mockSoundManager = {
 			create: jest.fn(),
 			getVolume: jest.fn(() => 0.5),
 			setVolume: jest.fn(),
 		};
-		(LuminusSoundManager as jest.Mock).mockImplementation(() => mockSoundManager);
+		(NeverquestSoundManager as jest.Mock).mockImplementation(() => mockSoundManager);
 
 		// Create scene instance
 		scene = new SettingScene();
@@ -116,7 +116,7 @@ describe('SettingScene', () => {
 		});
 
 		it('should initialize with null values', () => {
-			expect(scene.luminusSoundManager).toBeNull();
+			expect(scene.neverquestSoundManager).toBeNull();
 			expect(scene.panelComponent).toBeNull();
 			expect(scene.dialog).toBeNull();
 			expect(scene.closeButton).toBeNull();
@@ -165,13 +165,13 @@ describe('SettingScene', () => {
 			scene.create();
 		});
 
-		it('should create LuminusSoundManager', () => {
-			expect(LuminusSoundManager).toHaveBeenCalledWith(scene);
-			expect(scene.luminusSoundManager).toBeDefined();
+		it('should create NeverquestSoundManager', () => {
+			expect(NeverquestSoundManager).toHaveBeenCalledWith(scene);
+			expect(scene.neverquestSoundManager).toBeDefined();
 		});
 
-		it('should call luminusSoundManager.create()', () => {
-			expect(scene.luminusSoundManager!.create).toHaveBeenCalled();
+		it('should call neverquestSoundManager.create()', () => {
+			expect(scene.neverquestSoundManager!.create).toHaveBeenCalled();
 		});
 
 		it('should create PanelComponent', () => {
@@ -342,7 +342,7 @@ describe('SettingScene', () => {
 		});
 
 		it('should get initial volume from sound manager', () => {
-			expect(scene.luminusSoundManager!.getVolume).toHaveBeenCalled();
+			expect(scene.neverquestSoundManager!.getVolume).toHaveBeenCalled();
 		});
 	});
 
@@ -371,7 +371,7 @@ describe('SettingScene', () => {
 			// Execute callback with test value
 			callback(0.75);
 
-			expect(scene.luminusSoundManager!.setVolume).toHaveBeenCalledWith(0.75);
+			expect(scene.neverquestSoundManager!.setVolume).toHaveBeenCalledWith(0.75);
 		});
 
 		it('should handle 0 volume', () => {
@@ -383,7 +383,7 @@ describe('SettingScene', () => {
 			callback(0);
 
 			expect(scene.textAudioSlider!.text).toBe('Audio: 0');
-			expect(scene.luminusSoundManager!.setVolume).toHaveBeenCalledWith(0);
+			expect(scene.neverquestSoundManager!.setVolume).toHaveBeenCalledWith(0);
 		});
 
 		it('should handle max volume', () => {
@@ -395,7 +395,7 @@ describe('SettingScene', () => {
 			callback(1);
 
 			expect(scene.textAudioSlider!.text).toBe('Audio: 100');
-			expect(scene.luminusSoundManager!.setVolume).toHaveBeenCalledWith(1);
+			expect(scene.neverquestSoundManager!.setVolume).toHaveBeenCalledWith(1);
 		});
 
 		it('should round decimal values correctly', () => {
@@ -415,7 +415,7 @@ describe('SettingScene', () => {
 		it('should initialize all components in correct order', () => {
 			scene.create();
 
-			expect(scene.luminusSoundManager).toBeDefined();
+			expect(scene.neverquestSoundManager).toBeDefined();
 			expect(scene.panelComponent).toBeDefined();
 			expect(scene.dialog).toBeDefined();
 			expect(scene.textAudioSlider).toBeDefined();
@@ -442,7 +442,7 @@ describe('SettingScene', () => {
 			callback(0.75);
 			expect(scene.textAudioSlider!.text).toBe('Audio: 80');
 
-			expect(scene.luminusSoundManager!.setVolume).toHaveBeenCalledTimes(3);
+			expect(scene.neverquestSoundManager!.setVolume).toHaveBeenCalledTimes(3);
 		});
 
 		it('should handle scene close and resize cycle', () => {

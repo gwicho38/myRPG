@@ -5,10 +5,10 @@ import { ENTITIES } from '../../consts/Entities';
 jest.mock('phaser');
 
 // Mock other dependencies
-jest.mock('../../plugins/LuminusAnimationManager');
-jest.mock('../../plugins/LuminusBattleManager');
-jest.mock('../../plugins/LuminusHealthBar');
-jest.mock('../../plugins/LuminusDropSystem');
+jest.mock('../../plugins/NeverquestAnimationManager');
+jest.mock('../../plugins/NeverquestBattleManager');
+jest.mock('../../plugins/NeverquestHealthBar');
+jest.mock('../../plugins/NeverquestDropSystem');
 jest.mock('uniqid', () => () => 'test-unique-id');
 
 describe('Enemy', () => {
@@ -123,13 +123,13 @@ describe('Enemy', () => {
 		it('should initialize animation manager', () => {
 			enemy = new Enemy(mockScene, 100, 200, 'rat', 1);
 
-			expect(enemy.luminusAnimationManager).toBeDefined();
+			expect(enemy.neverquestAnimationManager).toBeDefined();
 		});
 
 		it('should initialize battle manager', () => {
 			enemy = new Enemy(mockScene, 100, 200, 'rat', 1);
 
-			expect(enemy.luminusBattleManager).toBeDefined();
+			expect(enemy.neverquestBattleManager).toBeDefined();
 		});
 
 		it('should set up update event listener', () => {

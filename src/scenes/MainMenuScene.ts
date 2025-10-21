@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
-import { LuminusInterfaceController } from '../plugins/LuminusInterfaceController';
-import { LuminusSaveManager } from '../plugins/LuminusSaveManager';
+import { NeverquestInterfaceController } from '../plugins/NeverquestInterfaceController';
+import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
 import intro_video from '../assets/video/intro_video_converted_FULLHD.mp4';
 import { PanelComponent } from '../components/PanelComponent';
 
 export class MainMenuScene extends Phaser.Scene {
-	luminusInterfaceControler: LuminusInterfaceController | null;
+	neverquestInterfaceControler: NeverquestInterfaceController | null;
 	gameStartText: Phaser.GameObjects.Text | null;
 	nineSliceOffset: number;
 	textWidth: number;
@@ -13,7 +13,7 @@ export class MainMenuScene extends Phaser.Scene {
 	lastMenuAction: any;
 	video: Phaser.GameObjects.Video | null;
 	themeSound: Phaser.Sound.BaseSound | null;
-	saveManager: LuminusSaveManager | null;
+	saveManager: NeverquestSaveManager | null;
 	loadGameText: Phaser.GameObjects.Text | null;
 	creditsText: Phaser.GameObjects.Text | null;
 	panelComponent: PanelComponent | null;
@@ -28,7 +28,7 @@ export class MainMenuScene extends Phaser.Scene {
 			key: 'MainMenuScene',
 		});
 
-		this.luminusInterfaceControler = null;
+		this.neverquestInterfaceControler = null;
 		this.gameStartText = null;
 		this.nineSliceOffset = 10;
 		this.textWidth = 452;
@@ -81,7 +81,7 @@ export class MainMenuScene extends Phaser.Scene {
 			loop: true,
 		});
 		this.themeSound.play();
-		this.luminusInterfaceControler = new LuminusInterfaceController(this);
+		this.neverquestInterfaceControler = new NeverquestInterfaceController(this);
 
 		this.gameStartText = this.add
 			.text(this.cameras.main.midPoint.x, this.cameras.main.midPoint.y, 'Start Game', {
@@ -95,7 +95,7 @@ export class MainMenuScene extends Phaser.Scene {
 			this.startGame();
 		});
 
-		this.saveManager = new LuminusSaveManager(this);
+		this.saveManager = new NeverquestSaveManager(this);
 
 		this.loadGameText = this.add
 			.text(this.gameStartText.x, this.gameStartText.y + 60, 'Load Game', {
@@ -151,17 +151,17 @@ export class MainMenuScene extends Phaser.Scene {
 
 	setMainMenuActions(): void {
 		// Sets the Firts action.
-		this.luminusInterfaceControler!.interfaceElements[0] = [];
-		this.luminusInterfaceControler!.interfaceElements[0][0] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0][0] = [];
 		const firstAction = {
 			element: this.gameStartText,
 			action: 'startGame',
 			context: this,
 			args: 'MainScene',
 		};
-		this.luminusInterfaceControler!.closeAction = null;
-		this.luminusInterfaceControler!.currentElementAction = firstAction;
-		this.luminusInterfaceControler!.interfaceElements[0][0].push(firstAction);
+		this.neverquestInterfaceControler!.closeAction = null;
+		this.neverquestInterfaceControler!.currentElementAction = firstAction;
+		this.neverquestInterfaceControler!.interfaceElements[0][0].push(firstAction);
 
 		const loadGameAction = {
 			element: this.loadGameText,
@@ -169,8 +169,8 @@ export class MainMenuScene extends Phaser.Scene {
 			context: this,
 			args: null as any,
 		};
-		this.luminusInterfaceControler!.interfaceElements[0][1] = [];
-		this.luminusInterfaceControler!.interfaceElements[0][1].push(loadGameAction);
+		this.neverquestInterfaceControler!.interfaceElements[0][1] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0][1].push(loadGameAction);
 
 		const credits = {
 			element: this.creditsText,
@@ -178,14 +178,14 @@ export class MainMenuScene extends Phaser.Scene {
 			context: this,
 			args: 'Credits',
 		};
-		this.luminusInterfaceControler!.interfaceElements[0][2] = [];
-		this.luminusInterfaceControler!.interfaceElements[0][2].push(credits);
+		this.neverquestInterfaceControler!.interfaceElements[0][2] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0][2].push(credits);
 
-		this.luminusInterfaceControler!.updateHighlightedElement(firstAction.element);
+		this.neverquestInterfaceControler!.updateHighlightedElement(firstAction.element);
 	}
 
 	showCredits(): void {
-		this.luminusInterfaceControler!.menuHistoryAdd();
+		this.neverquestInterfaceControler!.menuHistoryAdd();
 		this.panelComponent = new PanelComponent(this);
 		this.creditsBackground = this.panelComponent.panelBackground;
 		this.creditsTitle = this.panelComponent.panelTitle;
@@ -216,14 +216,14 @@ Forest - Intro Scene Music by "syncopika"
 			context: this,
 			args: '',
 		};
-		this.luminusInterfaceControler!.removeCurrentSelectionHighlight();
-		this.luminusInterfaceControler!.clearItems();
-		this.luminusInterfaceControler!.closeAction = closeAction;
-		this.luminusInterfaceControler!.currentElementAction = closeAction;
-		this.luminusInterfaceControler!.interfaceElements[0] = [];
-		this.luminusInterfaceControler!.interfaceElements[0][0] = [];
-		this.luminusInterfaceControler!.interfaceElements[0][0].push(closeAction);
-		this.luminusInterfaceControler!.updateHighlightedElement(closeAction.element);
+		this.neverquestInterfaceControler!.removeCurrentSelectionHighlight();
+		this.neverquestInterfaceControler!.clearItems();
+		this.neverquestInterfaceControler!.closeAction = closeAction;
+		this.neverquestInterfaceControler!.currentElementAction = closeAction;
+		this.neverquestInterfaceControler!.interfaceElements[0] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0][0] = [];
+		this.neverquestInterfaceControler!.interfaceElements[0][0].push(closeAction);
+		this.neverquestInterfaceControler!.updateHighlightedElement(closeAction.element);
 
 		this.closeButton.on('pointerup', () => {
 			this.closeCredits();
@@ -233,11 +233,11 @@ Forest - Intro Scene Music by "syncopika"
 	closeCredits(): void {
 		this.panelComponent!.destroy();
 		this.creditsTextContent!.destroy();
-		this.luminusInterfaceControler!.closeAction = null;
-		this.luminusInterfaceControler!.currentElementAction = null;
-		this.luminusInterfaceControler!.clearItems();
+		this.neverquestInterfaceControler!.closeAction = null;
+		this.neverquestInterfaceControler!.currentElementAction = null;
+		this.neverquestInterfaceControler!.clearItems();
 		this.setMainMenuActions();
-		this.luminusInterfaceControler!.menuHistoryRetrieve();
+		this.neverquestInterfaceControler!.menuHistoryRetrieve();
 	}
 
 	startGame(): void {

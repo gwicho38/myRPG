@@ -47,7 +47,7 @@ export class TerminalGame {
 		this.render();
 
 		// Log welcome message
-		this.renderer.log('{green-fg}✨ Welcome to Luminus RPG - Terminal Edition! ✨{/green-fg}');
+		this.renderer.log('{green-fg}✨ Welcome to Neverquest - Terminal Edition! ✨{/green-fg}');
 		this.renderer.log(
 			'{cyan-fg}🎮 Controls: Arrow/WASD=Move | Space/J=Attack | B/K=Block | H=Help | Q=Quit{/cyan-fg}'
 		);

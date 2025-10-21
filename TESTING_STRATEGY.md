@@ -14,13 +14,13 @@
     - Shift only worked after pressing another key (U, I, K)
     - Root cause: `updateRunningState()` required both shift AND movement keys
     - Fix: Changed shift to toggle mode (press once to enable, press again to disable)
-    - Location: `LuminusMovement.ts:56-62`
+    - Location: `NeverquestMovement.ts:56-62`
 
 6. **Shift-to-Run Toggle Bug** ✅ FIXED
     - Could not untoggle running mode once activated
     - Root cause: Running state was tied to both shift AND movement keys being down
     - Fix: Shift now acts as independent toggle, persists regardless of movement
-    - Location: `LuminusMovement.ts:176-183`
+    - Location: `NeverquestMovement.ts:176-183`
 
 ## Current Issues (2025-10-01)
 
@@ -33,7 +33,7 @@
 
 2. **Menu Popups Not Showing** 🔄 INVESTIGATING
     - U and I keys should open attribute/inventory menus
-    - Key bindings verified in `LuminusKeyboardMouseController.ts:86-92`
+    - Key bindings verified in `NeverquestKeyboardMouseController.ts:86-92`
     - Scene toggle logic in `SceneToggleWatcher.ts:5-16`
     - Possible causes:
         - Camera positioning/scroll factor issues
@@ -46,7 +46,7 @@
     - Root cause: `stopBlock()` unconditionally re-enabled abilities
     - This conflicted with dialog system which also disables abilities
     - Fix: Check `canBlock` status before re-enabling abilities in `stopBlock()`
-    - Location: `LuminusBattleManager.ts:340-350`
+    - Location: `NeverquestBattleManager.ts:340-350`
 
 ## Root Cause Analysis
 
@@ -160,9 +160,9 @@ npm run test:coverage  # Check coverage %
 
 **Files with NO tests:**
 
-- `LuminusInterfaceController.ts` (menu navigation)
-- `LuminusKeyboardMouseController.ts` (input handling)
-- `LuminusBattleManager.ts` (combat system)
+- `NeverquestInterfaceController.ts` (menu navigation)
+- `NeverquestKeyboardMouseController.ts` (input handling)
+- `NeverquestBattleManager.ts` (combat system)
 - `SceneToggleWatcher.ts` (scene transitions)
 
 **Critical paths lacking tests:**

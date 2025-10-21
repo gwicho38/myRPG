@@ -1,4 +1,4 @@
-# 🎮 Luminus RPG - Makefile Build System
+# 🎮 Neverquest - Makefile Build System
 
 A comprehensive Makefile that aggregates all building, testing, and development functionalities for multi-platform distribution.
 
@@ -19,6 +19,7 @@ make dev
 ## 📋 Main Commands
 
 ### 🔧 **Setup & Development**
+
 ```bash
 make install        # Install all dependencies
 make dev           # Start development server
@@ -28,6 +29,7 @@ make reset         # Clean + reinstall dependencies
 ```
 
 ### 🌐 **Web Builds**
+
 ```bash
 make build-web     # Build for web deployment
 make preview-web   # Build and preview web version
@@ -35,6 +37,7 @@ make size-check    # Check build sizes
 ```
 
 ### 🖥️ **Desktop Builds**
+
 ```bash
 make build-desktop    # Build for current platform
 make build-mac        # Build macOS (.dmg, .zip)
@@ -44,6 +47,7 @@ make build-all-desktop # Build for all desktop platforms
 ```
 
 ### 📱 **Mobile Builds**
+
 ```bash
 make sync-mobile      # Sync web build to mobile platforms
 make build-ios        # Build iOS app (requires macOS + Xcode)
@@ -53,6 +57,7 @@ make open-android     # Open Android project in Android Studio
 ```
 
 ### 🚀 **Build Combinations**
+
 ```bash
 make build-all        # Build for all platforms
 make build-release    # Clean build for release
@@ -60,6 +65,7 @@ make archive          # Create release archives
 ```
 
 ### 🧪 **Testing & Validation**
+
 ```bash
 make test             # Run tests
 make lint             # Run linting
@@ -69,6 +75,7 @@ make check-deps       # Check for dependency issues
 ```
 
 ### 🛠️ **Utilities**
+
 ```bash
 make info             # Show project information
 make doctor           # Check system requirements
@@ -89,28 +96,31 @@ make check-platform   # Platform-specific info
 
 ## 📁 **Build Outputs**
 
-| Command | Output Location | Description |
-|---------|----------------|-------------|
-| `make build-web` | `dist/` | Web files for hosting |
-| `make build-desktop` | `builds/` | Desktop installers |
-| `make build-ios` | iOS project | Open in Xcode |
+| Command              | Output Location | Description            |
+| -------------------- | --------------- | ---------------------- |
+| `make build-web`     | `dist/`         | Web files for hosting  |
+| `make build-desktop` | `builds/`       | Desktop installers     |
+| `make build-ios`     | iOS project     | Open in Xcode          |
 | `make build-android` | Android project | Open in Android Studio |
-| `make archive` | `releases/` | Release archives |
+| `make archive`       | `releases/`     | Release archives       |
 
 ## 🎨 **Features**
 
 ### ✨ **Color-Coded Output**
+
 - 🟢 Success messages
 - 🟡 Warning/info messages
 - 🔴 Error messages
 - 🔵 Info/tips
 
 ### 📊 **Smart Detection**
+
 - Automatically detects your operating system
 - Checks for required tools (Xcode, Android Studio)
 - Validates dependencies and project health
 
 ### 🔄 **CI/CD Ready**
+
 ```bash
 make ci-install       # CI dependency installation
 make ci-build         # CI build pipeline
@@ -118,10 +128,13 @@ make ci-test          # CI test pipeline
 ```
 
 ### 🏥 **Health Checks**
+
 ```bash
 make doctor           # Complete system health check
 ```
+
 Shows:
+
 - Node.js, NPM, Git versions
 - Platform information
 - Xcode availability (macOS)
@@ -131,6 +144,7 @@ Shows:
 ## 💡 **Examples**
 
 ### First-time setup:
+
 ```bash
 make install
 make doctor
@@ -139,6 +153,7 @@ make dev
 ```
 
 ### Release preparation:
+
 ```bash
 make build-release
 make archive
@@ -146,6 +161,7 @@ make list-builds
 ```
 
 ### Mobile development:
+
 ```bash
 make sync-mobile
 make open-ios        # On macOS
@@ -153,6 +169,7 @@ make open-android    # Any platform
 ```
 
 ### Troubleshooting:
+
 ```bash
 make doctor          # Check system
 make clean           # Clean builds
@@ -162,14 +179,14 @@ make check-deps      # Check dependencies
 
 ## 🆚 **Makefile vs NPM Scripts**
 
-| Task | Makefile | NPM Script |
-|------|----------|------------|
-| **Build web** | `make build-web` | `npm run build:web` |
-| **All desktop** | `make build-all-desktop` | 3 separate commands |
-| **Development** | `make dev` | `npm run dev` |
-| **Clean & build** | `make build-release` | Multiple commands |
-| **System check** | `make doctor` | Not available |
-| **Help** | `make help` | Manual lookup |
+| Task              | Makefile                 | NPM Script          |
+| ----------------- | ------------------------ | ------------------- |
+| **Build web**     | `make build-web`         | `npm run build:web` |
+| **All desktop**   | `make build-all-desktop` | 3 separate commands |
+| **Development**   | `make dev`               | `npm run dev`       |
+| **Clean & build** | `make build-release`     | Multiple commands   |
+| **System check**  | `make doctor`            | Not available       |
+| **Help**          | `make help`              | Manual lookup       |
 
 ## 🔍 **Help System**
 

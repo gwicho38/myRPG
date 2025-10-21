@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 import { AnimationNames } from '../consts/AnimationNames';
-import { LuminusAnimationManager } from '../plugins/LuminusAnimationManager';
-import { LuminusHealthBar } from '../plugins/LuminusHealthBar';
+import { NeverquestAnimationManager } from '../plugins/NeverquestAnimationManager';
+import { NeverquestHealthBar } from '../plugins/NeverquestHealthBar';
 import { BaseEntity, IBaseEntity } from './BaseEntity';
 import { EntityAttributes, IEntityAttributes } from './EntityAttributes';
 import uniqid from 'uniqid';
-import { LuminusBattleManager } from '../plugins/LuminusBattleManager';
+import { NeverquestBattleManager } from '../plugins/NeverquestBattleManager';
 import { ENTITIES } from '../consts/Entities';
-import { LuminusDropSystem } from '../plugins/LuminusDropSystem';
+import { NeverquestDropSystem } from '../plugins/NeverquestDropSystem';
 import { EnemiesSeedConfig } from '../consts/enemies/EnemiesSeedConfig';
 import { IEnemyConfig } from '../types/EnemyTypes';
 
@@ -39,10 +39,10 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 	public speed: number;
 	public drops: any[];
 	public exp: number;
-	public luminusAnimationManager: LuminusAnimationManager;
-	public luminusBattleManager: LuminusBattleManager;
+	public neverquestAnimationManager: NeverquestAnimationManager;
+	public neverquestBattleManager: NeverquestBattleManager;
 	public hitZone: Phaser.GameObjects.Zone;
-	public healthBar: LuminusHealthBar;
+	public healthBar: NeverquestHealthBar;
 	public container: Phaser.GameObjects.Container;
 
 	// Pathfinding properties
@@ -92,13 +92,13 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		this.drops = enemyConfig.drops;
 		this.exp = enemyConfig.exp;
 
-		this.luminusAnimationManager = new LuminusAnimationManager(this);
-		this.luminusBattleManager = new LuminusBattleManager();
+		this.neverquestAnimationManager = new NeverquestAnimationManager(this);
+		this.neverquestBattleManager = new NeverquestBattleManager();
 
 		this.hitZone = this.scene.add.zone(0, 0, this.width, this.height);
 		this.scene.physics.add.existing(this.hitZone);
 
-		this.healthBar = new LuminusHealthBar(
+		this.healthBar = new NeverquestHealthBar(
 			this.scene,
 			0,
 			0,
@@ -124,7 +124,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 
 		this.anims.play(idleAnimation);
 		this.scene.events.on('update', this.onUpdate, this);
-		Object.assign(this, new (LuminusDropSystem as any)(scene, this, enemyConfig));
+		Object.assign(this, new (NeverquestDropSystem as any)(scene, this, enemyConfig));
 	}
 
 	public setAttributes(attributes: IEnemyConfig): void {
@@ -177,7 +177,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 					this.scene.physics.overlap((target.gameObject as any).hitZone, this, (_t: any, _enemy: any) => {
 						overlaps = true;
 						this.stopMovement();
-						if (this.canAtack) this.luminusBattleManager.atack(this);
+						if (this.canAtack) this.neverquestBattleManager.atack(this);
 					});
 
 					inRange = true;
@@ -216,7 +216,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 				// Move towards current waypoint
 				const angle = Phaser.Math.Angle.Between(this.container.x, this.container.y, waypoint.x, waypoint.y);
 				this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
-				(this.luminusAnimationManager as any).animateWithAngle(
+				(this.neverquestAnimationManager as any).animateWithAngle(
 					`${this.texture.key}-${this.walkPrefixAnimation}`,
 					angle
 				);
@@ -235,7 +235,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		const angle = Math.atan2(body.velocity.y, body.velocity.x);
 
 		this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
-		(this.luminusAnimationManager as any).animateWithAngle(
+		(this.neverquestAnimationManager as any).animateWithAngle(
 			`${this.texture.key}-${this.walkPrefixAnimation}`,
 			angle
 		);
@@ -284,7 +284,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 
 				this.scene.physics.velocityFromAngle(Phaser.Math.RadToDeg(angle), this.speed);
 
-				(this.luminusAnimationManager as any).animateWithAngle(
+				(this.neverquestAnimationManager as any).animateWithAngle(
 					`${this.texture.key}-${this.walkPrefixAnimation}`,
 					angle
 				);
@@ -297,7 +297,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite implements IBaseEntity {
 		const body = this.container.body as Phaser.Physics.Arcade.Body;
 		body.setAcceleration(0, 0);
 		body.setVelocity(0, 0);
-		(this.luminusAnimationManager as any).setIdleAnimation();
+		(this.neverquestAnimationManager as any).setIdleAnimation();
 		this.changeBodySize(this.width, this.height);
 	}
 

@@ -1,9 +1,9 @@
 import { ExpManager } from '../../../plugins/attributes/ExpManager';
-import { LuminusEntityTextDisplay } from '../../../plugins/LuminusEntityTextDisplay';
+import { NeverquestEntityTextDisplay } from '../../../plugins/NeverquestEntityTextDisplay';
 
-// Mock LuminusEntityTextDisplay
-jest.mock('../../../plugins/LuminusEntityTextDisplay', () => ({
-	LuminusEntityTextDisplay: jest.fn().mockImplementation(() => ({
+// Mock NeverquestEntityTextDisplay
+jest.mock('../../../plugins/NeverquestEntityTextDisplay', () => ({
+	NeverquestEntityTextDisplay: jest.fn().mockImplementation(() => ({
 		displayDamage: jest.fn(),
 	})),
 }));
@@ -90,8 +90,8 @@ describe('ExpManager', () => {
 			},
 		};
 
-		// Mock LuminusEntityTextDisplay constructor
-		(LuminusEntityTextDisplay as jest.MockedClass<typeof LuminusEntityTextDisplay>).mockImplementation(
+		// Mock NeverquestEntityTextDisplay constructor
+		(NeverquestEntityTextDisplay as jest.MockedClass<typeof NeverquestEntityTextDisplay>).mockImplementation(
 			() => mockTextDisplay as any
 		);
 	});
@@ -334,10 +334,10 @@ describe('ExpManager', () => {
 			expect(mockScene.sound.play).toHaveBeenCalledWith('level_up');
 		});
 
-		it('should create LuminusEntityTextDisplay', () => {
+		it('should create NeverquestEntityTextDisplay', () => {
 			ExpManager.levelUpEffects(mockEntity);
 
-			expect(LuminusEntityTextDisplay).toHaveBeenCalledWith(mockEntity.scene);
+			expect(NeverquestEntityTextDisplay).toHaveBeenCalledWith(mockEntity.scene);
 		});
 
 		it('should display 999 as level up indicator', () => {
