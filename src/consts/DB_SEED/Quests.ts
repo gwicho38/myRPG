@@ -62,16 +62,14 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			items: [{ id: 1, count: 3 }], // 3 Red Potions
 			unlockQuest: 3,
 		},
-		dialogueStart:
-			'Those cursed rats are eating our grain! Deal with them, and I will reward you handsomely.',
+		dialogueStart: 'Those cursed rats are eating our grain! Deal with them, and I will reward you handsomely.',
 		dialogueProgress: 'I can still hear those rats scurrying about. Please, hurry!',
 		dialogueComplete: 'Well done! The town is safer thanks to you. But greater dangers await...',
 	},
 	{
 		id: 3,
 		name: 'Shadows in the Cave',
-		description:
-			'Strange noises have been heard from the nearby cave. Elder Marcus asks you to investigate.',
+		description: 'Strange noises have been heard from the nearby cave. Elder Marcus asks you to investigate.',
 		questGiver: 'Elder Marcus',
 		questGiverLocation: 'Town',
 		type: 'main',
@@ -175,15 +173,13 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			gold: 80,
 			unlockQuest: 6,
 		},
-		dialogueStart:
-			'Those markings... they speak of an ancient evil. We must gather the fragments to learn more.',
+		dialogueStart: 'Those markings... they speak of an ancient evil. We must gather the fragments to learn more.',
 		dialogueComplete: 'These fragments... they pulse with dark energy. We must prepare for what comes.',
 	},
 	{
 		id: 6,
 		name: 'The First Dungeon',
-		description:
-			'The fragments point to a hidden dungeon beneath the forest. Explore it and discover its secrets.',
+		description: 'The fragments point to a hidden dungeon beneath the forest. Explore it and discover its secrets.',
 		questGiver: 'Elder Marcus',
 		questGiverLocation: 'Town',
 		type: 'main',
@@ -220,8 +216,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 		},
 		dialogueStart:
 			'The dungeon entrance has been sealed for centuries. You must break the seal and face what lies within.',
-		dialogueComplete:
-			'You defeated the Guardian! But this is only the beginning. Darker forces are awakening...',
+		dialogueComplete: 'You defeated the Guardian! But this is only the beginning. Darker forces are awakening...',
 	},
 	{
 		id: 7,
@@ -256,8 +251,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			gold: 200,
 			unlockQuest: 8,
 		},
-		dialogueStart:
-			'The whispers grow louder. Seek out the Sage - she may know what ancient evil awakens.',
+		dialogueStart: 'The whispers grow louder. Seek out the Sage - she may know what ancient evil awakens.',
 		dialogueComplete: 'The Dark Essence confirms our fears. The Shadow Lord is returning...',
 	},
 	{
@@ -299,8 +293,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 	{
 		id: 9,
 		name: 'The Frozen Wastes',
-		description:
-			'Ancient texts speak of a Frozen Temple in the north. The next seal fragment lies within.',
+		description: 'Ancient texts speak of a Frozen Temple in the north. The next seal fragment lies within.',
 		questGiver: 'Sage',
 		questGiverLocation: 'Larus',
 		type: 'main',
@@ -417,15 +410,14 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			gold: 2000,
 			items: [{ id: 99, count: 1 }], // Legendary final weapon
 		},
-		dialogueStart:
-			'This is it. The fate of the world rests on your shoulders. May the light guide you!',
+		dialogueStart: 'This is it. The fate of the world rests on your shoulders. May the light guide you!',
 		dialogueComplete: 'You did it! The Shadow Lord is sealed. Peace returns to the land. You are a true hero!',
 	},
 
 	// ====== SIDE QUESTS ======
 	{
 		id: 101,
-		name: 'The Lumberjack\'s Axe',
+		name: "The Lumberjack's Axe",
 		description: 'A lumberjack lost his prized axe in the forest. Help him find it.',
 		questGiver: 'Lumberjack',
 		questGiverLocation: 'Overworld',
@@ -535,8 +527,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 	{
 		id: 104,
 		name: 'The Mysterious Stranger',
-		description:
-			'A hooded stranger offers you a challenge: survive 5 minutes in the dungeon without healing.',
+		description: 'A hooded stranger offers you a challenge: survive 5 minutes in the dungeon without healing.',
 		questGiver: 'Mysterious Stranger',
 		questGiverLocation: 'Town',
 		type: 'side',
@@ -557,8 +548,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			gold: 300,
 			items: [{ id: 70, count: 1 }], // Shadow Cloak
 		},
-		dialogueStart:
-			'I challenge you: survive the dungeon for 5 minutes without healing. Can you do it?',
+		dialogueStart: 'I challenge you: survive the dungeon for 5 minutes without healing. Can you do it?',
 		dialogueComplete: 'Remarkable! You have true skill. This cloak will serve you well.',
 		repeatable: false,
 	},
@@ -669,8 +659,7 @@ export const DB_SEED_QUESTS: IQuestConfig[] = [
 			gold: 500,
 			items: [{ id: 80, count: 1 }], // Dungeon Explorer Badge
 		},
-		dialogueStart:
-			'Think you can master the dungeons? Complete 5 and join our elite explorers!',
+		dialogueStart: 'Think you can master the dungeons? Complete 5 and join our elite explorers!',
 		dialogueComplete: 'Incredible! You are now an elite member of the Explorer Guild!',
 		repeatable: false,
 	},

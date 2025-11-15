@@ -59,14 +59,7 @@ export class QuestLogScene extends Phaser.Scene {
 		this.panel = this.add.container(width / 2, height / 2);
 
 		// Panel background
-		const panelBg = this.add.rectangle(
-			0,
-			0,
-			this.PANEL_WIDTH,
-			this.PANEL_HEIGHT,
-			0x2a2a2a,
-			1
-		);
+		const panelBg = this.add.rectangle(0, 0, this.PANEL_WIDTH, this.PANEL_HEIGHT, 0x2a2a2a, 1);
 		panelBg.setStrokeStyle(4, 0x8b7355);
 		this.panel.add(panelBg);
 
@@ -81,16 +74,11 @@ export class QuestLogScene extends Phaser.Scene {
 		this.panel.add(this.titleText);
 
 		// Close button
-		this.closeButton = this.add.text(
-			this.PANEL_WIDTH / 2 - 40,
-			-this.PANEL_HEIGHT / 2 + 30,
-			'✕',
-			{
-				fontFamily: 'Arial',
-				fontSize: '32px',
-				color: '#ff6b6b',
-			}
-		);
+		this.closeButton = this.add.text(this.PANEL_WIDTH / 2 - 40, -this.PANEL_HEIGHT / 2 + 30, '✕', {
+			fontFamily: 'Arial',
+			fontSize: '32px',
+			color: '#ff6b6b',
+		});
 		this.closeButton.setOrigin(0.5, 0.5);
 		this.closeButton.setInteractive({ useHandCursor: true });
 		this.closeButton.on('pointerdown', () => {
@@ -145,21 +133,9 @@ export class QuestLogScene extends Phaser.Scene {
 		});
 
 		// Listen for quest updates
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_UPDATED,
-			this.refreshQuestList,
-			this
-		);
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_COMPLETED,
-			this.refreshQuestList,
-			this
-		);
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_ACCEPTED,
-			this.refreshQuestList,
-			this
-		);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_UPDATED, this.refreshQuestList, this);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_COMPLETED, this.refreshQuestList, this);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_ACCEPTED, this.refreshQuestList, this);
 	}
 
 	private createTabs(): void {
@@ -245,7 +221,7 @@ export class QuestLogScene extends Phaser.Scene {
 
 		// Display quest list
 		let yOffset = 0;
-		quests.forEach((quest, index) => {
+		quests.forEach((quest, _index) => {
 			const questItem = this.createQuestListItem(quest, yOffset);
 			this.questListContainer.add(questItem);
 			yOffset += 70; // Space between quest items
@@ -277,10 +253,7 @@ export class QuestLogScene extends Phaser.Scene {
 		}
 	}
 
-	private createQuestListItem(
-		quest: IActiveQuest,
-		yOffset: number
-	): Phaser.GameObjects.Container {
+	private createQuestListItem(quest: IActiveQuest, yOffset: number): Phaser.GameObjects.Container {
 		const container = this.add.container(0, yOffset);
 
 		// Background
@@ -320,16 +293,11 @@ export class QuestLogScene extends Phaser.Scene {
 		// Progress indicator
 		const totalObjectives = quest.objectives.length;
 		const completedObjectives = quest.objectives.filter((obj) => obj.completed).length;
-		const progressText = this.add.text(
-			this.LIST_WIDTH - 10,
-			30,
-			`${completedObjectives}/${totalObjectives}`,
-			{
-				fontFamily: 'Arial',
-				fontSize: '12px',
-				color: completedObjectives === totalObjectives ? '#4ade80' : '#888888',
-			}
-		);
+		const progressText = this.add.text(this.LIST_WIDTH - 10, 30, `${completedObjectives}/${totalObjectives}`, {
+			fontFamily: 'Arial',
+			fontSize: '12px',
+			color: completedObjectives === totalObjectives ? '#4ade80' : '#888888',
+		});
 		progressText.setOrigin(1, 0);
 		container.add(progressText);
 
@@ -388,7 +356,7 @@ export class QuestLogScene extends Phaser.Scene {
 		yOffset += 30;
 
 		// Objectives list
-		quest.objectives.forEach((objective, index) => {
+		quest.objectives.forEach((objective, _index) => {
 			const checkmark = objective.completed ? '✓' : '○';
 			const color = objective.completed ? '#4ade80' : '#cccccc';
 
@@ -468,20 +436,8 @@ export class QuestLogScene extends Phaser.Scene {
 	 */
 	shutdown(): void {
 		// Remove event listeners
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_UPDATED,
-			this.refreshQuestList,
-			this
-		);
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_COMPLETED,
-			this.refreshQuestList,
-			this
-		);
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_ACCEPTED,
-			this.refreshQuestList,
-			this
-		);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_UPDATED, this.refreshQuestList, this);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_COMPLETED, this.refreshQuestList, this);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_ACCEPTED, this.refreshQuestList, this);
 	}
 }

@@ -153,7 +153,7 @@ export const QUEST_ITEMS = [
 		name: "Baker's Ring",
 		type: ITEM_TYPE.QUEST,
 		buffType: 0,
-		description: "A golden ring belonging to the town baker.",
+		description: 'A golden ring belonging to the town baker.',
 		script: '',
 		texture: 'treasure_chest',
 		sfx: 'item_pickup',
@@ -241,8 +241,7 @@ export const WEAPON_ITEMS = [
 		name: 'Legendary Blade',
 		type: ITEM_TYPE.EQUIPMENT,
 		buffType: BUFF_TYPES.ATK02,
-		description:
-			'A legendary sword said to have slain dragons. Permanently increases ATTACK by 10.',
+		description: 'A legendary sword said to have slain dragons. Permanently increases ATTACK by 10.',
 		script: 'perm atk 10;',
 		texture: 'mighty_sword',
 		sfx: 'equip_item',
@@ -307,8 +306,7 @@ export const WEAPON_ITEMS = [
 		name: 'Frost Blade',
 		type: ITEM_TYPE.EQUIPMENT,
 		buffType: BUFF_TYPES.ATK02,
-		description:
-			'A blade forged from eternal ice. Permanently increases ATTACK by 8 and adds ice damage.',
+		description: 'A blade forged from eternal ice. Permanently increases ATTACK by 8 and adds ice damage.',
 		script: 'perm atk 8;',
 		texture: 'mighty_sword',
 		sfx: 'equip_item',
@@ -322,8 +320,7 @@ export const WEAPON_ITEMS = [
 		name: 'Sword of Light',
 		type: ITEM_TYPE.EQUIPMENT,
 		buffType: BUFF_TYPES.ATK02,
-		description:
-			'The ultimate weapon, blessed by the gods. Permanently increases ATTACK by 20.',
+		description: 'The ultimate weapon, blessed by the gods. Permanently increases ATTACK by 20.',
 		script: 'perm atk 20;',
 		texture: 'mighty_sword',
 		sfx: 'equip_item',
@@ -426,8 +423,7 @@ export const ACCESSORY_ITEMS = [
 		name: 'Shadow Cloak',
 		type: ITEM_TYPE.EQUIPMENT,
 		buffType: BUFF_TYPES.SPD01,
-		description:
-			'A cloak woven from shadows. Permanently increases SPEED by 5 and evasion.',
+		description: 'A cloak woven from shadows. Permanently increases SPEED by 5 and evasion.',
 		script: 'perm spd 5;',
 		texture: 'treasure_chest',
 		sfx: 'equip_item',

@@ -112,14 +112,8 @@ export class NeverquestSkillTreeManager {
 		// Deduct skill points
 		this.playerSkills.availablePoints -= skill.cost;
 
-		console.log(
-			`Learned skill: ${skill.name} (Rank ${currentRank + 1}/${skill.maxRank})`
-		);
-		this.scene.events.emit(
-			NeverquestSkillTreeManager.SKILL_LEARNED,
-			skill,
-			currentRank + 1
-		);
+		console.log(`Learned skill: ${skill.name} (Rank ${currentRank + 1}/${skill.maxRank})`);
+		this.scene.events.emit(NeverquestSkillTreeManager.SKILL_LEARNED, skill, currentRank + 1);
 		this.scene.events.emit(NeverquestSkillTreeManager.SKILL_POINTS_SPENT, skill.cost);
 
 		return true;

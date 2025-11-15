@@ -18,5 +18,3 @@ export enum QuestObjectiveType {
 	EQUIP_ITEM = 'EQUIP_ITEM', // Equip a specific item type
 	COMPLETE_DUNGEON = 'COMPLETE_DUNGEON', // Complete a dungeon
 }
-
-export type QuestObjectiveType = (typeof QuestObjectiveType)[keyof typeof QuestObjectiveType];

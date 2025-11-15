@@ -10,5 +10,3 @@ export enum QuestStatus {
 	TURNED_IN = 'TURNED_IN', // Quest turned in, rewards claimed
 	FAILED = 'FAILED', // Quest failed (optional for time-limited quests)
 }
-
-export type QuestStatus = (typeof QuestStatus)[keyof typeof QuestStatus];
