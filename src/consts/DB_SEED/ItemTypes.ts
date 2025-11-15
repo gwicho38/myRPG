@@ -5,5 +5,4 @@ export const ITEM_TYPE = {
 	USABLE: new ItemType(2, 'Usable'),
 	MISC: new ItemType(3, 'Misc'),
 	QUEST: new ItemType(4, 'Quest'),
-	EQUIPMENT: new ItemType(5, 'Equipment'),
 };
