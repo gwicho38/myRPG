@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { IQuestConfig, IActiveQuest, IQuestProgress, IQuestObjective } from '../types/QuestTypes';
+import { IQuestConfig, IActiveQuest, IQuestProgress } from '../types/QuestTypes';
 import { QuestObjectiveType } from '../models/QuestObjectiveType';
 import { QuestStatus } from '../models/QuestStatus';
 import { DB_SEED_QUESTS } from '../consts/DB_SEED/Quests';
@@ -139,11 +139,7 @@ export class NeverquestQuestManager {
 	/**
 	 * Update quest progress for a specific objective type
 	 */
-	updateQuestProgress(
-		objectiveType: QuestObjectiveType,
-		targetId?: number,
-		count: number = 1
-	): void {
+	updateQuestProgress(objectiveType: QuestObjectiveType, targetId?: number, count: number = 1): void {
 		this.activeQuests.forEach((quest) => {
 			if (quest.status !== QuestStatus.ACTIVE) return;
 
@@ -165,23 +161,13 @@ export class NeverquestQuestManager {
 						if (objective.currentCount >= objective.targetCount) {
 							objective.currentCount = objective.targetCount;
 							objective.completed = true;
-							console.log(
-								`Objective completed: ${objective.description} for quest ${quest.name}`
-							);
-							this.scene.events.emit(
-								NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED,
-								quest,
-								objective
-							);
+							console.log(`Objective completed: ${objective.description} for quest ${quest.name}`);
+							this.scene.events.emit(NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED, quest, objective);
 						}
 					} else {
 						// For objectives without count, just mark as completed
 						objective.completed = true;
-						this.scene.events.emit(
-							NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED,
-							quest,
-							objective
-						);
+						this.scene.events.emit(NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED, quest, objective);
 					}
 
 					// Emit progress update
@@ -210,11 +196,7 @@ export class NeverquestQuestManager {
 		}
 
 		console.log(`Objective manually completed: ${objective.description}`);
-		this.scene.events.emit(
-			NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED,
-			quest,
-			objective
-		);
+		this.scene.events.emit(NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED, quest, objective);
 		this.scene.events.emit(NeverquestQuestManager.QUEST_UPDATED, quest, objective);
 
 		this.checkQuestCompletion(questId);

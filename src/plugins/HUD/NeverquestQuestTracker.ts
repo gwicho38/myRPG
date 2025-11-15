@@ -13,7 +13,7 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 	private questTexts: Phaser.GameObjects.Text[] = [];
 	private maxQuestsDisplay: number = 3; // Maximum quests to display at once
 	private padding: number = 10;
-	private width: number = 300;
+	private trackerWidth: number = 300;
 	private isMinimized: boolean = false;
 
 	constructor(scene: Phaser.Scene, x: number, y: number, questManager: NeverquestQuestManager) {
@@ -28,21 +28,9 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 		this.updateDisplay();
 
 		// Listen for quest updates
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_UPDATED,
-			this.updateDisplay,
-			this
-		);
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_COMPLETED,
-			this.updateDisplay,
-			this
-		);
-		this.questManager.scene.events.on(
-			NeverquestQuestManager.QUEST_ACCEPTED,
-			this.updateDisplay,
-			this
-		);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_UPDATED, this.updateDisplay, this);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_COMPLETED, this.updateDisplay, this);
+		this.questManager.scene.events.on(NeverquestQuestManager.QUEST_ACCEPTED, this.updateDisplay, this);
 		this.questManager.scene.events.on(
 			NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED,
 			this.onObjectiveCompleted,
@@ -52,7 +40,7 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 
 	private createTracker(): void {
 		// Background
-		this.background = this.scene.add.rectangle(0, 0, this.width, 100, 0x000000, 0.6);
+		this.background = this.scene.add.rectangle(0, 0, this.trackerWidth, 100, 0x000000, 0.6);
 		this.background.setOrigin(0, 0);
 		this.background.setStrokeStyle(2, 0x8b7355);
 		this.add(this.background);
@@ -79,7 +67,7 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 		if (this.isMinimized) {
 			this.titleText.setText('QUESTS [+]');
 			this.questTexts.forEach((text) => text.setVisible(false));
-			this.background.setSize(this.width, 35);
+			this.background.setSize(this.trackerWidth, 35);
 		} else {
 			this.titleText.setText('QUESTS [-]');
 			this.questTexts.forEach((text) => text.setVisible(true));
@@ -120,7 +108,7 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 					fontSize: '14px',
 					color: questNameColor,
 					fontStyle: 'bold',
-					wordWrap: { width: this.width - this.padding * 2 },
+					wordWrap: { width: this.trackerWidth - this.padding * 2 },
 				}
 			);
 			this.add(questName);
@@ -133,38 +121,25 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 				let objectiveText = `○ ${incompleteObjective.description}`;
 
 				// Add progress if applicable
-				if (
-					incompleteObjective.targetCount !== undefined &&
-					incompleteObjective.currentCount !== undefined
-				) {
+				if (incompleteObjective.targetCount !== undefined && incompleteObjective.currentCount !== undefined) {
 					objectiveText += ` (${incompleteObjective.currentCount}/${incompleteObjective.targetCount})`;
 				}
 
-				const objText = this.scene.add.text(
-					this.padding + 10,
-					yOffset,
-					objectiveText,
-					{
-						fontFamily: 'Arial',
-						fontSize: '12px',
-						color: '#cccccc',
-						wordWrap: { width: this.width - this.padding * 2 - 10 },
-					}
-				);
+				const objText = this.scene.add.text(this.padding + 10, yOffset, objectiveText, {
+					fontFamily: 'Arial',
+					fontSize: '12px',
+					color: '#cccccc',
+					wordWrap: { width: this.trackerWidth - this.padding * 2 - 10 },
+				});
 				this.add(objText);
 				this.questTexts.push(objText);
 				yOffset += objText.height + 5;
 			} else if (quest.status === 'COMPLETED') {
-				const completeText = this.scene.add.text(
-					this.padding + 10,
-					yOffset,
-					'✓ Ready to turn in!',
-					{
-						fontFamily: 'Arial',
-						fontSize: '12px',
-						color: '#4ade80',
-					}
-				);
+				const completeText = this.scene.add.text(this.padding + 10, yOffset, '✓ Ready to turn in!', {
+					fontFamily: 'Arial',
+					fontSize: '12px',
+					color: '#4ade80',
+				});
 				this.add(completeText);
 				this.questTexts.push(completeText);
 				yOffset += 20;
@@ -175,7 +150,7 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 
 		// Update background height
 		const totalHeight = Math.max(yOffset, 50);
-		this.background.setSize(this.width, totalHeight);
+		this.background.setSize(this.trackerWidth, totalHeight);
 
 		// Show "and X more" if there are more quests
 		if (activeQuests.length > this.maxQuestsDisplay) {
@@ -196,20 +171,15 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 
 		// If no active quests
 		if (activeQuests.length === 0) {
-			const noQuestsText = this.scene.add.text(
-				this.padding,
-				yOffset,
-				'No active quests',
-				{
-					fontFamily: 'Arial',
-					fontSize: '12px',
-					color: '#888888',
-					fontStyle: 'italic',
-				}
-			);
+			const noQuestsText = this.scene.add.text(this.padding, yOffset, 'No active quests', {
+				fontFamily: 'Arial',
+				fontSize: '12px',
+				color: '#888888',
+				fontStyle: 'italic',
+			});
 			this.add(noQuestsText);
 			this.questTexts.push(noQuestsText);
-			this.background.setSize(this.width, 60);
+			this.background.setSize(this.trackerWidth, 60);
 		}
 	}
 
@@ -267,21 +237,9 @@ export class NeverquestQuestTracker extends Phaser.GameObjects.Container {
 	 */
 	destroy(fromScene?: boolean): void {
 		// Remove event listeners
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_UPDATED,
-			this.updateDisplay,
-			this
-		);
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_COMPLETED,
-			this.updateDisplay,
-			this
-		);
-		this.questManager.scene.events.off(
-			NeverquestQuestManager.QUEST_ACCEPTED,
-			this.updateDisplay,
-			this
-		);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_UPDATED, this.updateDisplay, this);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_COMPLETED, this.updateDisplay, this);
+		this.questManager.scene.events.off(NeverquestQuestManager.QUEST_ACCEPTED, this.updateDisplay, this);
 		this.questManager.scene.events.off(
 			NeverquestQuestManager.QUEST_OBJECTIVE_COMPLETED,
 			this.onObjectiveCompleted,
