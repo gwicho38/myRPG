@@ -1052,4 +1052,119 @@ describe('NeverquestSaveManager', () => {
 			expect(saveData?.abilities).toBeUndefined();
 		});
 	});
+
+	describe('Raw Attributes Persistence', () => {
+		it('should include rawAttributes in createSaveData', () => {
+			mockScene.player.attributes.rawAttributes = { str: 7, agi: 4, vit: 9, dex: 3, int: 6 };
+
+			const saveData = saveManager.createSaveData();
+
+			expect(saveData?.player.attributes.rawAttributes).toEqual({
+				str: 7,
+				agi: 4,
+				vit: 9,
+				dex: 3,
+				int: 6,
+			});
+		});
+
+		it('should copy rawAttributes by value, not alias the live attributes', () => {
+			mockScene.player.attributes.rawAttributes = { str: 5, agi: 5, vit: 5, dex: 5, int: 5 };
+			const saveData = saveManager.createSaveData();
+
+			// Mutating the live player must NOT change the saved snapshot
+			mockScene.player.attributes.rawAttributes.str = 99;
+
+			expect(saveData?.player.attributes.rawAttributes?.str).toBe(5);
+		});
+
+		it('should restore rawAttributes on applySaveData', () => {
+			mockScene.player.container.setPosition = jest.fn();
+			mockScene.player.healthBar = { update: jest.fn() };
+
+			const saveData: ISaveData = {
+				player: {
+					x: 10,
+					y: 20,
+					attributes: {
+						level: 3,
+						experience: 100,
+						health: 50,
+						baseHealth: 60,
+						atack: 8,
+						defense: 4,
+						availableStatPoints: 5,
+						rawAttributes: { str: 12, agi: 6, vit: 15, dex: 7, int: 9 },
+					},
+					items: [],
+					level: 3,
+					experience: 100,
+					health: 50,
+				},
+				scene: 'TestScene',
+				timestamp: Date.now(),
+				playtime: 0,
+				version: '1.0.0',
+			};
+
+			const result = saveManager.applySaveData(saveData);
+
+			expect(result).toBe(true);
+			expect(mockScene.player.attributes.rawAttributes).toEqual({
+				str: 12,
+				agi: 6,
+				vit: 15,
+				dex: 7,
+				int: 9,
+			});
+		});
+
+		it('should round-trip rawAttributes through save and load', () => {
+			mockScene.player.container.setPosition = jest.fn();
+			mockScene.player.healthBar = { update: jest.fn() };
+			mockScene.player.attributes.rawAttributes = { str: 8, agi: 2, vit: 11, dex: 4, int: 5 };
+
+			saveManager.saveGame(false);
+
+			// Reset the live stats, then load them back
+			mockScene.player.attributes.rawAttributes = { str: 1, agi: 1, vit: 1, dex: 1, int: 1 };
+			const loaded = saveManager.loadGame(false);
+			expect(loaded).toBeTruthy();
+			saveManager.applySaveData(loaded!);
+
+			expect(mockScene.player.attributes.rawAttributes).toEqual({
+				str: 8,
+				agi: 2,
+				vit: 11,
+				dex: 4,
+				int: 5,
+			});
+		});
+	});
+
+	describe('Checkpoint helpers', () => {
+		it('hasCheckpoint returns false when no checkpoint exists', () => {
+			expect(saveManager.hasCheckpoint()).toBe(false);
+		});
+
+		it('hasCheckpoint returns true after a checkpoint save', () => {
+			saveManager.saveGame(true);
+			expect(saveManager.hasCheckpoint()).toBe(true);
+		});
+
+		it('loadCheckpoint returns false when no checkpoint exists', () => {
+			expect(saveManager.loadCheckpoint()).toBe(false);
+		});
+
+		it('loadCheckpoint applies the checkpoint when one exists', () => {
+			mockScene.player.container.setPosition = jest.fn();
+			mockScene.player.healthBar = { update: jest.fn() };
+
+			saveManager.saveGame(true);
+			const result = saveManager.loadCheckpoint();
+
+			expect(result).toBe(true);
+			expect(mockScene.player.container.setPosition).toHaveBeenCalled();
+		});
+	});
 });

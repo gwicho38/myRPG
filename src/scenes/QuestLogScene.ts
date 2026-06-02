@@ -9,6 +9,9 @@
  *
  * Tracks player narrative progress through the game.
  *
+ * Quest data lives in {@link module:consts/progression/QuestFlagMap} so the
+ * quest-log UI and the {@link NeverquestQuestManager} FSM share one source of truth.
+ *
  * @see NeverquestStoryFlags - Quest completion tracking
  * @see HUDScene - Quick access button
  *
@@ -17,22 +20,13 @@
 
 import Phaser from 'phaser';
 import { PanelComponent } from '../components/PanelComponent';
-import { NeverquestStoryFlags, StoryFlag } from '../plugins/NeverquestStoryFlags';
+import { NeverquestStoryFlags } from '../plugins/NeverquestStoryFlags';
 import { FontFamilies } from '../consts/Numbers';
 import { Colors } from '../consts/Colors';
+import { RegistryKeys } from '../consts/Events';
+import { IQuestEntry, QUEST_DEFINITIONS, QUEST_FLAG_MAP } from '../consts/progression/QuestFlagMap';
 
 export const QuestLogSceneName = 'QuestLogScene';
-
-/**
- * Interface for quest entry display
- */
-interface IQuestEntry {
-	id: string;
-	title: string;
-	description: string;
-	completed: boolean;
-	act: 1 | 2 | 3;
-}
 
 /**
  * Interface for initialization data
@@ -40,151 +34,6 @@ interface IQuestEntry {
 interface IQuestLogSceneInitData {
 	storyFlags?: NeverquestStoryFlags;
 }
-
-/**
- * Quest definitions organized by act
- */
-const QUEST_DEFINITIONS: IQuestEntry[] = [
-	// Act 1 - The Awakening
-	{
-		id: 'intro',
-		title: 'Awakening',
-		description: 'Regain your memories and speak with the village elder.',
-		completed: false,
-		act: 1,
-	},
-	{
-		id: 'meet_elder',
-		title: "The Elder's Request",
-		description: 'Meet with the village elder to learn about the threat.',
-		completed: false,
-		act: 1,
-	},
-	{
-		id: 'cave_artifact',
-		title: 'The Stolen Artifact',
-		description: 'Retrieve the artifact from the nearby cave.',
-		completed: false,
-		act: 1,
-	},
-	{
-		id: 'cave_boss',
-		title: 'Cave Guardian',
-		description: 'Defeat the guardian protecting the artifact.',
-		completed: false,
-		act: 1,
-	},
-
-	// Act 2 - The Journey
-	{
-		id: 'crossroads',
-		title: 'The Crossroads',
-		description: 'Travel to the Crossroads, the central hub of the realm.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'merchant',
-		title: 'Meet the Merchant',
-		description: 'Speak with the wandering merchant at the trading post.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'fallen_knight',
-		title: 'The Fallen Knight',
-		description: 'Encounter the mysterious fallen knight.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'oracle',
-		title: 'Seek the Oracle',
-		description: 'Find the Oracle of the Depths and receive the prophecy.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'fragment_ruins',
-		title: 'Fragment of Ruins',
-		description: 'Obtain the first Sunstone fragment from the Ancient Ruins.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'fragment_temple',
-		title: 'Fragment of Temple',
-		description: 'Obtain the second Sunstone fragment from the Forgotten Temple.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'fragment_gate',
-		title: 'Fragment of Gate',
-		description: 'Obtain the third Sunstone fragment near the Dark Gate.',
-		completed: false,
-		act: 2,
-	},
-	{
-		id: 'sunstone',
-		title: 'Restore the Sunstone',
-		description: 'Combine all three fragments to restore the Sunstone.',
-		completed: false,
-		act: 2,
-	},
-
-	// Act 3 - The Reckoning
-	{
-		id: 'dark_gate',
-		title: 'Open the Dark Gate',
-		description: 'Use the restored Sunstone to open the Dark Gate.',
-		completed: false,
-		act: 3,
-	},
-	{
-		id: 'citadel',
-		title: 'Enter the Citadel',
-		description: 'Brave the Dark Citadel to confront the Void King.',
-		completed: false,
-		act: 3,
-	},
-	{
-		id: 'shadow_guardian',
-		title: 'Shadow Guardian',
-		description: 'Defeat the Shadow Guardian blocking the way.',
-		completed: false,
-		act: 3,
-	},
-	{
-		id: 'void_king',
-		title: 'The Void King',
-		description: 'Confront the Void King and decide the fate of the realm.',
-		completed: false,
-		act: 3,
-	},
-];
-
-/**
- * Mapping from quest IDs to story flags
- */
-const QUEST_FLAG_MAP: Record<string, StoryFlag> = {
-	intro: StoryFlag.INTRO_COMPLETE,
-	meet_elder: StoryFlag.MET_ELDER,
-	cave_artifact: StoryFlag.CAVE_ARTIFACT_RETRIEVED,
-	cave_boss: StoryFlag.CAVE_BOSS_DEFEATED,
-	crossroads: StoryFlag.ENTERED_CROSSROADS,
-	merchant: StoryFlag.MET_MERCHANT,
-	fallen_knight: StoryFlag.MET_FALLEN_KNIGHT,
-	oracle: StoryFlag.MET_ORACLE,
-	fragment_ruins: StoryFlag.FRAGMENT_RUINS_OBTAINED,
-	fragment_temple: StoryFlag.FRAGMENT_TEMPLE_OBTAINED,
-	fragment_gate: StoryFlag.FRAGMENT_GATE_OBTAINED,
-	sunstone: StoryFlag.SUNSTONE_RESTORED,
-	dark_gate: StoryFlag.DARK_GATE_OPENED,
-	citadel: StoryFlag.ENTERED_CITADEL,
-	shadow_guardian: StoryFlag.SHADOW_GUARDIAN_DEFEATED,
-	void_king: StoryFlag.VOID_KING_CONFRONTED,
-};
 
 /**
  * QuestLogScene - Displays player's quest progress and story tracking
@@ -220,7 +69,10 @@ export class QuestLogScene extends Phaser.Scene {
 	}
 
 	init(data: IQuestLogSceneInitData): void {
-		this.storyFlags = data.storyFlags || null;
+		// Prefer an explicitly passed instance, then the shared Registry singleton.
+		// (registry is guarded for test environments that don't provide one.)
+		// A localStorage-backed fallback is created in create() if neither exists.
+		this.storyFlags = data.storyFlags || this.registry?.get(RegistryKeys.STORY_FLAGS) || null;
 	}
 
 	create(): void {
@@ -236,7 +88,9 @@ export class QuestLogScene extends Phaser.Scene {
 			});
 		}
 
-		// If no story flags provided, create a temporary one for display
+		// If no story flags provided, create a temporary one for display.
+		// load() reads the same localStorage the story-flag bridge writes to, so
+		// the quest log reflects live progress even without the shared instance.
 		if (!this.storyFlags) {
 			this.storyFlags = new NeverquestStoryFlags(this);
 			this.storyFlags.load();

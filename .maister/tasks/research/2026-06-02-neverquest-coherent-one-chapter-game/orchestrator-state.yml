@@ -1,0 +1,104 @@
+orchestrator:
+  started_phase: phase-1
+  completed_phases: [phase-1, phase-2, phase-3, phase-4, phase-5, phase-6]
+  failed_phases: []
+  autonomous_mode: true  # user authorized overnight autonomy 2026-06-02; gate decisions auto-resolved to recommended + documented
+  auto_fix_attempts:
+    phase-1: 0
+  options:
+    brainstorming_enabled: true
+    design_enabled: true  # auto-enabled: design output directly feeds implementation (user wants to reach implementation overnight)
+  created: 2026-06-02
+  updated: 2026-06-02
+  task_path: .maister/tasks/research/2026-06-02-neverquest-coherent-one-chapter-game
+  task_ids:
+    phase-1: "1"
+    phase-2: "2"
+    phase-3: "3"
+    phase-4: "4"
+    phase-5: "5"
+    phase-6: "6"
+
+task:
+  title: "Neverquest — coherent playable one-chapter game"
+  description: "Research how to tie existing Neverquest systems into a coherent, playable game with a one-chapter story and a connected open world."
+  status: in_progress
+  tags: [game-dev, phaser, narrative, world-building]
+  priority: high
+
+research_context:
+  research_type: mixed
+  research_question: "Continue building Neverquest into a coherent game with a one-chapter story — build out the open world and overall make it playable."
+  scope:
+    included:
+      - "Inventory of existing systems (scenes, story flags, quests, NPCs, save, world/map, progression, combat)"
+      - "Runtime flow boot->intro->main->menu->biomes and scene/warp connectivity"
+      - "Gap analysis vs coherent playable one-chapter game"
+      - "Recommended Chapter 1 scope using existing assets"
+      - "Architecture/design for story/quest/world-progression wiring"
+    excluded:
+      - "Multiplayer/co-op"
+      - "Terminal/ASCII edition"
+      - "Net-new biomes beyond Chapter 1 needs"
+      - "New art/asset production"
+      - "Crafting/economy/skill-trees unless minimal for coherence"
+      - "Deep performance optimization"
+    constraints:
+      - "Phaser 3 + TypeScript, Jest, Webpack; follow repo CLAUDE.md conventions"
+      - "Reuse existing plugins/scenes; prefer edit over create"
+      - "Overlap callbacks = UI only; each system owns its state flags; event-driven"
+      - "Constants in src/consts; types in src/types; no hardcoded strings"
+      - "Tests required; CI must pass (local act gate)"
+  methodology:
+    - "Iterative-deepening codebase analysis (reachability/wiring trace)"
+    - "Requirements synthesis (minimum-coherence ARPG checklist vs current state)"
+    - "Literature/design corroboration (ARPG chapter/quest/world patterns)"
+    - "Multi-source cross-reference for confidence scoring"
+  sources:
+    - "planning/sources.md"
+    - "src/index.ts, src/scenes/*, src/plugins/*, src/consts/*, src/entities/*"
+    - "assets/ Tiled maps (.json warp/goto properties)"
+    - "docs/ROADMAP.md, docs/ARCHITECTURE.md, CLAUDE.md"
+    - "External: 2D action-RPG chapter/quest/open-world design references"
+  confidence_level: high
+  gathering_strategy:
+    categories:
+      - codebase-game-flow
+      - codebase-narrative-systems
+      - codebase-world-map
+      - codebase-progression-combat
+      - requirements-coherence
+      - external-arpg-design
+    count: 6
+    source: planner
+  project_doc_paths: []
+  phase_summaries:
+    phase-1:
+      summary: "Engine pillars (boot/combat/XP/save/HUD) work; connective+narrative layer unwired. Full 3-act Lucius story exists in code but severed from gameplay. 11 P0 gaps, all in connective/narrative/win-lose layer. Recommended reuse-first Chapter 1 'The Awakening'. Confidence HIGH, zero contradictions across 6 gatherers."
+      steps_completed: ["step-1-initialize", "step-2-plan", "step-3-gather", "step-4-synthesize"]
+    phase-3:
+      summary: "Brainstormer produced 5 decision areas with alternatives + recommended combination (Registry keystone -> narrative spine -> connect warps -> frame chapter -> persist). outputs/solution-exploration.md."
+    phase-4:
+      summary: "Converged autonomously (user asleep, overnight authorization). Adopted brainstormer recommendations with a staged-scope refinement to de-risk."
+      decision_areas:
+        - area: "Chapter 1 scope"
+          chosen_approach: "1B target (larus hub + DungeonScene + IceCavernsScene), built STAGED: ship 1A first (complete narrative loop, Dungeon only) then add IceCaverns spoke if green. Fallback 1A."
+        - area: "Narrative wiring architecture"
+          chosen_approach: "2A: thin event-bridge (gameplay events -> setFlag, reuse emitted 'setStoryFlag' event) + QuestManager FSM (not-started/active/complete). Reuse NeverquestStoryFlags."
+        - area: "World connectivity model"
+          chosen_approach: "3A: hub-and-spoke via larus warp objects to existing scenes; forward-compatible with re-enabling Crossroads later."
+        - area: "Cross-scene persistence"
+          chosen_approach: "4C: Registry-singleton StoryFlags + SaveManager ref (the keystone) + save-on-warp; fix rawAttributes persistence."
+        - area: "Fix-vs-defer line"
+          chosen_approach: "5A: P0 gaps + persistence sub-fixes only. DEFER: equipment mechanic, biomes beyond IceCaverns, Crossroads/Act-2/3, ExperienceCurve cleanup, baseHealth double-mutation (unless trivial)."
+      deferred_ideas: ["equipment mechanic", "extra biomes beyond IceCaverns", "Crossroads hub + Act 2/3", "ExperienceCurve dead-code cleanup", "baseHealth double-mutation fix", "pause menu"]
+    phase-5:
+      summary: "Designer produced high-level-design.md + decision-log.md. Build sequence keystone-first, 17 files (6 create / 11 modify), Stage A=15 + Stage B=2. Top risks: GameOverScene calls nonexistent SaveManager methods; rawAttributes save round-trip; replacing 3 throwaway StoryFlags instances with Registry singleton."
+      architecture_style: "hub-and-spoke + event-bridge + quest FSM + Registry-singleton persistence keystone"
+      decisions_count: 5
+    phase-6:
+      summary: "Research workflow complete. Outputs: research-report.md, synthesis.md, solution-exploration.md, high-level-design.md, decision-log.md. Transitioning to autonomous implementation (feat/chapter1-coherence worktree)."
+  implementation:
+    branch: feat/chapter1-coherence
+    worktree: /Volumes/mac_extended/repos/neverquest-chapter1
+    status: starting
