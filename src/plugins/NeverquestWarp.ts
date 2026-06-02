@@ -21,6 +21,7 @@
 
 import { HexColors } from '../consts/Colors';
 import { Alpha, ParticleValues, Scale, AnimationTiming } from '../consts/Numbers';
+import { RegistryKeys } from '../consts/Events';
 import { Player } from '../entities/Player';
 import { IWarpableScene } from '../types';
 
@@ -194,6 +195,14 @@ export class NeverquestWarp {
 			} else if (isScene) {
 				const sceneKey = properties.find((f: ITiledProperty) => f.name === this.propertyWarpName)
 					?.value as string;
+
+				// Persist progress (checkpoint) before leaving so it survives the
+				// scene hop. Each gameplay scene publishes its SaveManager to the
+				// Registry in create().
+				const saveManager = this.scene.registry?.get(RegistryKeys.SAVE_MANAGER) as
+					| { saveGame: (isCheckpoint?: boolean) => boolean }
+					| undefined;
+				saveManager?.saveGame(true);
 
 				// Pass the current scene key to the target scene for return navigation
 				this.scene.scene.start(sceneKey, { previousScene: this.scene.scene.key });

@@ -30,7 +30,8 @@ import { IceCavernsScene } from './scenes/IceCavernsScene';
 import { SkyIslandsScene } from './scenes/SkyIslandsScene';
 import { UnderwaterTempleScene } from './scenes/UnderwaterTempleScene';
 import { VolcanicDungeonsScene } from './scenes/VolcanicDungeonsScene';
-// import { GameOverScene } from './scenes/GameOverScene';
+import { GameOverScene } from './scenes/GameOverScene';
+import { ChapterCompleteScene } from './scenes/ChapterCompleteScene';
 import { HUDScene } from './scenes/HUDScene';
 import { IntroScene } from './scenes/IntroScene';
 import { InventoryScene } from './scenes/InventoryScene';
@@ -129,7 +130,8 @@ const config: Phaser.Types.Core.GameConfig = {
 		JournalScene, // Lore and discovery collection
 		// SettingScene,
 		// VideoPlayerScene,
-		// GameOverScene,
+		GameOverScene, // Death screen (wired: SaveManager publishes to registry)
+		ChapterCompleteScene, // Chapter 1 victory overlay
 		SpellWheelScene,
 	],
 	input: {

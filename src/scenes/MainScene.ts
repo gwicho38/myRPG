@@ -34,6 +34,7 @@ import { NeverquestNPCManager } from '../plugins/NeverquestNPCManager';
 import { StoryFlag } from '../plugins/NeverquestStoryFlags';
 import { GameEvents, RegistryKeys } from '../consts/Events';
 import { PlayerConfig } from '../consts/player/Player';
+import { ChapterCompleteSceneName } from './ChapterCompleteScene';
 import ElderGreeting from '../consts/DB_SEED/chats/ElderGreeting';
 
 /** Pixel offset placing the Chapter 1 Elder NPC beside the player spawn. */
@@ -166,6 +167,7 @@ export class MainScene extends Phaser.Scene {
 		this.questManager = new NeverquestQuestManager(this);
 		this.questManager.create();
 		this.registry?.set(RegistryKeys.QUEST_MANAGER, this.questManager);
+		this.events.on(GameEvents.CHAPTER_COMPLETE, this.onChapterComplete, this);
 
 		// Chapter 1 opens: the Awakening (intro) completes on arrival at the hub,
 		// activating "The Elder's Request". Idempotent, so returning to the hub
@@ -200,6 +202,13 @@ export class MainScene extends Phaser.Scene {
 
 	stopSceneMusic(): void {
 		this.themeSound!.stop();
+	}
+
+	/**
+	 * Launches the "Chapter 1 Complete" overlay when the chapter is finished.
+	 */
+	private onChapterComplete(): void {
+		this.scene.launch(ChapterCompleteSceneName, { returnScene: 'MainScene' });
 	}
 
 	setupSaveKeybinds(): void {

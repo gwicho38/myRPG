@@ -45,6 +45,7 @@ import { NeverquestStoryFlagBridge } from '../plugins/NeverquestStoryFlagBridge'
 import { NeverquestQuestManager } from '../plugins/NeverquestQuestManager';
 import { StoryFlag } from '../plugins/NeverquestStoryFlags';
 import { GameEvents } from '../consts/Events';
+import { ChapterCompleteSceneName } from './ChapterCompleteScene';
 
 export class DungeonScene extends Phaser.Scene {
 	dungeon!: NeverquestDungeonGenerator;
@@ -105,6 +106,13 @@ export class DungeonScene extends Phaser.Scene {
 		this.caveCleared = true;
 		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.CAVE_ARTIFACT_RETRIEVED);
 		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.CAVE_BOSS_DEFEATED);
+	}
+
+	/**
+	 * Launches the "Chapter 1 Complete" overlay; Continue returns to the hub.
+	 */
+	private onChapterComplete(): void {
+		this.scene.launch(ChapterCompleteSceneName, { returnScene: 'MainScene' });
 	}
 
 	/**
@@ -210,6 +218,7 @@ export class DungeonScene extends Phaser.Scene {
 		this.storyFlagBridge.create();
 		this.questManager = new NeverquestQuestManager(this);
 		this.questManager.create();
+		this.events.on(GameEvents.CHAPTER_COMPLETE, this.onChapterComplete, this);
 
 		// Chapter 1 cave objective: defeat every enemy to retrieve the artifact
 		// and slay the guardian. Track clears via the BattleManager's events.
