@@ -558,6 +558,9 @@ describe('MainScene', () => {
 		it('should set spellWheelOpen to false when spellwheelclosed event fires', () => {
 			const mockEvents = {
 				on: jest.fn(),
+				once: jest.fn(),
+				off: jest.fn(),
+				emit: jest.fn(),
 			};
 			(scene as any).events = mockEvents;
 

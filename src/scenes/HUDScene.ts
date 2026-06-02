@@ -27,6 +27,9 @@ import { NeverquestMinimap } from '../plugins/HUD/NeverquestMinimap';
 import { NeverquestUtils } from '../utils/NeverquestUtils';
 import { AttributeSceneName } from './AttributeScene';
 import { InventorySceneName } from './InventoryScene';
+import { QuestLogSceneName } from './QuestLogScene';
+import { JournalSceneName } from './JournalScene';
+import { RegistryKeys } from '../consts/Events';
 import { SceneToggleWatcher } from './watchers/SceneToggleWatcher';
 import { Player } from '../entities/Player';
 import { HexColors } from '../consts/Colors';
@@ -406,6 +409,36 @@ export class HUDScene extends Phaser.Scene {
 		this.createSaveButton();
 		this.createMessageLog();
 		this.createMinimap();
+		this.setupCodexKeybinds();
+	}
+
+	/**
+	 * Registers keyboard shortcuts that toggle the narrative "codex" overlays:
+	 *  - Q: Quest Log (active/completed quests)
+	 *  - J: Journal (lore & discoveries)
+	 * This is what makes those scenes reachable in normal play.
+	 */
+	setupCodexKeybinds(): void {
+		const keyboard = this.input.keyboard;
+		if (!keyboard) {
+			return;
+		}
+		keyboard.on('keydown-Q', () => this.toggleCodexScene(QuestLogSceneName));
+		keyboard.on('keydown-J', () => this.toggleCodexScene(JournalSceneName));
+	}
+
+	/**
+	 * Launches a codex overlay (passing the shared story flags from the
+	 * Registry), or stops it if already open. Each codex scene also falls back
+	 * to localStorage, so it renders correct progress even without the Registry.
+	 */
+	toggleCodexScene(sceneName: string): void {
+		if (this.scene.isVisible(sceneName)) {
+			this.scene.stop(sceneName);
+			return;
+		}
+		const storyFlags = this.registry?.get(RegistryKeys.STORY_FLAGS);
+		this.scene.launch(sceneName, { storyFlags });
 	}
 
 	createMinimap(): void {

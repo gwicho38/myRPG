@@ -28,6 +28,10 @@ import { NeverquestEnvironmentParticles } from '../plugins/NeverquestEnvironment
 import { NeverquestEnemyZones } from '../plugins/NeverquestEnemyZones';
 import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
 import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
+import { NeverquestStoryFlagBridge } from '../plugins/NeverquestStoryFlagBridge';
+import { NeverquestQuestManager } from '../plugins/NeverquestQuestManager';
+import { StoryFlag } from '../plugins/NeverquestStoryFlags';
+import { GameEvents, RegistryKeys } from '../consts/Events';
 import { HexColors, NumericColors } from '../consts/Colors';
 import { Alpha, Scale, CameraValues, Depth } from '../consts/Numbers';
 import { UILabels, SaveMessages, FontFamily } from '../consts/Messages';
@@ -47,6 +51,8 @@ export class MainScene extends Phaser.Scene {
 	upsideDownPortal: Phaser.GameObjects.Zone | null;
 	upsideDownPortalParticles: Phaser.GameObjects.Particles.ParticleEmitter | null;
 	spellWheelOpen: boolean;
+	storyFlagBridge: NeverquestStoryFlagBridge | null = null;
+	questManager: NeverquestQuestManager | null = null;
 
 	constructor() {
 		super({
@@ -142,6 +148,20 @@ export class MainScene extends Phaser.Scene {
 
 		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
+
+		// Wire the narrative spine. The bridge turns gameplay SET_STORY_FLAG
+		// events into writes on the shared StoryFlags (published to the Registry
+		// by the SaveManager above); the quest FSM reacts and tracks Chapter 1.
+		this.storyFlagBridge = new NeverquestStoryFlagBridge(this);
+		this.storyFlagBridge.create();
+		this.questManager = new NeverquestQuestManager(this);
+		this.questManager.create();
+		this.registry?.set(RegistryKeys.QUEST_MANAGER, this.questManager);
+
+		// Chapter 1 opens: the Awakening (intro) completes on arrival at the hub,
+		// activating "The Elder's Request". Idempotent, so returning to the hub
+		// from a biome does not re-trigger it.
+		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.INTRO_COMPLETE);
 
 		// Create the Upside Down portal
 		// this.createUpsideDownPortal();
