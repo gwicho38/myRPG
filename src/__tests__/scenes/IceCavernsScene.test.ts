@@ -372,9 +372,9 @@ describe('IceCavernsScene', () => {
 			expect(newScene.enemies).toEqual([]);
 		});
 
-		it('should initialize previousScene to CrossroadsScene', () => {
+		it('should initialize previousScene to MainScene', () => {
 			const newScene = new IceCavernsScene();
-			expect(newScene.previousScene).toBe('CrossroadsScene');
+			expect(newScene.previousScene).toBe('MainScene');
 		});
 
 		it('should initialize ice physics properties', () => {
@@ -399,12 +399,12 @@ describe('IceCavernsScene', () => {
 
 		it('should keep default previousScene when data is empty', () => {
 			scene.init({});
-			expect(scene.previousScene).toBe('CrossroadsScene');
+			expect(scene.previousScene).toBe('MainScene');
 		});
 
 		it('should handle undefined data', () => {
 			scene.init(undefined as any);
-			expect(scene.previousScene).toBe('CrossroadsScene');
+			expect(scene.previousScene).toBe('MainScene');
 		});
 	});
 
