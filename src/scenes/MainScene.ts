@@ -30,8 +30,16 @@ import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
 import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
 import { NeverquestStoryFlagBridge } from '../plugins/NeverquestStoryFlagBridge';
 import { NeverquestQuestManager } from '../plugins/NeverquestQuestManager';
+import { NeverquestNPCManager } from '../plugins/NeverquestNPCManager';
 import { StoryFlag } from '../plugins/NeverquestStoryFlags';
 import { GameEvents, RegistryKeys } from '../consts/Events';
+import { PlayerConfig } from '../consts/player/Player';
+import ElderGreeting from '../consts/DB_SEED/chats/ElderGreeting';
+
+/** Pixel offset placing the Chapter 1 Elder NPC beside the player spawn. */
+const ElderPlacement = {
+	OFFSET_X: 80,
+} as const;
 import { HexColors, NumericColors } from '../consts/Colors';
 import { Alpha, Scale, CameraValues, Depth } from '../consts/Numbers';
 import { UILabels, SaveMessages, FontFamily } from '../consts/Messages';
@@ -53,6 +61,7 @@ export class MainScene extends Phaser.Scene {
 	spellWheelOpen: boolean;
 	storyFlagBridge: NeverquestStoryFlagBridge | null = null;
 	questManager: NeverquestQuestManager | null = null;
+	npcManager: NeverquestNPCManager | null = null;
 
 	constructor() {
 		super({
@@ -162,6 +171,22 @@ export class MainScene extends Phaser.Scene {
 		// activating "The Elder's Request". Idempotent, so returning to the hub
 		// from a biome does not re-trigger it.
 		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.INTRO_COMPLETE);
+
+		// Spawn the village Elder — the Chapter 1 quest-giver. Meeting him sets
+		// MET_ELDER (via the NPC manager's storyFlag hook), completing "The
+		// Elder's Request" and activating "The Stolen Artifact".
+		this.npcManager = new NeverquestNPCManager(this, this.player);
+		this.npcManager.addNPC({
+			id: 'village_elder',
+			name: 'Village Elder',
+			x: this.player.container.x + ElderPlacement.OFFSET_X,
+			y: this.player.container.y,
+			chatId: ElderGreeting.id,
+			texture: PlayerConfig.texture,
+			frame: 0,
+			storyFlag: StoryFlag.MET_ELDER,
+		});
+		this.npcManager.create();
 
 		// Create the Upside Down portal
 		// this.createUpsideDownPortal();

@@ -45,6 +45,13 @@ export const GameEvents = {
 	CHAPTER_COMPLETE: 'chapterComplete',
 
 	/**
+	 * An enemy was defeated by the player.
+	 * Payload: the enemy's entity name. Emitted by NeverquestBattleManager;
+	 * consumed by scenes that track "clear the area" objectives (e.g. DungeonScene).
+	 */
+	ENEMY_DEFEATED: 'enemyDefeated',
+
+	/**
 	 * A spell was unlocked (existing event, emitted by `NeverquestStoryFlags`).
 	 * Payload: spell id string.
 	 */

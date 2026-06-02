@@ -30,6 +30,7 @@ import { HUDScene } from '../scenes/HUDScene';
 import { NumericColors } from '../consts/Colors';
 import { CombatNumbers, Alpha } from '../consts/Numbers';
 import { GameMessages } from '../consts/Messages';
+import { GameEvents } from '../consts/Events';
 import { IEntityAttributes } from '../entities/EntityAttributes';
 import { NeverquestHealthBar } from './NeverquestHealthBar';
 import { NeverquestHUDProgressBar } from './HUD/NeverquestHUDProgressBar';
@@ -367,6 +368,8 @@ export class NeverquestBattleManager extends AnimationNames {
 					if (atacker.entityName === ENTITIES.Player) {
 						// Cast through unknown to satisfy ExpManager.Entity interface which has additional Phaser sprite properties
 						ExpManager.addExp(atacker as unknown as Parameters<typeof ExpManager.addExp>[0], enemyExp);
+						// Announce the kill so scenes can track "clear the area" objectives.
+						atacker.scene.events?.emit(GameEvents.ENEMY_DEFEATED, targetName);
 					}
 					setTimeout(() => {
 						if (target.entityName === this.enemyConstructorName && target.dropItems) target.dropItems();

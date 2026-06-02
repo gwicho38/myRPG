@@ -20,12 +20,7 @@
 import Phaser from 'phaser';
 import { GameEvents, RegistryKeys } from '../consts/Events';
 import { NeverquestStoryFlags, StoryFlag } from './NeverquestStoryFlags';
-import {
-	ACT_1_QUEST_CHAIN,
-	QUEST_DEFINITIONS,
-	QUEST_FLAG_MAP,
-	TQuestState,
-} from '../consts/progression/QuestFlagMap';
+import { ACT_1_QUEST_CHAIN, QUEST_DEFINITIONS, QUEST_FLAG_MAP, TQuestState } from '../consts/progression/QuestFlagMap';
 
 /**
  * Payload emitted with {@link GameEvents.QUEST_CHANGED}.

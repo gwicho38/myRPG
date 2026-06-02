@@ -2,6 +2,7 @@ import { NeverquestBattleManager } from '../../plugins/NeverquestBattleManager';
 import { NumericColors } from '../../consts/Colors';
 import { CRITICAL_MULTIPLIER } from '../../consts/Battle';
 import { ENTITIES } from '../../consts/Entities';
+import { GameEvents } from '../../consts/Events';
 import { CombatNumbers } from '../../consts/Numbers';
 import { ExpManager } from '../../plugins/attributes/ExpManager';
 
@@ -894,6 +895,7 @@ describe('NeverquestBattleManager', () => {
 			mockAttacker = {
 				attributes: { atack: 200, critical: 0, hit: 100 },
 				scene: {
+					events: { emit: jest.fn() },
 					sound: { add: jest.fn().mockReturnValue({ play: jest.fn() }) },
 					scene: {
 						get: jest.fn().mockReturnValue(null),
@@ -941,6 +943,11 @@ describe('NeverquestBattleManager', () => {
 			expect(mockTarget.dropItems).toHaveBeenCalled();
 			expect(mockTarget.anims.stop).toHaveBeenCalled();
 			expect(mockTarget.destroyAll).toHaveBeenCalled();
+		});
+
+		it('should emit ENEMY_DEFEATED when the player kills an enemy', () => {
+			battleManager.takeDamage(mockAttacker, mockTarget);
+			expect(mockAttacker.scene.events.emit).toHaveBeenCalledWith(GameEvents.ENEMY_DEFEATED, ENTITIES.Enemy);
 		});
 
 		it('should call ExpManager.addExp for player killing enemy', () => {

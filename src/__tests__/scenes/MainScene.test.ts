@@ -5,6 +5,7 @@ import { NeverquestObjectMarker } from '../../plugins/NeverquestObjectMarker';
 import { NeverquestEnvironmentParticles } from '../../plugins/NeverquestEnvironmentParticles';
 import { NeverquestEnemyZones } from '../../plugins/NeverquestEnemyZones';
 import { NeverquestSaveManager } from '../../plugins/NeverquestSaveManager';
+import { NeverquestNPCManager } from '../../plugins/NeverquestNPCManager';
 import AnimatedTiles from '../../plugins/AnimatedTiles';
 
 // Mock all plugin dependencies
@@ -14,6 +15,7 @@ jest.mock('../../plugins/NeverquestObjectMarker');
 jest.mock('../../plugins/NeverquestEnvironmentParticles');
 jest.mock('../../plugins/NeverquestEnemyZones');
 jest.mock('../../plugins/NeverquestSaveManager');
+jest.mock('../../plugins/NeverquestNPCManager');
 jest.mock('../../plugins/AnimatedTiles');
 jest.mock('../../scenes/SpellWheelScene', () => ({
 	SpellWheelSceneName: 'SpellWheelScene',
@@ -139,6 +141,15 @@ describe('MainScene', () => {
 		};
 
 		(NeverquestSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);
+
+		// Mock NeverquestNPCManager
+		const mockNPCManagerInstance = {
+			addNPC: jest.fn(),
+			addNPCs: jest.fn(),
+			create: jest.fn(),
+		};
+
+		(NeverquestNPCManager as jest.Mock).mockImplementation(() => mockNPCManagerInstance);
 
 		// Create scene instance
 		scene = new MainScene();

@@ -41,6 +41,10 @@ import {
 	ParticleValues,
 } from '../consts/Numbers';
 import { GameMessages } from '../consts/Messages';
+import { NeverquestStoryFlagBridge } from '../plugins/NeverquestStoryFlagBridge';
+import { NeverquestQuestManager } from '../plugins/NeverquestQuestManager';
+import { StoryFlag } from '../plugins/NeverquestStoryFlags';
+import { GameEvents } from '../consts/Events';
 
 export class DungeonScene extends Phaser.Scene {
 	dungeon!: NeverquestDungeonGenerator;
@@ -56,6 +60,11 @@ export class DungeonScene extends Phaser.Scene {
 	exitPortal!: Phaser.GameObjects.Zone;
 	previousScene: string = 'MainScene'; // Track which scene to return to
 	spellWheelOpen: boolean = false;
+	storyFlagBridge: NeverquestStoryFlagBridge | null = null;
+	questManager: NeverquestQuestManager | null = null;
+	private totalEnemies = 0;
+	private enemiesDefeated = 0;
+	private caveCleared = false;
 
 	constructor() {
 		super({
@@ -72,6 +81,30 @@ export class DungeonScene extends Phaser.Scene {
 		if (data && data.previousScene) {
 			this.previousScene = data.previousScene;
 		}
+	}
+
+	/**
+	 * Counts defeated enemies; once all are down, the cave is cleared.
+	 */
+	private handleEnemyDefeated(): void {
+		this.enemiesDefeated += 1;
+		if (!this.caveCleared && this.enemiesDefeated >= this.totalEnemies) {
+			this.onCaveCleared();
+		}
+	}
+
+	/**
+	 * Marks the cave cleared: retrieves the artifact and defeats the guardian.
+	 * With the earlier hub beats complete, this finishes Chapter 1 (the quest
+	 * manager then sets ACT_1_COMPLETE and emits CHAPTER_COMPLETE).
+	 */
+	private onCaveCleared(): void {
+		if (this.caveCleared) {
+			return;
+		}
+		this.caveCleared = true;
+		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.CAVE_ARTIFACT_RETRIEVED);
+		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.CAVE_BOSS_DEFEATED);
 	}
 
 	/**
@@ -170,6 +203,25 @@ export class DungeonScene extends Phaser.Scene {
 
 		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
+
+		// Wire the narrative spine so cave events advance the story. The bridge
+		// reads the shared StoryFlags the SaveManager published to the Registry.
+		this.storyFlagBridge = new NeverquestStoryFlagBridge(this);
+		this.storyFlagBridge.create();
+		this.questManager = new NeverquestQuestManager(this);
+		this.questManager.create();
+
+		// Chapter 1 cave objective: defeat every enemy to retrieve the artifact
+		// and slay the guardian. Track clears via the BattleManager's events.
+		this.totalEnemies = this.enemies.length;
+		this.enemiesDefeated = 0;
+		this.caveCleared = false;
+		if (this.totalEnemies === 0) {
+			this.onCaveCleared();
+		} else {
+			this.events.on(GameEvents.ENEMY_DEFEATED, this.handleEnemyDefeated, this);
+		}
+
 		this.setupSaveKeybinds();
 
 		// Create exit portal in the last room

@@ -17,6 +17,7 @@ import BadChair from './chats/BadChair';
 import BedRest from './chats/BedRest';
 import CrossroadsWelcome from './chats/CrossroadsWelcome';
 import DungeonEntrance from './chats/DungeonEntrance';
+import ElderGreeting from './chats/ElderGreeting';
 import FallenKnightEncounter from './chats/FallenKnightEncounter';
 import GateGuardian from './chats/GateGuardian';
 import HousePlates from './chats/HousePlates';
@@ -43,4 +44,5 @@ export const CHATS = [
 	FallenKnightEncounter,
 	OracleVision,
 	GateGuardian,
+	ElderGreeting,
 ];

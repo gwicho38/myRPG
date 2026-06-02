@@ -23,6 +23,8 @@ import { Player } from '../entities/Player';
 import { IDialogChat, NeverquestDialogBox } from './NeverquestDialogBox';
 import { DialogBox } from '../consts/Numbers';
 import { HexColors } from '../consts/Colors';
+import { StoryFlag } from './NeverquestStoryFlags';
+import { GameEvents } from '../consts/Events';
 
 /**
  * NPC configuration for programmatic spawning
@@ -50,6 +52,8 @@ export interface INPCConfig {
 	animated?: boolean;
 	/** Animation key to play if animated */
 	animationKey?: string;
+	/** Story flag set the first time the player meets this NPC (quest-giver hook) */
+	storyFlag?: StoryFlag;
 }
 
 /**
@@ -58,6 +62,7 @@ export interface INPCConfig {
 interface INPCZone extends Phaser.GameObjects.Zone {
 	chat?: IDialogChat[];
 	npcId?: string;
+	storyFlag?: StoryFlag;
 }
 
 /**
@@ -107,6 +112,8 @@ export class NeverquestNPCManager {
 	spriteDepth: number;
 	/** Depth layer for NPC name labels */
 	labelDepth: number;
+	/** NPC ids whose story flag has already been announced (meet-once guard) */
+	private metNPCs: Set<string> = new Set();
 
 	/**
 	 * Creates a new NPC manager for the scene
@@ -237,6 +244,7 @@ export class NeverquestNPCManager {
 
 		zone.chat = chatData.chat as IDialogChat[];
 		zone.npcId = config.id;
+		zone.storyFlag = config.storyFlag;
 
 		this.interactionZones.push(zone);
 	}
@@ -255,6 +263,14 @@ export class NeverquestNPCManager {
 			this.player.container.y - body.height * DialogBox.MARGIN_MULTIPLIER_TEXT_Y
 		);
 		this.dialogBox.chat = zone.chat;
+
+		// First time the player meets a quest-giver NPC, announce its story flag.
+		// Guarded so we do not re-emit on every overlap frame (overlap callbacks
+		// stay light per CLAUDE.md); the bridge also dedups downstream.
+		if (zone.storyFlag && zone.npcId && !this.metNPCs.has(zone.npcId)) {
+			this.metNPCs.add(zone.npcId);
+			this.scene.events.emit(GameEvents.SET_STORY_FLAG, zone.storyFlag);
+		}
 	}
 
 	/**
