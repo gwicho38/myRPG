@@ -415,8 +415,9 @@ export class HUDScene extends Phaser.Scene {
 	/**
 	 * Registers keyboard shortcuts that toggle the narrative "codex" overlays:
 	 *  - Q: Quest Log (active/completed quests)
-	 *  - J: Journal (lore & discoveries)
-	 * This is what makes those scenes reachable in normal play.
+	 *  - H: Journal (lore & discoveries)
+	 * This is what makes those scenes reachable in normal play. Journal is on H
+	 * (not J) because J is the attack key.
 	 */
 	setupCodexKeybinds(): void {
 		const keyboard = this.input.keyboard;
@@ -424,7 +425,7 @@ export class HUDScene extends Phaser.Scene {
 			return;
 		}
 		keyboard.on('keydown-Q', () => this.toggleCodexScene(QuestLogSceneName));
-		keyboard.on('keydown-J', () => this.toggleCodexScene(JournalSceneName));
+		keyboard.on('keydown-H', () => this.toggleCodexScene(JournalSceneName));
 	}
 
 	/**
