@@ -76,7 +76,7 @@ export class IceCavernsScene extends Phaser.Scene {
 	pathfinding!: NeverquestPathfinding;
 	lineOfSight!: NeverquestLineOfSight;
 	exitPortal!: Phaser.GameObjects.Zone;
-	previousScene: string = 'CrossroadsScene';
+	previousScene: string = 'MainScene';
 	spellWheelOpen: boolean = false;
 
 	/** Tracks ice tiles for physics */

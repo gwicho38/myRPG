@@ -21,6 +21,7 @@
 import Phaser from 'phaser';
 import { NeverquestInterfaceController } from '../plugins/NeverquestInterfaceController';
 import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
+import { STORY_FLAGS_STORAGE_KEY } from '../plugins/NeverquestStoryFlags';
 import intro_video from '../assets/video/intro_video_converted_FULLHD.mp4';
 import { PanelComponent } from '../components/PanelComponent';
 import { HexColors } from '../consts/Colors';
@@ -51,6 +52,7 @@ interface ISceneWithSaveManager extends Phaser.Scene {
 
 export class MainMenuScene extends Phaser.Scene {
 	neverquestInterfaceControler: NeverquestInterfaceController | null;
+	titleLogo: Phaser.GameObjects.Text | null;
 	gameStartText: Phaser.GameObjects.Text | null;
 	nineSliceOffset: number;
 	textWidth: number;
@@ -74,6 +76,7 @@ export class MainMenuScene extends Phaser.Scene {
 		});
 
 		this.neverquestInterfaceControler = null;
+		this.titleLogo = null;
 		this.gameStartText = null;
 		this.nineSliceOffset = 10;
 		this.textWidth = Dimensions.MAIN_MENU_TEXT_WIDTH;
@@ -134,6 +137,22 @@ export class MainMenuScene extends Phaser.Scene {
 		this.themeSound.play();
 		this.neverquestInterfaceControler = new NeverquestInterfaceController(this);
 
+		// Title logo above the menu options so the menu reads as a proper title screen.
+		this.titleLogo = this.add
+			.text(
+				this.cameras.main.midPoint.x,
+				this.cameras.main.midPoint.y - Dimensions.MAIN_MENU_TITLE_OFFSET_Y,
+				UILabels.GAME_TITLE,
+				{
+					fontSize: Dimensions.MAIN_MENU_TITLE_FONT_SIZE,
+					fontFamily: this.fontFamily,
+					color: HexColors.YELLOW_LIGHT,
+					stroke: HexColors.BLACK,
+					strokeThickness: 8,
+				}
+			)
+			.setOrigin(0.5, 0.5);
+
 		this.gameStartText = this.add
 			.text(this.cameras.main.midPoint.x, this.cameras.main.midPoint.y, UILabels.BUTTON_START_GAME, {
 				fontSize: 34,
@@ -184,6 +203,7 @@ export class MainMenuScene extends Phaser.Scene {
 
 	resizeAll(size: IResizeSize): void {
 		if (size && this && this.cameras && this.cameras.main) {
+			this.titleLogo!.setPosition(size.width / 2, size.height / 2 - Dimensions.MAIN_MENU_TITLE_OFFSET_Y);
 			this.gameStartText!.setPosition(size.width / 2, size.height / 2);
 			this.loadGameText!.setPosition(this.gameStartText!.x, this.gameStartText!.y + 60);
 			this.creditsText!.setPosition(
@@ -295,6 +315,12 @@ Forest - Intro Scene Music by "syncopika"
 	}
 
 	startGame(): void {
+		// New Game: wipe any prior save + story progress so the chapter starts
+		// fresh (otherwise a previous run's flags/quests carry over).
+		this.saveManager?.deleteSave(false);
+		this.saveManager?.deleteSave(true);
+		localStorage.removeItem(STORY_FLAGS_STORAGE_KEY);
+
 		this.themeSound!.stop();
 		this.cameras.main.fadeOut(AnimationTiming.TWEEN_NORMAL, 0, 0, 0);
 		const startSound = this.sound.add('start_game');

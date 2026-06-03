@@ -20,11 +20,15 @@
 // =============================================================================
 
 export const EntitySpeed = {
-	// Base movement speeds
+	// Base movement speeds (used by enemies and generic entities)
 	BASE: 200,
 	SWIM: 100,
 	RUN: 300,
 	SPRINT: 400,
+	// Player movement: a deliberate, slower walk; running matches the old walk pace.
+	PLAYER_WALK: 100, // classic top-down RPG walking pace
+	PLAYER_RUN: 150, // run boost (was the prior walk feel)
+	PLAYER_SWIM: 65, // ~0.65x walk: swimming is slower than walking
 } as const;
 
 // =============================================================================
@@ -136,6 +140,8 @@ export const Dimensions = {
 	// Main Menu Scene
 	MAIN_MENU_TEXT_WIDTH: 452,
 	MAIN_MENU_CREDITS_SPACING: 120,
+	MAIN_MENU_TITLE_OFFSET_Y: 140,
+	MAIN_MENU_TITLE_FONT_SIZE: 72,
 
 	// InfoBox dimensions
 	INFOBOX_WIDTH: 200,

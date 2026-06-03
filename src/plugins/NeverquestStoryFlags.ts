@@ -22,6 +22,9 @@
 
 import Phaser from 'phaser';
 
+/** localStorage key for persisted story flags (also used by New Game reset). */
+export const STORY_FLAGS_STORAGE_KEY = 'neverquest_story_flags';
+
 /**
  * Story flag keys for tracking narrative progression
  */
@@ -118,7 +121,7 @@ export class NeverquestStoryFlags {
 		this.scene = scene;
 		this.flags = new Set();
 		this.choices = [];
-		this.storageKey = 'neverquest_story_flags';
+		this.storageKey = STORY_FLAGS_STORAGE_KEY;
 	}
 
 	/**

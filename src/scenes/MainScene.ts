@@ -28,6 +28,24 @@ import { NeverquestEnvironmentParticles } from '../plugins/NeverquestEnvironment
 import { NeverquestEnemyZones } from '../plugins/NeverquestEnemyZones';
 import { NeverquestMapCreator } from '../plugins/NeverquestMapCreator';
 import { NeverquestSaveManager } from '../plugins/NeverquestSaveManager';
+import { NeverquestStoryFlagBridge } from '../plugins/NeverquestStoryFlagBridge';
+import { NeverquestQuestManager } from '../plugins/NeverquestQuestManager';
+import { NeverquestNPCManager } from '../plugins/NeverquestNPCManager';
+import { StoryFlag } from '../plugins/NeverquestStoryFlags';
+import { GameEvents, RegistryKeys } from '../consts/Events';
+import { PlayerConfig } from '../consts/player/Player';
+import { ChapterCompleteSceneName } from './ChapterCompleteScene';
+import ElderGreeting from '../consts/DB_SEED/chats/ElderGreeting';
+
+/** Placement + appearance for the Chapter 1 Elder NPC. */
+const ElderPlacement = {
+	OFFSET_X: 80,
+	// A calm idle pose. Numeric frame 0 of the 'character' atlas resolves to an
+	// attack frame (atk-down), which made the Elder look like it was swinging a sword.
+	IDLE_FRAME: 'idle-down/idle-down00',
+	// Sage robe tint so the Elder reads as an NPC, not a clone of the player.
+	TINT: 0x8fbc8f,
+} as const;
 import { HexColors, NumericColors } from '../consts/Colors';
 import { Alpha, Scale, CameraValues, Depth } from '../consts/Numbers';
 import { UILabels, SaveMessages, FontFamily } from '../consts/Messages';
@@ -47,6 +65,11 @@ export class MainScene extends Phaser.Scene {
 	upsideDownPortal: Phaser.GameObjects.Zone | null;
 	upsideDownPortalParticles: Phaser.GameObjects.Particles.ParticleEmitter | null;
 	spellWheelOpen: boolean;
+	storyFlagBridge: NeverquestStoryFlagBridge | null = null;
+	questManager: NeverquestQuestManager | null = null;
+	npcManager: NeverquestNPCManager | null = null;
+	/** Max frames to wait for DialogScene before giving up on spawning the Elder (~2s). */
+	private static readonly ELDER_SPAWN_MAX_FRAMES = 120;
 
 	constructor() {
 		super({
@@ -143,6 +166,43 @@ export class MainScene extends Phaser.Scene {
 		this.saveManager = new NeverquestSaveManager(this);
 		this.saveManager.create();
 
+		// Wire the narrative spine. The bridge turns gameplay SET_STORY_FLAG
+		// events into writes on the shared StoryFlags (published to the Registry
+		// by the SaveManager above); the quest FSM reacts and tracks Chapter 1.
+		this.storyFlagBridge = new NeverquestStoryFlagBridge(this);
+		this.storyFlagBridge.create();
+		this.questManager = new NeverquestQuestManager(this);
+		this.questManager.create();
+		this.registry?.set(RegistryKeys.QUEST_MANAGER, this.questManager);
+		this.events.on(GameEvents.CHAPTER_COMPLETE, this.onChapterComplete, this);
+
+		// Chapter 1 opens: the Awakening (intro) completes on arrival at the hub,
+		// activating "The Elder's Request". Idempotent, so returning to the hub
+		// from a biome does not re-trigger it.
+		this.events.emit(GameEvents.SET_STORY_FLAG, StoryFlag.INTRO_COMPLETE);
+
+		// Spawn the village Elder — the Chapter 1 quest-giver. Meeting him sets
+		// MET_ELDER (via the NPC manager's storyFlag hook), completing "The
+		// Elder's Request" and activating "The Stolen Artifact".
+		this.npcManager = new NeverquestNPCManager(this, this.player);
+		this.npcManager.addNPC({
+			id: 'village_elder',
+			name: 'Village Elder',
+			x: this.player.container.x + ElderPlacement.OFFSET_X,
+			y: this.player.container.y,
+			chatId: ElderGreeting.id,
+			texture: PlayerConfig.texture,
+			frame: ElderPlacement.IDLE_FRAME,
+			tint: ElderPlacement.TINT,
+			storyFlag: StoryFlag.MET_ELDER,
+		});
+		// Defer the actual spawn until DialogScene's camera is ready. The NPC
+		// manager builds a DialogBox bound to DialogScene, which reads
+		// DialogScene.cameras.main — undefined for a frame or two after launch
+		// (notably when MainScene is cold-started from the chapter-complete
+		// "Continue"). Spawning early there throws and strands the player.
+		this.createElderWhenDialogReady();
+
 		// Create the Upside Down portal
 		// this.createUpsideDownPortal();
 
@@ -155,6 +215,38 @@ export class MainScene extends Phaser.Scene {
 
 	stopSceneMusic(): void {
 		this.themeSound!.stop();
+	}
+
+	/**
+	 * Launches the "Chapter 1 Complete" overlay when the chapter is finished.
+	 */
+	private onChapterComplete(): void {
+		this.scene.launch(ChapterCompleteSceneName, { returnScene: 'MainScene' });
+	}
+
+	/**
+	 * Calls npcManager.create() once the DialogScene it depends on has booted
+	 * (its main camera exists). Polls on update so it works whether DialogScene
+	 * is launched fresh or woken on a cold-start, with a safety cap.
+	 */
+	private createElderWhenDialogReady(): void {
+		const dialogScene = this.scene.get('DialogScene');
+		const isReady = (): boolean => !!(dialogScene && dialogScene.cameras && dialogScene.cameras.main);
+		if (isReady()) {
+			this.npcManager!.create();
+			return;
+		}
+		let frames = 0;
+		const poll = (): void => {
+			frames += 1;
+			if (isReady()) {
+				this.events.off('update', poll);
+				this.npcManager!.create();
+			} else if (frames > MainScene.ELDER_SPAWN_MAX_FRAMES) {
+				this.events.off('update', poll);
+			}
+		};
+		this.events.on('update', poll);
 	}
 
 	setupSaveKeybinds(): void {

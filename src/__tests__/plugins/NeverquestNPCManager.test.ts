@@ -48,6 +48,10 @@ interface IMockScene {
 	scene: {
 		get: jest.Mock;
 	};
+	events: {
+		on: jest.Mock;
+		off: jest.Mock;
+	};
 }
 
 describe('NeverquestNPCManager', () => {
@@ -93,6 +97,10 @@ describe('NeverquestNPCManager', () => {
 			},
 			scene: {
 				get: jest.fn().mockReturnValue({}),
+			},
+			events: {
+				on: jest.fn(),
+				off: jest.fn(),
 			},
 		};
 

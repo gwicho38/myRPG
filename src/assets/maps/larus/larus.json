@@ -2803,6 +2803,29 @@
 					"width": 28,
 					"x": -214,
 					"y": -201.5
+				},
+				{
+					"class": "",
+					"height": 31.5,
+					"id": 89,
+					"name": "ice_caverns",
+					"properties": [
+						{
+							"name": "goto",
+							"type": "string",
+							"value": "IceCavernsScene"
+						},
+						{
+							"name": "scene",
+							"type": "bool",
+							"value": true
+						}
+					],
+					"rotation": 0,
+					"visible": true,
+					"width": 28,
+					"x": -180,
+					"y": -201.5
 				}
 			],
 			"opacity": 1,

@@ -31,6 +31,7 @@ import { HUDScene } from '../scenes/HUDScene';
 import { HexColors } from '../consts/Colors';
 import { SaveMessages, FontFamily } from '../consts/Messages';
 import { SaveManagerValues, Depth } from '../consts/Numbers';
+import { RegistryKeys } from '../consts/Events';
 import { NeverquestStoryFlags, StoryFlag, StoryChoice } from './NeverquestStoryFlags';
 import { NeverquestSpellManager } from './NeverquestSpellManager';
 import { NeverquestAbilityManager } from './NeverquestAbilityManager';
@@ -183,6 +184,17 @@ export class NeverquestSaveManager {
 		}
 		console.log('Ability manager initialized, unlocked abilities:', this.abilityManager.getUnlockedCount());
 
+		// Publish singletons to the global Phaser Registry (which survives
+		// scene.start) so every scene, UI overlay, and GameOverScene share one
+		// instance. This is the cross-scene persistence keystone: it makes story
+		// flags consistent across biome transitions and gives GameOverScene the
+		// 'saveManager' it reads for "Load Checkpoint". Guarded for headless/test
+		// scenes that do not provide a registry.
+		this.scene.registry?.set(RegistryKeys.SAVE_MANAGER, this);
+		if (this.storyFlags) {
+			this.scene.registry?.set(RegistryKeys.STORY_FLAGS, this.storyFlags);
+		}
+
 		this.startCheckpointTimer();
 
 		// Also create an immediate save to test functionality
@@ -264,6 +276,12 @@ export class NeverquestSaveManager {
 					atack: player.attributes.atack,
 					defense: player.attributes.defense,
 					availableStatPoints: player.attributes.availableStatPoints,
+					// Persist the allocated base stats (STR/AGI/VIT/DEX/INT) so stat-point
+					// allocations survive a reload. Copied by value to avoid aliasing the
+					// live player attributes. (bonus is intentionally not persisted: its
+					// consumable timers hold non-serializable Phaser TimerEvent refs and
+					// equipment is not yet a mechanic.)
+					rawAttributes: { ...player.attributes.rawAttributes },
 				},
 				items: player.items,
 				level: player.attributes.level,
@@ -483,6 +501,27 @@ export class NeverquestSaveManager {
 	hasSaveData(checkCheckpoint: boolean = false): boolean {
 		const key = checkCheckpoint ? this.checkpointKey : this.saveKey;
 		return localStorage.getItem(key) !== null;
+	}
+
+	/**
+	 * Returns true if a checkpoint save exists.
+	 * Used by GameOverScene to decide whether to offer "Load Checkpoint".
+	 */
+	hasCheckpoint(): boolean {
+		return this.hasSaveData(true);
+	}
+
+	/**
+	 * Loads the most recent checkpoint and applies it to the current game state.
+	 * Returns true if a checkpoint existed and was applied successfully.
+	 * Used by GameOverScene's "Load Checkpoint" recovery option.
+	 */
+	loadCheckpoint(): boolean {
+		const saveData = this.loadGame(true);
+		if (!saveData) {
+			return false;
+		}
+		return this.applySaveData(saveData);
 	}
 
 	/**

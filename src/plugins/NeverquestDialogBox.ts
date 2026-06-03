@@ -31,6 +31,7 @@ import { NeverquestVideoOpener } from './NeverquestVideoOpener';
 import { NumericColors } from '../consts/Colors';
 import { Alpha, Depth, FontFamilies, DialogBox } from '../consts/Numbers';
 import { DialogBoxMessages } from '../consts/Messages';
+import { logDebug } from '../utils/Logger';
 import type Button from './VirtualJoystick/Button';
 
 /**
@@ -301,7 +302,7 @@ export class NeverquestDialogBox {
 		const escKey = this.scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 		escKey.on('down', () => {
 			if (this.chat && this.chat.length > 0 && this.dialog.visible) {
-				console.log('[NeverquestDialogBox] ESC pressed - closing dialog');
+				logDebug('DialogBox', '[NeverquestDialogBox] ESC pressed - closing dialog');
 				this.hideDialog();
 			}
 		});
@@ -529,7 +530,7 @@ export class NeverquestDialogBox {
 			text = '';
 		}
 
-		console.log('[NeverquestDialogBox] setText called', {
+		logDebug('DialogBox', '[NeverquestDialogBox] setText called', {
 			textLength: text.length,
 			animate,
 			dialogExists: !!this.dialog,
@@ -542,7 +543,7 @@ export class NeverquestDialogBox {
 		if (this.timedEvent) {
 			this.timedEvent.destroy();
 			this.timedEvent = null;
-			console.log('[NeverquestDialogBox] Stopped existing timer');
+			logDebug('DialogBox', '[NeverquestDialogBox] Stopped existing timer');
 		}
 
 		// Reset the dialog
@@ -561,13 +562,13 @@ export class NeverquestDialogBox {
 				callbackScope: this,
 				repeat: this.animationText.length - 1,
 			});
-			console.log('[NeverquestDialogBox] Started text animation with delay:', this.typewriterDelay);
+			logDebug('DialogBox', '[NeverquestDialogBox] Started text animation with delay:', this.typewriterDelay);
 		} else {
 			this.isAnimatingText = false;
 			if (this.dialog && this.dialog.textMessage) {
 				this.dialog.textMessage.visible = true;
 				this.dialog.textMessage.setText(text);
-				console.log('[NeverquestDialogBox] Text set directly (no animation):', text.substring(0, 50));
+				logDebug('DialogBox', '[NeverquestDialogBox] Text set directly (no animation):', text.substring(0, 50));
 			} else {
 				console.warn('[NeverquestDialogBox] Cannot set text - dialog or textMessage is null', {
 					dialogExists: !!this.dialog,
@@ -595,7 +596,7 @@ export class NeverquestDialogBox {
 
 		// Stops the text animation.
 		if (this.eventCounter === this.animationText.length) {
-			console.log('[NeverquestDialogBox] Text animation completed');
+			logDebug('DialogBox', '[NeverquestDialogBox] Text animation completed');
 			this.isAnimatingText = false;
 			this.timedEvent?.remove();
 		}
@@ -618,7 +619,7 @@ export class NeverquestDialogBox {
 	checkButtonDown(): void {
 		// Fast-forward: Skip animation if space is pressed during typing
 		if (this.isAnimatingText) {
-			console.log('[NeverquestDialogBox] Currently animating, checking for fast-forward...', {
+			logDebug('DialogBox', '[NeverquestDialogBox] Currently animating, checking for fast-forward...', {
 				buttonPressed: this.checkButtonsPressed(),
 				keyDown: this.keyObj.isDown,
 				currentPage: this.currentPage,
@@ -626,7 +627,7 @@ export class NeverquestDialogBox {
 			});
 
 			if (this.checkButtonsPressed()) {
-				console.log('[NeverquestDialogBox] ⚡ Fast-forwarding text animation!');
+				logDebug('DialogBox', '[NeverquestDialogBox] ⚡ Fast-forwarding text animation!');
 				this.setText(this.pagesMessage[this.currentPage], false);
 				this.justFastForwarded = true;
 				return; // Exit early to prevent other actions
@@ -636,7 +637,7 @@ export class NeverquestDialogBox {
 		// Clear fast-forward flag if button is released
 		if (this.justFastForwarded && !this.checkButtonsPressed()) {
 			this.justFastForwarded = false;
-			console.log('[NeverquestDialogBox] Button released after fast-forward');
+			logDebug('DialogBox', '[NeverquestDialogBox] Button released after fast-forward');
 			return; // Don't advance yet, wait for next press
 		}
 
@@ -654,7 +655,7 @@ export class NeverquestDialogBox {
 
 		if ((this.isOverlapingChat || this.showRandomChat) && !this.dialog.visible) {
 			// First time, show the Dialog.
-			console.log('[NeverquestDialogBox] Opening dialog (first time)');
+			logDebug('DialogBox', '[NeverquestDialogBox] Opening dialog (first time)');
 			this.currentChat = this.chat[0];
 			this.dialogMessage = this.currentChat.message;
 			this.checkSpeaker();
@@ -664,7 +665,7 @@ export class NeverquestDialogBox {
 			}
 			// Disable player input capabilities during dialog
 			this.player.canMove = false;
-			console.log('[DialogBox] Setting canAtack = false (starting dialog)');
+			logDebug('DialogBox', '[DialogBox] Setting canAtack = false (starting dialog)');
 			this.player.canAtack = false;
 			this.player.canBlock = false;
 		} else if (
@@ -675,14 +676,20 @@ export class NeverquestDialogBox {
 			this.dialog.textMessage.active
 		) {
 			// Has more pages.
-			console.log(`[NeverquestDialogBox] Advancing to next page (${this.currentPage + 1}/${this.pagesNumber})`);
+			logDebug(
+				'DialogBox',
+				`[NeverquestDialogBox] Advancing to next page (${this.currentPage + 1}/${this.pagesNumber})`
+			);
 			this.currentPage++;
 			this.dialog.textMessage.text = '';
 			this.setText(this.pagesMessage[this.currentPage], true);
 		} else if (this.currentChat && this.currentChat.index < this.chat.length - 1) {
 			// Advance to next chat message
 			const index = this.currentChat.index;
-			console.log(`[NeverquestDialogBox] Advancing to next chat message (${index + 1}/${this.chat.length})`);
+			logDebug(
+				'DialogBox',
+				`[NeverquestDialogBox] Advancing to next chat message (${index + 1}/${this.chat.length})`
+			);
 			this.currentChat = this.chat[index + 1];
 			this.dialogMessage = this.currentChat.message;
 			this.pagesMessage = [];
@@ -690,7 +697,7 @@ export class NeverquestDialogBox {
 			this.showDialog(false);
 		} else if (this.dialog.visible && this.dialog.textMessage && this.dialog.textMessage.active) {
 			// Close dialog
-			console.log('[NeverquestDialogBox] Closing dialog (final page)');
+			logDebug('DialogBox', '[NeverquestDialogBox] Closing dialog (final page)');
 			this.hideDialog();
 		}
 	}
@@ -699,7 +706,7 @@ export class NeverquestDialogBox {
 	 * Show dialog with optional text creation
 	 */
 	showDialog(createText: boolean = true): void {
-		console.log('[NeverquestDialogBox] showDialog called', {
+		logDebug('DialogBox', '[NeverquestDialogBox] showDialog called', {
 			createText,
 			textMessageExists: !!this.dialog?.textMessage,
 			pagesCount: this.pagesMessage.length,
@@ -720,7 +727,7 @@ export class NeverquestDialogBox {
 		// Populate pagesMessage from dialogMessage if it's empty
 		// (For now, we treat the entire message as a single page)
 		if (this.pagesMessage.length === 0 && this.dialogMessage) {
-			console.log('[NeverquestDialogBox] pagesMessage empty, populating from dialogMessage');
+			logDebug('DialogBox', '[NeverquestDialogBox] pagesMessage empty, populating from dialogMessage');
 			this.pagesMessage = [this.dialogMessage];
 			this.pagesNumber = 1;
 		}
@@ -739,7 +746,7 @@ export class NeverquestDialogBox {
 	 * Hide dialog and reset state to allow re-triggering
 	 */
 	hideDialog(): void {
-		console.log('[NeverquestDialogBox] Hiding dialog');
+		logDebug('DialogBox', '[NeverquestDialogBox] Hiding dialog');
 
 		// Hide UI elements
 		this.dialog.visible = false;
@@ -789,7 +796,7 @@ export class NeverquestDialogBox {
 		if (this.player.container.body && 'maxSpeed' in this.player.container.body) {
 			(this.player.container.body as Phaser.Physics.Arcade.Body).maxSpeed = this.player.speed;
 		}
-		console.log('[DialogBox] Re-enabling player controls after dialog close', {
+		logDebug('DialogBox', '[DialogBox] Re-enabling player controls after dialog close', {
 			beforeCanAtack: this.player.canAtack,
 			beforeCanMove: this.player.canMove,
 			beforeCanBlock: this.player.canBlock,
@@ -797,7 +804,7 @@ export class NeverquestDialogBox {
 		this.player.canMove = true;
 		this.player.canAtack = true;
 		this.player.canBlock = true;
-		console.log('[DialogBox] Player controls re-enabled', {
+		logDebug('DialogBox', '[DialogBox] Player controls re-enabled', {
 			afterCanAtack: this.player.canAtack,
 			afterCanMove: this.player.canMove,
 			afterCanBlock: this.player.canBlock,
@@ -812,23 +819,24 @@ export class NeverquestDialogBox {
 	 * Create text element for dialog
 	 */
 	createText(): void {
-		console.log('[NeverquestDialogBox] createText called - creating new textMessage element');
-		this.dialog.textMessage = this.scene.add.text(
-			this.margin * 2,
-			this.dialog.y + this.margin * DialogBox.MARGIN_MULTIPLIER_TEXT_Y,
-			'',
-			{
-				wordWrap: {
-					width: this.textWidth,
-				},
-				fontSize: this.fontSize,
-				fontFamily: this.fontFamily,
-				color: this.fontColor.rgba,
-			}
-		) as IDialogTextMessage;
+		logDebug('DialogBox', '[NeverquestDialogBox] createText called - creating new textMessage element');
+		// Drop the message below the speaker name when one is showing so they never
+		// overlap (checkSpeaker runs before createText and has already positioned the name).
+		const textY =
+			this.leftNameText && this.leftNameText.visible
+				? this.leftNameText.y + this.leftNameText.height + 6
+				: this.dialog.y + this.margin * DialogBox.MARGIN_MULTIPLIER_TEXT_Y;
+		this.dialog.textMessage = this.scene.add.text(this.margin * 2, textY, '', {
+			wordWrap: {
+				width: this.textWidth,
+			},
+			fontSize: this.fontSize,
+			fontFamily: this.fontFamily,
+			color: this.fontColor.rgba,
+		}) as IDialogTextMessage;
 
 		this.dialog.textMessage.setScrollFactor(0, 0).setDepth(Depth.TOP).setOrigin(0, 0);
-		console.log('[NeverquestDialogBox] textMessage created successfully', {
+		logDebug('DialogBox', '[NeverquestDialogBox] textMessage created successfully', {
 			exists: !!this.dialog.textMessage,
 			active: this.dialog.textMessage?.active,
 		});
@@ -841,17 +849,27 @@ export class NeverquestDialogBox {
 		this.resetSpeakersAlpha();
 
 		if (this.currentChat?.left) {
-			if (this.currentChat.leftName) {
-				this.leftNameText.visible = true;
-				this.leftNameText.setText(DialogBoxMessages.LEFT_NAME_PREFIX(this.currentChat.leftName));
-			} else {
-				this.leftNameText.visible = false;
-			}
+			// Decide portrait visibility first so the name can be anchored relative to it.
 			if (this.currentChat.leftPortraitName) {
 				this.leftPortraitImage.visible = true;
 				this.leftPortraitImage.setTexture(this.currentChat.leftPortraitName);
 			} else {
 				this.leftPortraitImage.visible = false;
+			}
+			if (this.currentChat.leftName) {
+				// Anchor the name below the portrait when present; otherwise pin it to the
+				// dialog's top-left so a portrait-less speaker's name (e.g. the Elder) does
+				// not collide with the message body. The message is dropped below this name
+				// in createText().
+				const nameY = this.leftPortraitImage.visible
+					? this.leftPortraitImage.y + this.leftPortraitImage.height + 5
+					: this.dialog.y + this.margin;
+				const nameX = this.leftPortraitImage.visible ? this.leftPortraitImage.x : this.margin * 2;
+				this.leftNameText.setPosition(nameX, nameY);
+				this.leftNameText.visible = true;
+				this.leftNameText.setText(DialogBoxMessages.LEFT_NAME_PREFIX(this.currentChat.leftName));
+			} else {
+				this.leftNameText.visible = false;
 			}
 			this.leftNameText.alpha = 1;
 			this.leftPortraitImage.alpha = 1;

@@ -390,9 +390,9 @@ describe('DungeonScene', () => {
 		it('should create enemies in rooms', () => {
 			scene.create();
 
-			// 2 rooms * 5 enemies per room = 10 enemies
-			expect(Enemy).toHaveBeenCalledTimes(10);
-			expect(scene.enemies.length).toBe(10);
+			// 2 rooms * 2 enemies per room = 4 enemies (capped for level-1 survivability)
+			expect(Enemy).toHaveBeenCalledTimes(4);
+			expect(scene.enemies.length).toBe(4);
 		});
 
 		it('should play theme song and ambient sound', () => {
