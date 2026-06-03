@@ -611,4 +611,24 @@ describe('HUDScene', () => {
 			expect(scene.maximize.on).toHaveBeenCalledWith('pointerup', expect.any(Function));
 		});
 	});
+
+	describe('codex keybinds', () => {
+		it('binds Quest Log to Q and Journal to H, never to the J attack key', () => {
+			const registered: string[] = [];
+			(scene as any).input = {
+				keyboard: {
+					on: (ev: string): void => {
+						registered.push(ev);
+					},
+				},
+			};
+
+			scene.setupCodexKeybinds();
+
+			expect(registered).toContain('keydown-Q');
+			expect(registered).toContain('keydown-H');
+			// J is the attack key — the Journal must not be bound to it.
+			expect(registered).not.toContain('keydown-J');
+		});
+	});
 });

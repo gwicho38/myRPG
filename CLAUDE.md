@@ -208,6 +208,88 @@ Use the mock in `src/__mocks__/phaserMock.ts` - it provides:
 
 ---
 
+## Running & Verifying the Game (Agent Harness)
+
+This is the fast, repeatable loop for writing code and verifying it against the
+**actual running game** (not just unit tests).
+
+### Run the dev server
+
+```bash
+npm start            # webpack-dev-server on :8080
+```
+
+**Gotcha — load `http://[::1]:8080` (IPv6), not `localhost:8080`.** An IPFS
+gateway commonly binds `127.0.0.1:8080`; `localhost` intermittently resolves to
+it and serves stale code. The webpack server binds `[::1]:8080`. Playwright is
+already configured to use `[::1]`.
+
+**Gotcha — HMR/cache staleness.** The dev bundle is `main.js` (no content hash).
+After edits, if the browser shows old behavior, hard-reload or restart `npm
+start`. A clean `npm start` is a full from-scratch build.
+
+### `window.nq` — the in-game test/automation driver
+
+A dev-only driver (`src/utils/NeverquestTestApi.ts`, attached in `index.ts`,
+tree-shaken from production). Use it from the browser console, the Playwright
+MCP, or e2e specs:
+
+```js
+nq.ready();                 // game booted?
+nq.start('MainScene');      // enter the hub (SceneManager.start; runs in parallel)
+nq.player();                // { x, y, speed, baseSpeed, runSpeed, health, isRunning }
+nq.flags.set('met_elder');  // advance the story via the REAL event bus (bridge + FSM react)
+nq.flags.has('act_1_complete');
+nq.quest('cave_artifact');  // FSM state: 'not-started' | 'active' | 'complete'
+nq.gotoElder();             // teleport onto the Elder NPC (fires the real overlap)
+nq.warpToDungeon();         // start DungeonScene
+nq.clearDungeon();          // emit the exact ENEMY_DEFEATED events a full clear produces
+nq.completeChapter();       // fire all Act 1 beats -> Chapter Complete
+nq.snapshot();              // { ready, activeScenes, player, flags, quests } for assertions
+nq.help();
+```
+
+`nq.press(key)` / `nq.hold(key, ms)` dispatch synthetic keyboard input — useful
+**headed only** (see below).
+
+### E2E (Playwright + the `GameDriver` helper)
+
+```bash
+npx playwright install chromium    # one-time
+npm run test:e2e                   # runs tests/e2e/*.spec.ts against the dev server
+```
+
+- `tests/e2e/helpers/game.ts` — `GameDriver`, a typed wrapper over `window.nq`
+  (boot, enterHub, waitForScene/Flag, player, quest, completeChapter, …) that
+  also collects page errors (`crashErrors()`).
+- `tests/e2e/chapter1.spec.ts` — the committed Chapter 1 regression specs (boot,
+  player speed, quest chain, cave-clear → Chapter Complete, codex reachability).
+  These are the durable version of manual playthrough verification.
+
+**Gotcha — headless can't do keyboard.** Headless Chromium does NOT deliver
+keyboard input to Phaser (neither `page.keyboard` nor synthetic events move the
+player). **Drive behavior via events/state (`nq.flags.set`, `nq.warpToDungeon`,
+`nq.gotoElder`), not keypresses.** Keyboard-specific behavior (e.g. the H/J
+binding) is covered by jest unit tests instead.
+
+**Gotcha — headless has no WebAudio.** Boot the game with `?noaudio=1` (the
+`GameDriver` does this) or `this.sound.add(...)` throws on boot.
+
+### Other landmines learned the hard way
+
+- **`Player`/entities run `Object.assign(this, BaseEntity)` in the constructor**,
+  which clobbers class-field initializers. To set an entity-specific value
+  (e.g. player speed), assign it **after** that call, not just on the field.
+- **Controls:** move = WASD/arrows, attack = `J` (or Space) / left-click, block
+  = `K`, spell wheel = `L` (hold), interact/dialog = `E`/Enter, Quest Log = `Q`,
+  Journal = `H`.
+- **Narrative architecture:** gameplay emits `GameEvents.SET_STORY_FLAG` →
+  `NeverquestStoryFlagBridge` writes the shared `StoryFlags` (in the Phaser
+  Registry) → `NeverquestQuestManager` FSM → `CHAPTER_COMPLETE`. Constants in
+  `src/consts/Events.ts`; quest data in `src/consts/progression/QuestFlagMap.ts`.
+
+---
+
 ## CI/CD Requirements
 
 ### CRITICAL: CI Must Pass Before Work is Complete

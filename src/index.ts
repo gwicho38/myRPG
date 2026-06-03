@@ -55,6 +55,7 @@ import { SpellWheelScene } from './scenes/SpellWheelScene';
 import { crashReporter } from './utils/CrashReporter';
 import { debugHelper } from './utils/DebugHelper';
 import { logger } from './utils/Logger';
+import { installNeverquestTestApi } from './utils/NeverquestTestApi';
 import { PhysicsConfig } from './consts/Numbers';
 import { ErrorPageStyles, ErrorPageText } from './consts/Messages';
 
@@ -69,12 +70,17 @@ if (!canvas) {
 	}
 }
 
+// Allow disabling audio via `?noaudio=1`. Headless browsers (e2e) have no
+// WebAudio backend, so creating sounds throws; normal play keeps sound on.
+const noAudio = new URLSearchParams(window.location.search).has('noaudio');
+
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
 	parent: 'neverquest-rpg-parent',
 	canvas: document.getElementById('neverquest-rpg') as HTMLCanvasElement,
 	width: 800,
 	height: 600,
+	audio: { noAudio },
 	render: {
 		antialias: false,
 		pixelArt: true,
@@ -197,6 +203,12 @@ try {
 	// Initialize debug utilities
 	logger.setupConsoleCommands();
 	debugHelper.initialize(game);
+
+	// Dev-only test/automation driver (window.nq). The guard is a build-time
+	// constant, so this is tree-shaken out of production bundles.
+	if (process.env.NODE_ENV !== 'production') {
+		installNeverquestTestApi();
+	}
 
 	// Handle uncaught game errors
 	game.events.on('error', (error: Error) => {
