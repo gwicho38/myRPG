@@ -79,9 +79,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	public canSwim: boolean = true;
 	public isRunning: boolean = false;
 	public wasShiftDown: boolean = false;
-	public baseSpeed: number = EntitySpeed.BASE;
+	public baseSpeed: number = EntitySpeed.PLAYER_WALK;
 	public swimSpeed: number = EntitySpeed.SWIM;
-	public runSpeed: number = EntitySpeed.RUN;
+	public runSpeed: number = EntitySpeed.PLAYER_RUN;
 	public isJumping: boolean = false;
 	public canJump: boolean = true;
 	public jumpHeight: number = 16; // Reduced by 20% from 20
@@ -124,6 +124,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		// Here are all classes that this Player Extends.
 		Object.assign(this, BaseEntity);
 		console.log('[Player] Constructor - after BaseEntity assign:', { canAtack: this.canAtack });
+
+		// Player-specific movement speeds. Object.assign(this, BaseEntity) above
+		// applies the generic 200/300 walk/run; re-apply the player's values here
+		// so they win: a deliberate, slower walk; running matches the old walk pace.
+		this.baseSpeed = EntitySpeed.PLAYER_WALK;
+		this.runSpeed = EntitySpeed.PLAYER_RUN;
 
 		/**
 		 * The entity attributes.

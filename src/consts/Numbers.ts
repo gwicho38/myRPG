@@ -20,11 +20,14 @@
 // =============================================================================
 
 export const EntitySpeed = {
-	// Base movement speeds
+	// Base movement speeds (used by enemies and generic entities)
 	BASE: 200,
 	SWIM: 100,
 	RUN: 300,
 	SPRINT: 400,
+	// Player movement: a deliberate, slower walk; running matches the old walk pace.
+	PLAYER_WALK: 150, // 25% slower than BASE (200 * 0.75)
+	PLAYER_RUN: 200, // equals the previous normal walking speed (BASE)
 } as const;
 
 // =============================================================================
