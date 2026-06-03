@@ -84,6 +84,20 @@ export class NeverquestEnemyZones {
 	idPropertyName: string = 'id';
 
 	/**
+	 * Hard cap on enemies spawned from a single zone, regardless of its Tiled `number`
+	 * property. Keeps any one zone from overwhelming a low-level area.
+	 */
+	maxEnemiesPerZone: number = 3;
+
+	/**
+	 * Hard cap on the total number of enemies this plugin spawns across ALL zones in
+	 * the scene. Hub/town scenes share this plugin and were spawning ~29 enemies, which
+	 * is unsurvivable at level 1. Scenes that want a denser field can raise this before
+	 * calling create().
+	 */
+	maxTotalEnemies: number = 8;
+
+	/**
 	 * Animation prefix for idle animations.
 	 */
 	idlePrefixAnimation: string;
@@ -110,6 +124,8 @@ export class NeverquestEnemyZones {
 	create(): void {
 		const objectZones = this.map.getObjectLayer(this.tiledObjectLayer);
 		if (objectZones && objectZones.objects && objectZones.objects.length > 0) {
+			// Running total across all zones so the scene-wide cap is enforced.
+			let totalSpawned = 0;
 			objectZones.objects.forEach((infoObj) => {
 				const zone = this.scene.add.zone(infoObj.x, infoObj.y, infoObj.width, infoObj.height);
 				// Create a proper Rectangle from the zone dimensions
@@ -125,7 +141,8 @@ export class NeverquestEnemyZones {
 					const textureProp = properties.find((f) => f.name === this.texturePropertyName);
 					const idProp = properties.find((f) => f.name === this.idPropertyName);
 
-					const enemyCount = numberProp ? Number(numberProp.value) : 0;
+					// Cap per-zone spawns so the level-1 hub stays survivable.
+					const enemyCount = Math.min(numberProp ? Number(numberProp.value) : 0, this.maxEnemiesPerZone);
 					const idValue = idProp ? String(idProp.value) : '0';
 					let textureValue = textureProp ? String(textureProp.value) : '';
 
@@ -135,6 +152,10 @@ export class NeverquestEnemyZones {
 						textureValue = enemyConfig.texture;
 					}
 					for (let i = 0; i < enemyCount; i++) {
+						// Stop once the scene-wide cap is reached so hub areas stay survivable.
+						if (totalSpawned >= this.maxTotalEnemies) {
+							break;
+						}
 						const pos = Phaser.Geom.Rectangle.Random(spriteBounds, new Phaser.Geom.Point());
 						const enemy = new Enemy(
 							this.scene,
@@ -149,6 +170,7 @@ export class NeverquestEnemyZones {
 						enemy.body.setSize(enemy.width, enemy.height);
 						const enemyScene = this.scene as IEnemyScene;
 						enemyScene.enemies.push(enemy);
+						totalSpawned++;
 					}
 				}
 				this.zones.push(zone);

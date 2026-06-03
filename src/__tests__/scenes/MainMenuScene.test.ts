@@ -134,6 +134,7 @@ describe('MainMenuScene', () => {
 		const mockSaveManagerInstance = {
 			hasSaveData: jest.fn(() => false),
 			loadGame: jest.fn(),
+			deleteSave: jest.fn(),
 		};
 
 		(NeverquestSaveManager as jest.Mock).mockImplementation(() => mockSaveManagerInstance);

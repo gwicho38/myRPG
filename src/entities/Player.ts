@@ -80,7 +80,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 	public isRunning: boolean = false;
 	public wasShiftDown: boolean = false;
 	public baseSpeed: number = EntitySpeed.PLAYER_WALK;
-	public swimSpeed: number = EntitySpeed.SWIM;
+	public swimSpeed: number = EntitySpeed.PLAYER_SWIM;
 	public runSpeed: number = EntitySpeed.PLAYER_RUN;
 	public isJumping: boolean = false;
 	public canJump: boolean = true;
@@ -130,6 +130,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		// so they win: a deliberate, slower walk; running matches the old walk pace.
 		this.baseSpeed = EntitySpeed.PLAYER_WALK;
 		this.runSpeed = EntitySpeed.PLAYER_RUN;
+		this.swimSpeed = EntitySpeed.PLAYER_SWIM;
 
 		/**
 		 * The entity attributes.

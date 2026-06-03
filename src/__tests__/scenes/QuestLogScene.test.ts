@@ -25,6 +25,7 @@ jest.mock('phaser', () => {
 	const mockGraphics = {
 		fillStyle: jest.fn().mockReturnThis(),
 		fillRect: jest.fn().mockReturnThis(),
+		setVisible: jest.fn().mockReturnThis(),
 		destroy: jest.fn(),
 		createGeometryMask: jest.fn().mockReturnValue({}),
 	};

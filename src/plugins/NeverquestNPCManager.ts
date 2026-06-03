@@ -114,6 +114,8 @@ export class NeverquestNPCManager {
 	labelDepth: number;
 	/** NPC ids whose story flag has already been announced (meet-once guard) */
 	private metNPCs: Set<string> = new Set();
+	/** Whether the player overlapped any NPC zone this frame (for leave-detection) */
+	private playerInAnyZone = false;
 
 	/**
 	 * Creates a new NPC manager for the scene
@@ -175,6 +177,27 @@ export class NeverquestNPCManager {
 				() => this.dialogBox.canShowDialog
 			);
 		}
+
+		// Hide the interaction prompt + clear the overlap flag when the player
+		// leaves all NPC zones. The physics overlap only fires WHILE overlapping,
+		// so without this the prompt sticks on and the dialog stays re-openable
+		// from anywhere on the map (and a half-finished dialog can strand the player).
+		this.scene.events.on('update', this.checkZoneExit, this);
+	}
+
+	/**
+	 * Clears the interaction prompt + overlap flag once the player has left all
+	 * NPC zones. Skipped while a dialog is open (canShowDialog === false) so it
+	 * never interrupts an active conversation.
+	 */
+	private checkZoneExit(): void {
+		if (!this.playerInAnyZone && this.dialogBox.canShowDialog && this.dialogBox.isOverlapingChat) {
+			this.dialogBox.isOverlapingChat = false;
+			if (this.dialogBox.actionButton) this.dialogBox.actionButton.visible = false;
+			if (this.dialogBox.interactionIcon) this.dialogBox.interactionIcon.visible = false;
+		}
+		// Reset for next frame; the physics overlap re-sets it if still overlapping.
+		this.playerInAnyZone = false;
 	}
 
 	/**
@@ -255,6 +278,7 @@ export class NeverquestNPCManager {
 	private handleNPCOverlap(zone: INPCZone): void {
 		const body = this.player.container.body as Phaser.Physics.Arcade.Body;
 
+		this.playerInAnyZone = true;
 		this.dialogBox.isOverlapingChat = true;
 		this.dialogBox.actionButton.visible = true;
 		this.dialogBox.interactionIcon.visible = true;
@@ -325,6 +349,7 @@ export class NeverquestNPCManager {
 	 * Destroys all NPCs and cleans up resources
 	 */
 	destroy(): void {
+		this.scene.events.off('update', this.checkZoneExit, this);
 		this.npcs.forEach((npc) => {
 			npc.nameText?.destroy();
 			npc.destroy();

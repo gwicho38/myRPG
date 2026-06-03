@@ -113,6 +113,9 @@ export const GameMessages = {
 // =============================================================================
 
 export const UILabels = {
+	// Title
+	GAME_TITLE: 'NEVERQUEST',
+
 	// HUD
 	GAME_LOG_TITLE: 'Game Log',
 	GAME_LOG_TITLE_WITH_ICON: '⚔️ Game Log',

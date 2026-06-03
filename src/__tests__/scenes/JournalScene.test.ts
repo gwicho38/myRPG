@@ -46,6 +46,7 @@ jest.mock('phaser', () => {
 	const mockGraphics = {
 		fillStyle: jest.fn().mockReturnThis(),
 		fillRect: jest.fn().mockReturnThis(),
+		setVisible: jest.fn().mockReturnThis(),
 		createGeometryMask: jest.fn().mockReturnValue({}),
 		destroy: jest.fn(),
 	};
@@ -128,6 +129,7 @@ describe('JournalScene', () => {
 			graphics: jest.fn().mockReturnValue({
 				fillStyle: jest.fn().mockReturnThis(),
 				fillRect: jest.fn().mockReturnThis(),
+				setVisible: jest.fn().mockReturnThis(),
 				createGeometryMask: jest.fn().mockReturnValue({}),
 				destroy: jest.fn(),
 			}),

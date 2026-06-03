@@ -128,6 +128,9 @@ export class QuestLogScene extends Phaser.Scene {
 		this.scrollMask.fillRect(contentX, contentY, contentWidth, contentHeight);
 
 		const mask = this.scrollMask.createGeometryMask();
+		// The mask graphic is a white fill used only to define the mask shape;
+		// keep it invisible or it renders on top and hides the quest content.
+		this.scrollMask.setVisible(false);
 		this.scrollContainer.setMask(mask);
 	}
 

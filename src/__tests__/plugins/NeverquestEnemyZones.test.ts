@@ -575,7 +575,7 @@ describe('NeverquestEnemyZones', () => {
 			}).not.toThrow();
 		});
 
-		it('should handle very large number of enemies', () => {
+		it('should cap a very large requested enemy count per zone', () => {
 			const mockObjects = [
 				{
 					x: 100,
@@ -594,8 +594,9 @@ describe('NeverquestEnemyZones', () => {
 
 			enemyZones.create();
 
-			expect(Enemy).toHaveBeenCalledTimes(100);
-			expect(mockScene.enemies).toHaveLength(100);
+			// A requested count of 100 is clamped to MAX_ENEMIES_PER_ZONE (3) for level-1 survivability.
+			expect(Enemy).toHaveBeenCalledTimes(3);
+			expect(mockScene.enemies).toHaveLength(3);
 		});
 	});
 

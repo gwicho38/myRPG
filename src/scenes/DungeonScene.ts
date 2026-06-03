@@ -172,7 +172,9 @@ export class DungeonScene extends Phaser.Scene {
 				0,
 				0
 			);
-			for (let i = 0; i < 5; i++) {
+			// 2 per room keeps the Chapter 1 cave clearable for a level-1 player
+			// (was 5/room = ~60 enemies, brutal at level 1).
+			for (let i = 0; i < 2; i++) {
 				const pos = Phaser.Geom.Rectangle.Random(spriteBounds, new Phaser.Geom.Point());
 				const enemy = new Enemy(this, pos.x, pos.y, 'bat', 2);
 				this.enemies.push(enemy);
