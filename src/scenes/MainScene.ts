@@ -63,6 +63,8 @@ export class MainScene extends Phaser.Scene {
 	storyFlagBridge: NeverquestStoryFlagBridge | null = null;
 	questManager: NeverquestQuestManager | null = null;
 	npcManager: NeverquestNPCManager | null = null;
+	/** Max frames to wait for DialogScene before giving up on spawning the Elder (~2s). */
+	private static readonly ELDER_SPAWN_MAX_FRAMES = 120;
 
 	constructor() {
 		super({
@@ -188,7 +190,12 @@ export class MainScene extends Phaser.Scene {
 			frame: 0,
 			storyFlag: StoryFlag.MET_ELDER,
 		});
-		this.npcManager.create();
+		// Defer the actual spawn until DialogScene's camera is ready. The NPC
+		// manager builds a DialogBox bound to DialogScene, which reads
+		// DialogScene.cameras.main — undefined for a frame or two after launch
+		// (notably when MainScene is cold-started from the chapter-complete
+		// "Continue"). Spawning early there throws and strands the player.
+		this.createElderWhenDialogReady();
 
 		// Create the Upside Down portal
 		// this.createUpsideDownPortal();
@@ -209,6 +216,31 @@ export class MainScene extends Phaser.Scene {
 	 */
 	private onChapterComplete(): void {
 		this.scene.launch(ChapterCompleteSceneName, { returnScene: 'MainScene' });
+	}
+
+	/**
+	 * Calls npcManager.create() once the DialogScene it depends on has booted
+	 * (its main camera exists). Polls on update so it works whether DialogScene
+	 * is launched fresh or woken on a cold-start, with a safety cap.
+	 */
+	private createElderWhenDialogReady(): void {
+		const dialogScene = this.scene.get('DialogScene');
+		const isReady = (): boolean => !!(dialogScene && dialogScene.cameras && dialogScene.cameras.main);
+		if (isReady()) {
+			this.npcManager!.create();
+			return;
+		}
+		let frames = 0;
+		const poll = (): void => {
+			frames += 1;
+			if (isReady()) {
+				this.events.off('update', poll);
+				this.npcManager!.create();
+			} else if (frames > MainScene.ELDER_SPAWN_MAX_FRAMES) {
+				this.events.off('update', poll);
+			}
+		};
+		this.events.on('update', poll);
 	}
 
 	setupSaveKeybinds(): void {
