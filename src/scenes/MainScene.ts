@@ -37,9 +37,14 @@ import { PlayerConfig } from '../consts/player/Player';
 import { ChapterCompleteSceneName } from './ChapterCompleteScene';
 import ElderGreeting from '../consts/DB_SEED/chats/ElderGreeting';
 
-/** Pixel offset placing the Chapter 1 Elder NPC beside the player spawn. */
+/** Placement + appearance for the Chapter 1 Elder NPC. */
 const ElderPlacement = {
 	OFFSET_X: 80,
+	// A calm idle pose. Numeric frame 0 of the 'character' atlas resolves to an
+	// attack frame (atk-down), which made the Elder look like it was swinging a sword.
+	IDLE_FRAME: 'idle-down/idle-down00',
+	// Sage robe tint so the Elder reads as an NPC, not a clone of the player.
+	TINT: 0x8fbc8f,
 } as const;
 import { HexColors, NumericColors } from '../consts/Colors';
 import { Alpha, Scale, CameraValues, Depth } from '../consts/Numbers';
@@ -187,7 +192,8 @@ export class MainScene extends Phaser.Scene {
 			y: this.player.container.y,
 			chatId: ElderGreeting.id,
 			texture: PlayerConfig.texture,
-			frame: 0,
+			frame: ElderPlacement.IDLE_FRAME,
+			tint: ElderPlacement.TINT,
 			storyFlag: StoryFlag.MET_ELDER,
 		});
 		// Defer the actual spawn until DialogScene's camera is ready. The NPC

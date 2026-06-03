@@ -42,8 +42,8 @@ export interface INPCConfig {
 	chatId: number;
 	/** Sprite texture key (defaults to 'character') */
 	texture?: string;
-	/** Animation frame to display (for static NPCs) */
-	frame?: number;
+	/** Animation frame to display (for static NPCs) — index or atlas frame name */
+	frame?: string | number;
 	/** Scale of the sprite */
 	scale?: number;
 	/** Tint color for the sprite (hex number) */
