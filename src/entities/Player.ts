@@ -27,6 +27,7 @@ import Phaser from 'phaser';
 import { NumericColors } from '../consts/Colors';
 import { ENTITIES } from '../consts/Entities';
 import { EntitySpeed, Alpha, Scale, AnimationTiming } from '../consts/Numbers';
+import { KNIGHTS_SHIELD_ITEM_ID } from '../consts/DB_SEED/Items';
 import { AttributesManager } from '../plugins/attributes/AttributesManager';
 import { NeverquestHUDProgressBar } from '../plugins/HUD/NeverquestHUDProgressBar';
 import { NeverquestHealthBar } from '../plugins/NeverquestHealthBar';
@@ -153,11 +154,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite implements IBaseEntity 
 		 */
 		this.speed = this.baseSpeed;
 
-		// TODO - Should get the player's items when he starts the game.
 		/**
 		 * An Array with the Item ID's and the number of that specific Item that the player has.
+		 * The player starts with a Knight's Shield so the block mechanic (K / right-click)
+		 * has a defensive companion to the sword from the outset.
 		 */
-		this.items = [];
+		this.items = [{ id: KNIGHTS_SHIELD_ITEM_ID, count: 1 }];
 
 		/**
 		 * The zone that will interact as a hitzone.

@@ -4,6 +4,7 @@
  * This file defines buff types that restrict consumable stacking:
  * - ATK01: Basic attack buff (can stack with others)
  * - ATK02: Strong attack buff (unique, cannot stack)
+ * - DEF01: Defense buff (Knight's Shield)
  *
  * Used by consumable items to prevent buff conflicts.
  *
@@ -18,4 +19,5 @@ import { BuffType } from '../../models/BuffType';
 export const BUFF_TYPES = {
 	ATK01: new BuffType(1, 'Atack 01'),
 	ATK02: new BuffType(2, 'Atack 02'),
+	DEF01: new BuffType(3, 'Defense 01'),
 };

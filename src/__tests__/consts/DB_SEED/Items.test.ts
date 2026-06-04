@@ -14,7 +14,7 @@ import { ITEM_TYPE } from '../../../consts/DB_SEED/ItemTypes';
 describe('DB_SEED_ITEMS', () => {
 	it('should export an array of item configurations', () => {
 		expect(Array.isArray(DB_SEED_ITEMS)).toBe(true);
-		expect(DB_SEED_ITEMS.length).toBe(13);
+		expect(DB_SEED_ITEMS.length).toBe(14);
 	});
 
 	it('should have all items with valid structure', () => {
@@ -64,7 +64,7 @@ describe('DB_SEED_ITEMS', () => {
 	});
 
 	it('should only use valid texture keys', () => {
-		const validTextures = ['red_potion', 'atk_potion', 'treasure_chest', 'mighty_sword'];
+		const validTextures = ['red_potion', 'atk_potion', 'treasure_chest', 'mighty_sword', 'knight_shield'];
 		DB_SEED_ITEMS.forEach((item) => {
 			expect(validTextures).toContain(item.texture);
 		});

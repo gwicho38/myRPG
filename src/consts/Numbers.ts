@@ -230,7 +230,10 @@ export const CombatNumbers = {
 
 	// Combat timing
 	ATTACK_COOLDOWN: 500,
+	// Raising a shield (block) adds this to the blocker's effective defense...
 	BLOCK_DEFENSE_BONUS: 5,
+	// ...and halves whatever damage still gets through.
+	BLOCK_DAMAGE_MULTIPLIER: 0.5,
 
 	// Hitbox settings
 	HITBOX_OFFSET_DIVIDER_Y: 1.5,

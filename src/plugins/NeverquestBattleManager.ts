@@ -323,12 +323,20 @@ export class NeverquestBattleManager extends AnimationNames {
 	takeDamage(atacker: ICombatEntity, target: ICombatEntity): void {
 		// Randomizes the name of the damage sound.
 		let damageName = this.damageSoundNames[Math.floor(Math.random() * this.damageSoundNames.length)];
-		let damage = this.randomDamage(atacker.attributes.atack - target.attributes.defense);
+		// A raised shield (isBlocking) adds to the target's effective defense before the roll.
+		const isBlocking = !!target.isBlocking;
+		const effectiveDefense = target.attributes.defense + (isBlocking ? CombatNumbers.BLOCK_DEFENSE_BONUS : 0);
+		let damage = this.randomDamage(atacker.attributes.atack - effectiveDefense);
 		const isCritical = this.checkAtackIsCritial(atacker.attributes.critical);
 		const hit = this.checkAtackHit(atacker.attributes.hit, target.attributes.flee);
 		if (isCritical) {
 			damage = Math.ceil(atacker.attributes.atack * CRITICAL_MULTIPLIER);
 			damageName = 'critical';
+		}
+		// Blocking also halves whatever damage still gets through (after defense + crit),
+		// so a shield meaningfully softens even critical hits.
+		if (isBlocking && damage > 0) {
+			damage = Math.floor(damage * CombatNumbers.BLOCK_DAMAGE_MULTIPLIER);
 		}
 		if (hit || isCritical) {
 			if (damage > 0) {
