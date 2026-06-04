@@ -124,6 +124,45 @@ describe('NeverquestConsumableManager', () => {
 		});
 	});
 
+	describe('buff', () => {
+		beforeEach(() => {
+			mockPlayer.attributes.atack = 10;
+			mockPlayer.attributes.defense = 1;
+			mockPlayer.attributes.bonus.consumable = [];
+		});
+
+		it('should raise ATK for an attack buff (Mighty Sword)', () => {
+			mockItem.buffType = { id: 2 };
+			manager.buff(mockItem, ['buff', 'atk', '5', '120'], mockPlayer);
+
+			expect(mockPlayer.attributes.atack).toBe(15);
+			expect(mockPlayer.attributes.bonus.consumable).toHaveLength(1);
+			expect(mockPlayer.attributes.bonus.consumable[0].statBonus).toBe('atack');
+		});
+
+		it("should raise DEF for a defense buff (Knight's Shield)", () => {
+			mockItem.buffType = { id: 3 };
+			manager.buff(mockItem, ['buff', 'def', '5', '120'], mockPlayer);
+
+			expect(mockPlayer.attributes.defense).toBe(6);
+			expect(mockPlayer.attributes.bonus.consumable).toHaveLength(1);
+			expect(mockPlayer.attributes.bonus.consumable[0].statBonus).toBe('defense');
+		});
+
+		it('should refresh the timer instead of stacking when the same buff is re-used', () => {
+			mockItem.buffType = { id: 3 };
+			manager.buff(mockItem, ['buff', 'def', '5', '120'], mockPlayer);
+			const reset = mockPlayer.attributes.bonus.consumable[0].timer.reset;
+
+			// Re-use the same shield: defense must not climb again, timer just resets.
+			manager.buff(mockItem, ['buff', 'def', '5', '120'], mockPlayer);
+
+			expect(mockPlayer.attributes.defense).toBe(6);
+			expect(mockPlayer.attributes.bonus.consumable).toHaveLength(1);
+			expect(reset).toHaveBeenCalled();
+		});
+	});
+
 	describe('recover', () => {
 		it('should recover HP and not exceed baseHealth', () => {
 			mockPlayer.attributes.health = 50;

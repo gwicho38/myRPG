@@ -141,44 +141,61 @@ export class NeverquestConsumableManager {
 			case 'sp':
 				// SP buff not yet implemented
 				break;
-			case 'atk': {
-				const buffId = typeof item.buffType === 'number' ? item.buffType : (item.buffType?.id ?? 0);
-				const consumableBonus = player.attributes.bonus.consumable.find(
-					(consumableItem) => consumableItem.uniqueId === buffId
-				);
-				if (consumableBonus) {
-					player.scene.sound.play(this.getItemSfx(item));
-					consumableBonus.timer.reset({
-						callbackScope: this,
-						delay: consumableBonus.time * ConsumableManagerValues.BUFF_DURATION_MULTIPLIER, // Time to restore the attributes to it's default value.
-						callback: this.changeStats, // Callback
-						args: [player, consumableBonus, -1], // Params
-					});
-				} else {
-					// Add the item
-					const bonusStatus = new ConsumableBonus(
-						buffId,
-						'atack',
-						parseInt(action[2], 10),
-						parseInt(action[3], 10)
-					);
-					this.changeStats(player, bonusStatus);
-
-					player.scene.sound.play(this.getItemSfx(item));
-					bonusStatus.timer = player.scene.time.addEvent({
-						callbackScope: this,
-						delay: bonusStatus.time * ConsumableManagerValues.BUFF_DURATION_MULTIPLIER, // Time to restore the attributes to it's default value.
-						callback: this.changeStats, // Callback
-						args: [player, bonusStatus, -1], // Params
-					});
-					player.attributes.bonus.consumable.push(bonusStatus);
-				}
-
+			// 'buff atk <value> <seconds>' — e.g. the Mighty Sword (+ATK).
+			case 'atk':
+				this.applyStatBuff(item, action, player, 'atack');
 				break;
-			}
+			// 'buff def <value> <seconds>' — e.g. the Knight's Shield (+DEF).
+			case 'def':
+				this.applyStatBuff(item, action, player, 'defense');
+				break;
 
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * Applies (or refreshes) a temporary stat buff from a consumable. Used by both
+	 * the attack buff (Mighty Sword) and the defense buff (Knight's Shield) so the
+	 * two stay in lockstep. The bonus is keyed by the item's buffType id so re-using
+	 * the same item just refreshes its timer instead of stacking.
+	 * @param item the item granting the buff.
+	 * @param action the parsed script action: ['buff', stat, value, seconds].
+	 * @param player the player receiving the buff.
+	 * @param statBonus the IEntityAttributes key to modify ('atack' | 'defense').
+	 */
+	applyStatBuff(item: IConsumableItem, action: string[], player: Player, statBonus: string): void {
+		const buffId = typeof item.buffType === 'number' ? item.buffType : (item.buffType?.id ?? 0);
+		const consumableBonus = player.attributes.bonus.consumable.find(
+			(consumableItem) => consumableItem.uniqueId === buffId
+		);
+		if (consumableBonus) {
+			player.scene.sound.play(this.getItemSfx(item));
+			consumableBonus.timer.reset({
+				callbackScope: this,
+				delay: consumableBonus.time * ConsumableManagerValues.BUFF_DURATION_MULTIPLIER, // Time to restore the attributes to it's default value.
+				callback: this.changeStats, // Callback
+				args: [player, consumableBonus, -1], // Params
+			});
+		} else {
+			// Add the item
+			const bonusStatus = new ConsumableBonus(
+				buffId,
+				statBonus,
+				parseInt(action[2], 10),
+				parseInt(action[3], 10)
+			);
+			this.changeStats(player, bonusStatus);
+
+			player.scene.sound.play(this.getItemSfx(item));
+			bonusStatus.timer = player.scene.time.addEvent({
+				callbackScope: this,
+				delay: bonusStatus.time * ConsumableManagerValues.BUFF_DURATION_MULTIPLIER, // Time to restore the attributes to it's default value.
+				callback: this.changeStats, // Callback
+				args: [player, bonusStatus, -1], // Params
+			});
+			player.attributes.bonus.consumable.push(bonusStatus);
 		}
 	}
 

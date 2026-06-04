@@ -30,6 +30,9 @@ import { ITEM_TYPE } from './ItemTypes';
  * Will translate to -> Recover 50 HP.
  * Then the transpiles will take care to recover the HP.
  */
+/** Item id of the Knight's Shield (the defensive companion to the Mighty Sword). */
+export const KNIGHTS_SHIELD_ITEM_ID = 14;
+
 export const DB_SEED_ITEMS = [
 	{
 		id: 1,
@@ -75,6 +78,18 @@ export const DB_SEED_ITEMS = [
 		description: `A powerfull sword created by merlin The Wizzard of Wizzards. Used to break stones, it's durability is out of the blue. (Increases the ATACK by 5 points for 120 seconds. Carrier can only have one of these)`,
 		script: 'buff atk 5 120;',
 		texture: 'mighty_sword',
+		sfx: 'equip_item',
+		stackable: true,
+		inventoryScale: 1.7,
+	},
+	{
+		id: 14,
+		name: "Knight's Shield",
+		type: ITEM_TYPE.USABLE,
+		buffType: BUFF_TYPES.DEF01,
+		description: `A sturdy oak shield banded with steel, the perfect companion to a good blade. Raise it (K / right-click) to halve incoming blows. (Increases DEFENSE by 5 points for 120 seconds. Carrier can only have one of these)`,
+		script: 'buff def 5 120;',
+		texture: 'knight_shield',
 		sfx: 'equip_item',
 		stackable: true,
 		inventoryScale: 1.7,

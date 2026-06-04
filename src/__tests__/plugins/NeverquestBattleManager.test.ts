@@ -263,12 +263,34 @@ describe('NeverquestBattleManager', () => {
 			expect(mockTarget.healthBar.decrease).toHaveBeenCalled();
 		});
 
-		it('should reduce damage while blocking', () => {
-			mockTarget.isBlocking = true;
-			const initialHealth = mockTarget.attributes.health;
+		it('should reduce damage while blocking vs not blocking', () => {
+			// Make the damage deterministic: identity roll, guaranteed hit, never crit,
+			// so the only variable is the isBlocking flag.
+			jest.spyOn(battleManager, 'randomDamage').mockImplementation((d: number) => d);
+			jest.spyOn(
+				battleManager as unknown as { checkAtackIsCritial: () => boolean },
+				'checkAtackIsCritial'
+			).mockReturnValue(false);
+			jest.spyOn(battleManager as unknown as { checkAtackHit: () => boolean }, 'checkAtackHit').mockReturnValue(
+				true
+			);
+
+			// Baseline: not blocking.
+			mockTarget.isBlocking = false;
+			mockTarget.attributes.health = 50;
 			battleManager.takeDamage(mockAttacker, mockTarget);
-			// Should apply reduced damage while blocking
-			expect(mockTarget.attributes.health).toBeLessThan(initialHealth);
+			const unblockedDamage = 50 - mockTarget.attributes.health;
+
+			// Same hit, now blocking.
+			mockTarget.isBlocking = true;
+			mockTarget.attributes.health = 50;
+			battleManager.takeDamage(mockAttacker, mockTarget);
+			const blockedDamage = 50 - mockTarget.attributes.health;
+
+			// Blocking must strictly reduce the damage taken (atk 10 vs def 3:
+			// unblocked = 7, blocked = floor((10 - (3 + 5)) * 0.5) clamped to >=1 = 1).
+			expect(blockedDamage).toBeLessThan(unblockedDamage);
+			expect(blockedDamage).toBeGreaterThanOrEqual(0);
 		});
 
 		it('should clamp health to minimum of 0 and prevent negative health', () => {

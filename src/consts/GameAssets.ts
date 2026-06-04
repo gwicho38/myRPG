@@ -128,6 +128,7 @@ import red_potion from '../assets/sprites/consumables/red_potion.png';
 import atk_potion from '../assets/sprites/consumables/atk_potion.png';
 import treasure_chest from '../assets/sprites/chest.png';
 import mighty_sword from '../assets/sprites/mighty_sword.png';
+import knight_shield from '../assets/sprites/knight_shield.png';
 
 // Maps
 import dungeon_map from '../assets/maps/dungeon/dungeon_tileset.png';
@@ -358,6 +359,10 @@ export const Images: IImageAsset[] = [
 	{
 		name: 'mighty_sword',
 		image: mighty_sword,
+	},
+	{
+		name: 'knight_shield',
+		image: knight_shield,
 	},
 	{
 		name: 'critical',
